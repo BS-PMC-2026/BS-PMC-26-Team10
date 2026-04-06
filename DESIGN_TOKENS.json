@@ -1,0 +1,76 @@
+{
+  "colors": {
+    "primary": {
+      "name": "Primary Brand Red",
+      "hex": "#b30000",
+      "usage": "Topbar, primary buttons, main accents"
+    },
+    "accent": {
+      "name": "Accent Red",
+      "hex": "#d94a4a",
+      "usage": "Card borders, secondary accents, highlights"
+    },
+    "text": {
+      "name": "Dark Red Text",
+      "hex": "#7a1111",
+      "usage": "Body text, headings"
+    },
+    "background": {
+      "name": "Light Background",
+      "hex": "#fff8f8",
+      "usage": "Main page background"
+    },
+    "white": {
+      "name": "White",
+      "hex": "#ffffff",
+      "usage": "Cards, content containers, hover states"
+    }
+  },
+  "typography": {
+    "fontFamily": "Arial, sans-serif",
+    "sizes": {
+      "h1": "3vw",
+      "h2": "2.2vw",
+      "h3": "1.5vw",
+      "body": "1vw",
+      "bodyLarge": "1.3vw",
+      "bodySmall": "0.9vw",
+      "tabs": "1.2vw"
+    }
+  },
+  "spacing": {
+    "xs": "0.5vw",
+    "sm": "0.7vw",
+    "md": "1.2vw",
+    "lg": "1.5vw",
+    "xl": "2vw",
+    "2xl": "3vw"
+  },
+  "borderRadius": {
+    "sm": "0.5vw",
+    "md": "1vw",
+    "lg": "1.2vw",
+    "full": "50%"
+  },
+  "shadows": {
+    "card": "0 0.4vw 1vw rgba(0, 0, 0, 0.08)"
+  },
+  "components": {
+    "topbar": {
+      "background": "#b30000",
+      "padding": "1.5vw 3vw",
+      "textColor": "white"
+    },
+    "pepperCard": {
+      "border": "0.15vw solid #d94a4a",
+      "borderRadius": "1.2vw",
+      "boxShadow": "0 0.4vw 1vw rgba(0, 0, 0, 0.08)",
+      "hoverTransform": "scale(1.02)",
+      "imageHeight": "16vw"
+    },
+    "gridLayout": {
+      "columns": "repeat(auto-fit, minmax(18vw, 1fr))",
+      "gap": "2vw"
+    }
+  }
+}
