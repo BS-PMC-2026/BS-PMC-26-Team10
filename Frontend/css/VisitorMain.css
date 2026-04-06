@@ -366,6 +366,7 @@ body {
     .filter-chip,
     .active-filter-placeholder {
         padding: 1.6vw 3vw;
+    }
 
     .search-panel {
         width: 100%;
@@ -395,7 +396,6 @@ body {
     .search-status {
         min-height: 5vw;
         font-size: 3.5vw;
-
     }
 
     .chilli-grid {
