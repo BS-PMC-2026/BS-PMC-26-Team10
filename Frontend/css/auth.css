@@ -1,0 +1,199 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f1ea;
+}
+
+.page {
+    width: 100vw;
+    padding: 6vw 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    width: 88vw;
+    background-color: white;
+    border-radius: 3vw;
+    box-shadow: 0 0 2vw rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.left {
+    width: 100%;
+    background-color: #b22222;
+    color: white;
+    padding: 6vw 5vw;
+    text-align: center;
+}
+
+.title {
+    font-size: 8vw;
+    margin-bottom: 2vw;
+}
+
+.subtitle {
+    font-size: 4vw;
+    margin-bottom: 5vw;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 2vw;
+}
+
+.tab {
+    border: none;
+    background-color: white;
+    color: #b22222;
+    padding: 2vw 4vw;
+    font-size: 3.5vw;
+    border-radius: 2vw;
+    cursor: pointer;
+}
+
+.tab.active {
+    background-color: #ffd6d6;
+}
+
+.right {
+    width: 100%;
+    padding: 6vw 5vw;
+}
+
+.form {
+    display: none;
+}
+
+.form.active {
+    display: block;
+}
+
+.form h2 {
+    font-size: 6vw;
+    margin-bottom: 4vw;
+    color: #b22222;
+    text-align: center;
+}
+
+.form input,
+.form select {
+    width: 100%;
+    padding: 3vw;
+    margin-bottom: 3vw;
+    font-size: 3.5vw;
+    border: 0.2vw solid #ccc;
+    border-radius: 2vw;
+    outline: none;
+}
+
+.form button {
+    width: 100%;
+    padding: 3vw;
+    font-size: 3.5vw;
+    border: none;
+    border-radius: 2vw;
+    cursor: pointer;
+    background-color: #b22222;
+    color: white;
+    margin-bottom: 2vw;
+}
+
+.form button.guest {
+    background-color: #2e8b57;
+}
+
+.switch {
+    text-align: center;
+    font-size: 3.2vw;
+    margin-top: 2vw;
+    color: #444;
+}
+
+.switch span {
+    color: #b22222;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* desktop */
+@media (min-width: 768px) {
+    .page {
+        padding: 4vw 0;
+    }
+
+    .box {
+        width: 70vw;
+        border-radius: 2vw;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .left {
+        width: 35vw;
+        padding: 5vw 3vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .title {
+        font-size: 3.5vw;
+        margin-bottom: 1vw;
+    }
+
+    .subtitle {
+        font-size: 1.5vw;
+        margin-bottom: 3vw;
+    }
+
+    .tabs {
+        gap: 1vw;
+    }
+
+    .tab {
+        padding: 1vw 2vw;
+        font-size: 1.2vw;
+        border-radius: 1vw;
+    }
+
+    .right {
+        width: 35vw;
+        padding: 4vw 3vw;
+    }
+
+    .form h2 {
+        font-size: 2.2vw;
+        margin-bottom: 2vw;
+    }
+
+    .form input,
+    .form select {
+        padding: 1vw;
+        margin-bottom: 1.2vw;
+        font-size: 1.1vw;
+        border: 0.1vw solid #ccc;
+        border-radius: 0.8vw;
+    }
+
+    .form button {
+        padding: 1vw;
+        font-size: 1.1vw;
+        border-radius: 0.8vw;
+        margin-bottom: 1vw;
+    }
+
+    .switch {
+        font-size: 1vw;
+        margin-top: 1vw;
+    }
+}
