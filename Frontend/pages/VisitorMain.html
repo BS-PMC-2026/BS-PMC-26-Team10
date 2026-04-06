@@ -25,6 +25,27 @@
 
         <section class="catalogue-section">
             <h2>Catalogue</h2>
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label for="shuMinFilter">Minimum SHU</label>
+                    <input type="number" id="shuMinFilter" min="0" placeholder="e.g. 1000">
+                </div>
+                <div class="filter-group">
+                    <label for="shuMaxFilter">Maximum SHU</label>
+                    <input type="number" id="shuMaxFilter" min="0" placeholder="e.g. 50000">
+                </div>
+                <div class="filter-group">
+                    <label for="originFilter">Origin</label>
+                    <select id="originFilter">
+                        <option value="">All origins</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="button" id="applyFiltersBtn">Apply Filters</button>
+                    <button type="button" id="resetFiltersBtn" class="secondary-button">Reset</button>
+                </div>
+            </div>
+            <div id="activeFilters" class="active-filters" aria-live="polite"></div>
             <div id="chilliContainer" class="chilli-grid"></div>
         </section>
     </main>
