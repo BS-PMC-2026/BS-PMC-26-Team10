@@ -70,100 +70,6 @@ body {
     text-align: center;
 }
 
-<<<<<<< HEAD
-.filter-panel {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14vw, 1fr));
-    gap: 1.5vw;
-    background-color: #ffffff;
-    border: 0.15vw solid #d94a4a;
-    border-radius: 1.2vw;
-    box-shadow: 0 0.4vw 1vw rgba(0, 0, 0, 0.08);
-    padding: 1.5vw;
-    margin-bottom: 1.5vw;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6vw;
-}
-
-.filter-group label {
-    font-size: 1vw;
-    font-weight: bold;
-    color: #7a1111;
-}
-
-.filter-group input,
-.filter-group select,
-.filter-actions button {
-    font: inherit;
-    font-size: 1vw;
-    border-radius: 0.8vw;
-}
-
-.filter-group input,
-.filter-group select {
-    border: 0.1vw solid #d94a4a;
-    padding: 0.8vw 1vw;
-    color: #7a1111;
-    background-color: #fff8f8;
-}
-
-.filter-actions {
-    display: flex;
-    align-items: flex-end;
-    gap: 1vw;
-}
-
-.filter-actions button {
-    border: none;
-    padding: 0.9vw 1.2vw;
-    cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.filter-actions button:hover {
-    transform: translateY(-0.1vw);
-}
-
-#applyFiltersBtn {
-    background-color: #b30000;
-    color: #ffffff;
-}
-
-.secondary-button {
-    background-color: #f6dede;
-    color: #7a1111;
-}
-
-.active-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8vw;
-    margin-bottom: 2vw;
-    min-height: 2.4vw;
-}
-
-.filter-chip,
-.active-filter-placeholder {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999vw;
-    padding: 0.5vw 1vw;
-    font-size: 0.95vw;
-}
-
-.filter-chip {
-    background-color: #b30000;
-    color: #ffffff;
-}
-
-.active-filter-placeholder {
-    background-color: #f6dede;
-    color: #7a1111;
-=======
 .search-panel {
     width: min(56rem, 100%);
     margin: 0 auto 2.2vw;
@@ -250,7 +156,6 @@ body {
 
 .search-status.error {
     color: #9f1a1a;
->>>>>>> d51360aeb6ee9e844394e8e5d2388f817e040fa6
 }
 
 .chilli-grid {
@@ -330,55 +235,6 @@ body {
         margin-bottom: 4vw;
     }
 
-<<<<<<< HEAD
-    .filter-panel {
-        grid-template-columns: 1fr;
-        gap: 3vw;
-        padding: 4vw;
-        margin-bottom: 4vw;
-        border-radius: 4vw;
-    }
-
-    .filter-group {
-        gap: 1.8vw;
-    }
-
-    .filter-group label,
-    .filter-group input,
-    .filter-group select,
-    .filter-actions button,
-    .active-filter-placeholder,
-    .filter-chip,
-    .status-message,
-    .empty-state p {
-        font-size: 3.7vw;
-    }
-
-    .filter-group input,
-    .filter-group select {
-        padding: 2.8vw 3vw;
-        border-radius: 2.5vw;
-    }
-
-    .filter-actions {
-        gap: 3vw;
-    }
-
-    .filter-actions button {
-        padding: 2.8vw 4vw;
-        border-radius: 2.8vw;
-    }
-
-    .active-filters {
-        gap: 2vw;
-        margin-bottom: 4vw;
-        min-height: 8vw;
-    }
-
-    .filter-chip,
-    .active-filter-placeholder {
-        padding: 1.6vw 3vw;
-=======
     .search-panel {
         width: 100%;
         margin-bottom: 5vw;
@@ -407,7 +263,6 @@ body {
     .search-status {
         min-height: 5vw;
         font-size: 3.5vw;
->>>>>>> d51360aeb6ee9e844394e8e5d2388f817e040fa6
     }
 
     .chilli-grid {
@@ -432,17 +287,4 @@ body {
         font-size: 3.7vw;
         margin-bottom: 1.5vw;
     }
-<<<<<<< HEAD
-
-    .empty-state {
-        padding: 6vw 5vw;
-        border-radius: 4vw;
-    }
-
-    .empty-state h3 {
-        font-size: 4.8vw;
-        margin-bottom: 2vw;
-    }
-=======
->>>>>>> d51360aeb6ee9e844394e8e5d2388f817e040fa6
 }
