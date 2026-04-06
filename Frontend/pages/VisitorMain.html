@@ -25,6 +25,15 @@
 
         <section class="catalogue-section">
             <h2>Catalogue</h2>
+            <form class="search-panel" id="searchForm" role="search">
+                <label class="search-label" for="searchInput">Find a pepper</label>
+                <div class="search-bar">
+                    <input type="search" id="searchInput" placeholder="Search peppers by name or description..." autocomplete="off">
+                    <button type="button" id="clearSearchButton" class="secondary-button" aria-label="Clear search">Clear</button>
+                    <button type="submit" id="searchButton">Search</button>
+                </div>
+                <p id="searchStatus" class="search-status" aria-live="polite">Showing all peppers.</p>
+            </form>
             <div id="chilliContainer" class="chilli-grid"></div>
         </section>
     </main>
