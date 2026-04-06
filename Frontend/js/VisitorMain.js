@@ -41,94 +41,6 @@ function displayChillies(chillies, query = "") {
         setSearchStatus(formatSearchStatus([], query));
         return;
     }
-}
-const chilliContainer = document.getElementById("chilliContainer");
-const shuMinFilter = document.getElementById("shuMinFilter");
-const shuMaxFilter = document.getElementById("shuMaxFilter");
-const originFilter = document.getElementById("originFilter");
-const applyFiltersBtn = document.getElementById("applyFiltersBtn");
-const resetFiltersBtn = document.getElementById("resetFiltersBtn");
-const activeFilters = document.getElementById("activeFilters");
-
-let filterRequestTimeout;
-
-function getFilterValues() {
-    return {
-        shuMin: shuMinFilter.value.trim(),
-        shuMax: shuMaxFilter.value.trim(),
-        origin: originFilter.value.trim()
-    };
-}
-
-function buildFilterQuery() {
-    const params = new URLSearchParams();
-    const { shuMin, shuMax, origin } = getFilterValues();
-
-    if (shuMin) {
-        params.append("shu_min", shuMin);
-    }
-
-    if (shuMax) {
-        params.append("shu_max", shuMax);
-    }
-
-    if (origin) {
-        params.append("origin", origin);
-    }
-
-    return params.toString();
-}
-
-function renderActiveFilters() {
-    const { shuMin, shuMax, origin } = getFilterValues();
-    const activeItems = [];
-
-    if (shuMin || shuMax) {
-        const minLabel = shuMin || "0";
-        const maxLabel = shuMax || "Any";
-        activeItems.push(`SHU: ${minLabel} - ${maxLabel}`);
-    }
-
-    if (origin) {
-        activeItems.push(`Origin: ${origin}`);
-    }
-
-    if (activeItems.length === 0) {
-        activeFilters.innerHTML = '<span class="active-filter-placeholder">Showing all chillies</span>';
-        return;
-    }
-
-    activeFilters.innerHTML = activeItems
-        .map((item) => `<span class="filter-chip">${item}</span>`)
-        .join("");
-}
-
-function showStatusMessage(message) {
-    chilliContainer.innerHTML = `<p class="status-message">${message}</p>`;
-}
-
-function hasInvalidRange() {
-    const { shuMin, shuMax } = getFilterValues();
-
-    if (!shuMin || !shuMax) {
-        return false;
-    }
-
-    return Number(shuMin) > Number(shuMax);
-}
-
-function renderChillies(chillies) {
-    chilliContainer.innerHTML = "";
-
-    if (chillies.length === 0) {
-        chilliContainer.innerHTML = `
-            <div class="empty-state">
-                <h3>No chillies match these filters.</h3>
-                <p>Try a wider SHU range or choose another origin.</p>
-            </div>
-        `;
-        return;
-    }
 
     chillies.forEach((chilli) => {
         const card = document.createElement("div");
@@ -148,74 +60,120 @@ function renderChillies(chillies) {
 
         chilliContainer.appendChild(card);
     });
-}
 
-async function loadOriginOptions() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/chillies`);
-        const chillies = await response.json();
-        const uniqueOrigins = [...new Set(
-            chillies
-                .map((chilli) => chilli.origin)
-                .filter((origin) => origin && origin.trim().length > 0)
-        )].sort((first, second) => first.localeCompare(second));
-
-        uniqueOrigins.forEach((origin) => {
-            const option = document.createElement("option");
-            option.value = origin;
-            option.textContent = origin;
-            originFilter.appendChild(option);
-        });
-    } catch (error) {
-        console.error("Error loading filter options:", error);
-    }
+    setSearchStatus(formatSearchStatus(chillies, query));
 }
 
 async function loadChillies() {
-    renderActiveFilters();
+    setSearchBusy(true);
 
-    if (hasInvalidRange()) {
-        showStatusMessage("Minimum SHU cannot be greater than maximum SHU.");
+    try {
+        const response = await fetch(`${API_BASE_URL}/chillies`);
+        const chillies = await response.json();
+        displayChillies(chillies, "");
+    } catch (error) {
+        console.error("Error loading chillies:", error);
+        document.getElementById("chilliContainer").innerHTML = "<p>Failed to load chillies.</p>";
+        setSearchStatus("Failed to load peppers.", true);
+    } finally {
+        setSearchBusy(false);
+    }
+}
+
+async function searchChillies(query) {
+    const trimmedQuery = query.trim();
+    const currentToken = ++latestSearchToken;
+
+    if (!trimmedQuery) {
+        loadChillies();
         return;
     }
 
-    showStatusMessage("Loading chillies...");
+    setSearchBusy(true);
+    setSearchStatus(`Searching for "${trimmedQuery}"...`);
 
     try {
-        const query = buildFilterQuery();
-        const endpoint = query ? `${API_BASE_URL}/chillies?${query}` : `${API_BASE_URL}/chillies`;
-        const response = await fetch(endpoint);
+        const response = await fetch(`${API_BASE_URL}/chillies/search?q=${encodeURIComponent(trimmedQuery)}`);
+        const chillies = await response.json();
 
-        if (!response.ok) {
-            throw new Error("Failed to load chillies");
+        if (currentToken !== latestSearchToken) {
+            return;
         }
 
-        const chillies = await response.json();
-        renderChillies(chillies);
+        displayChillies(chillies, trimmedQuery);
     } catch (error) {
-        console.error("Error loading chillies:", error);
-        showStatusMessage("Failed to load chillies.");
+        console.error("Error searching chillies:", error);
+
+        if (currentToken !== latestSearchToken) {
+            return;
+        }
+
+        document.getElementById("chilliContainer").innerHTML = "<p>Failed to search chillies.</p>";
+        setSearchStatus("Failed to search peppers.", true);
+    } finally {
+        if (currentToken === latestSearchToken) {
+            setSearchBusy(false);
+        }
     }
 }
 
-function queueDynamicReload() {
-    clearTimeout(filterRequestTimeout);
-    filterRequestTimeout = setTimeout(() => {
+document.addEventListener("DOMContentLoaded", () => {
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const clearSearchButton = document.getElementById("clearSearchButton");
+
+    function submitSearch() {
+        const query = searchInput.value.trim();
+
+        if (searchDebounceTimer) {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = null;
+        }
+
+        if (query) {
+            searchChillies(query);
+        } else {
+            latestSearchToken += 1;
+            loadChillies();
+        }
+    }
+
+    searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitSearch();
+    });
+
+    searchButton.addEventListener("click", submitSearch);
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+        clearSearchButton.disabled = query.length === 0;
+
+        if (searchDebounceTimer) {
+            clearTimeout(searchDebounceTimer);
+        }
+
+        if (!query) {
+            latestSearchToken += 1;
+            setSearchStatus("Showing all peppers.");
+            loadChillies();
+            return;
+        }
+
+        searchDebounceTimer = setTimeout(() => {
+            searchChillies(query);
+        }, SEARCH_DEBOUNCE_MS);
+    });
+
+    clearSearchButton.addEventListener("click", () => {
+        searchInput.value = "";
+        clearSearchButton.disabled = true;
+        latestSearchToken += 1;
+        searchInput.focus();
         loadChillies();
-    }, 250);
-}
+    });
 
-function resetFilters() {
-    shuMinFilter.value = "";
-    shuMaxFilter.value = "";
-    originFilter.value = "";
+    clearSearchButton.disabled = true;
     loadChillies();
-}
-
-applyFiltersBtn.addEventListener("click", loadChillies);
-resetFiltersBtn.addEventListener("click", resetFilters);
-shuMinFilter.addEventListener("input", queueDynamicReload);
-shuMaxFilter.addEventListener("input", queueDynamicReload);
-originFilter.addEventListener("change", loadChillies);
-
-loadOriginOptions().then(loadChillies);
+});
