@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Query, Request
+from typing import Optional
 from app.models import Chilli
-from app.services.chilli_services import create_chilli, get_all_chillies, search_chillies
+from app.services.chilli_services import create_chilli, filter_chillies, get_all_chillies, search_chillies
 
 
 
@@ -27,6 +28,24 @@ def build_public_image_url(request: Request, image_url: str) -> str:
     public_path = normalized.removeprefix("../")
     return str(request.base_url).rstrip("/") + f"/{public_path}"
 
+
+def serialize_chillies(chillies, request: Request):
+    return [
+        {
+            'name': chilli[0],
+            'description': chilli[1],
+            'image_url': build_public_image_url(request, chilli[2] or ''),
+            'shu_min': chilli[3],
+            'shu_max': chilli[4],
+            'origin': chilli[5],
+            'color': chilli[6],
+            'is_available': chilli[7],
+            'stock_quantity': chilli[8],
+            'season': chilli[9],
+        }
+        for chilli in chillies
+    ]
+
 @router.post('/chillies')
 def add_chilli(chilli : Chilli):
     chilli.shuMin = int(chilli.shuMin)
@@ -43,24 +62,21 @@ def add_chilli(chilli : Chilli):
 
 
 @router.get('/chillies')
-def list_chillies(request: Request):
-    chillies = get_all_chillies()
+def list_chillies(
+    request: Request,
+    shu_min: Optional[int] = Query(default=None, ge=0),
+    shu_max: Optional[int] = Query(default=None, ge=0),
+    origin: Optional[str] = Query(default=None)
+):
+    if shu_min is not None and shu_max is not None and shu_min > shu_max:
+        raise HTTPException(status_code=400, detail="shu_min cannot be greater than shu_max")
 
-    return [
-        {
-            'name': chilli[0],
-            'description': chilli[1],
-            'image_url': build_public_image_url(request, chilli[2] or ''),
-            'shu_min': chilli[3],
-            'shu_max': chilli[4],
-            'origin': chilli[5],
-            'color': chilli[6],
-            'is_available': chilli[7],
-            'stock_quantity': chilli[8],
-            'season': chilli[9],
-        }
-        for chilli in chillies
-    ]
+    if shu_min is None and shu_max is None and not origin:
+        chillies = get_all_chillies()
+    else:
+        chillies = filter_chillies(shu_min, shu_max, origin.strip() if origin else None)
+
+    return serialize_chillies(chillies, request)
 
 
 @router.get('/chillies/search')
@@ -75,18 +91,4 @@ def search(q: str, request: Request):
     
     chillies = search_chillies(q)
 
-    return [
-        {
-            'name': chilli[0],
-            'description': chilli[1],
-            'image_url': build_public_image_url(request, chilli[2] or ''),
-            'shu_min': chilli[3],
-            'shu_max': chilli[4],
-            'origin': chilli[5],
-            'color': chilli[6],
-            'is_available': chilli[7],
-            'stock_quantity': chilli[8],
-            'season': chilli[9],
-        }
-        for chilli in chillies
-    ]
+    return serialize_chillies(chillies, request)

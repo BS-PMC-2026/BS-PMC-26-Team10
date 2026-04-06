@@ -42,7 +42,7 @@ function displayChillies(chillies, query = "") {
         return;
     }
 
-    chillies.forEach(chilli => {
+    chillies.forEach((chilli) => {
         const card = document.createElement("div");
         card.className = "chilli-card";
 
