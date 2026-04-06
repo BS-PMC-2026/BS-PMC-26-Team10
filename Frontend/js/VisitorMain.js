@@ -41,6 +41,7 @@ function displayChillies(chillies, query = "") {
         setSearchStatus(formatSearchStatus([], query));
         return;
     }
+<<<<<<< HEAD
 }
 const chilliContainer = document.getElementById("chilliContainer");
 const shuMinFilter = document.getElementById("shuMinFilter");
@@ -49,86 +50,7 @@ const originFilter = document.getElementById("originFilter");
 const applyFiltersBtn = document.getElementById("applyFiltersBtn");
 const resetFiltersBtn = document.getElementById("resetFiltersBtn");
 const activeFilters = document.getElementById("activeFilters");
-
-let filterRequestTimeout;
-
-function getFilterValues() {
-    return {
-        shuMin: shuMinFilter.value.trim(),
-        shuMax: shuMaxFilter.value.trim(),
-        origin: originFilter.value.trim()
-    };
-}
-
-function buildFilterQuery() {
-    const params = new URLSearchParams();
-    const { shuMin, shuMax, origin } = getFilterValues();
-
-    if (shuMin) {
-        params.append("shu_min", shuMin);
-    }
-
-    if (shuMax) {
-        params.append("shu_max", shuMax);
-    }
-
-    if (origin) {
-        params.append("origin", origin);
-    }
-
-    return params.toString();
-}
-
-function renderActiveFilters() {
-    const { shuMin, shuMax, origin } = getFilterValues();
-    const activeItems = [];
-
-    if (shuMin || shuMax) {
-        const minLabel = shuMin || "0";
-        const maxLabel = shuMax || "Any";
-        activeItems.push(`SHU: ${minLabel} - ${maxLabel}`);
-    }
-
-    if (origin) {
-        activeItems.push(`Origin: ${origin}`);
-    }
-
-    if (activeItems.length === 0) {
-        activeFilters.innerHTML = '<span class="active-filter-placeholder">Showing all chillies</span>';
-        return;
-    }
-
-    activeFilters.innerHTML = activeItems
-        .map((item) => `<span class="filter-chip">${item}</span>`)
-        .join("");
-}
-
-function showStatusMessage(message) {
-    chilliContainer.innerHTML = `<p class="status-message">${message}</p>`;
-}
-
-function hasInvalidRange() {
-    const { shuMin, shuMax } = getFilterValues();
-
-    if (!shuMin || !shuMax) {
-        return false;
-    }
-
-    return Number(shuMin) > Number(shuMax);
-}
-
-function renderChillies(chillies) {
-    chilliContainer.innerHTML = "";
-
-    if (chillies.length === 0) {
-        chilliContainer.innerHTML = `
-            <div class="empty-state">
-                <h3>No chillies match these filters.</h3>
-                <p>Try a wider SHU range or choose another origin.</p>
-            </div>
-        `;
-        return;
-    }
+=======
 
     chillies.forEach((chilli) => {
         const card = document.createElement("div");
@@ -148,12 +70,18 @@ function renderChillies(chillies) {
 
         chilliContainer.appendChild(card);
     });
+
+    setSearchStatus(formatSearchStatus(chillies, query));
 }
 
-async function loadOriginOptions() {
+async function loadChillies() {
+    setSearchBusy(true);
+>>>>>>> d51360aeb6ee9e844394e8e5d2388f817e040fa6
+
     try {
         const response = await fetch(`${API_BASE_URL}/chillies`);
         const chillies = await response.json();
+<<<<<<< HEAD
         const uniqueOrigins = [...new Set(
             chillies
                 .map((chilli) => chilli.origin)
@@ -219,3 +147,112 @@ shuMaxFilter.addEventListener("input", queueDynamicReload);
 originFilter.addEventListener("change", loadChillies);
 
 loadOriginOptions().then(loadChillies);
+=======
+        displayChillies(chillies, "");
+    } catch (error) {
+        console.error("Error loading chillies:", error);
+        document.getElementById("chilliContainer").innerHTML = "<p>Failed to load chillies.</p>";
+        setSearchStatus("Failed to load peppers.", true);
+    } finally {
+        setSearchBusy(false);
+    }
+}
+
+async function searchChillies(query) {
+    const trimmedQuery = query.trim();
+    const currentToken = ++latestSearchToken;
+
+    if (!trimmedQuery) {
+        loadChillies();
+        return;
+    }
+
+    setSearchBusy(true);
+    setSearchStatus(`Searching for "${trimmedQuery}"...`);
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/chillies/search?q=${encodeURIComponent(trimmedQuery)}`);
+        const chillies = await response.json();
+
+        if (currentToken !== latestSearchToken) {
+            return;
+        }
+
+        displayChillies(chillies, trimmedQuery);
+    } catch (error) {
+        console.error("Error searching chillies:", error);
+
+        if (currentToken !== latestSearchToken) {
+            return;
+        }
+
+        document.getElementById("chilliContainer").innerHTML = "<p>Failed to search chillies.</p>";
+        setSearchStatus("Failed to search peppers.", true);
+    } finally {
+        if (currentToken === latestSearchToken) {
+            setSearchBusy(false);
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const clearSearchButton = document.getElementById("clearSearchButton");
+
+    function submitSearch() {
+        const query = searchInput.value.trim();
+
+        if (searchDebounceTimer) {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = null;
+        }
+
+        if (query) {
+            searchChillies(query);
+        } else {
+            latestSearchToken += 1;
+            loadChillies();
+        }
+    }
+
+    searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitSearch();
+    });
+
+    searchButton.addEventListener("click", submitSearch);
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+        clearSearchButton.disabled = query.length === 0;
+
+        if (searchDebounceTimer) {
+            clearTimeout(searchDebounceTimer);
+        }
+
+        if (!query) {
+            latestSearchToken += 1;
+            setSearchStatus("Showing all peppers.");
+            loadChillies();
+            return;
+        }
+
+        searchDebounceTimer = setTimeout(() => {
+            searchChillies(query);
+        }, SEARCH_DEBOUNCE_MS);
+    });
+
+    clearSearchButton.addEventListener("click", () => {
+        searchInput.value = "";
+        clearSearchButton.disabled = true;
+        latestSearchToken += 1;
+        searchInput.focus();
+        loadChillies();
+    });
+
+    clearSearchButton.disabled = true;
+    loadChillies();
+});
+>>>>>>> d51360aeb6ee9e844394e8e5d2388f817e040fa6
