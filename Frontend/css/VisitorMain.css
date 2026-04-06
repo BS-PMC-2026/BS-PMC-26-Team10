@@ -70,13 +70,13 @@ body {
     text-align: center;
 }
 
-.pepper-grid {
+.chilli-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(18vw, 1fr));
     gap: 2vw;
 }
 
-.pepper-card {
+.chilli-card {
     background-color: white;
     border: 0.15vw solid #d94a4a;
     border-radius: 1.2vw;
@@ -85,28 +85,28 @@ body {
     transition: transform 0.2s;
 }
 
-.pepper-card:hover {
+.chilli-card:hover {
     transform: scale(1.02);
 }
 
-.pepper-card img {
+.chilli-card img {
     width: 100%;
     height: 16vw;
     object-fit: cover;
     display: block;
 }
 
-.pepper-info {
+.chilli-info {
     padding: 1.2vw;
 }
 
-.pepper-info h3 {
+.chilli-info h3 {
     font-size: 1.4vw;
     margin-bottom: 0.8vw;
     color: #b30000;
 }
 
-.pepper-info p {
+.chilli-info p {
     font-size: 1vw;
     margin-bottom: 0.5vw;
     color: #5a1a1a;
@@ -147,25 +147,25 @@ body {
         margin-bottom: 4vw;
     }
 
-    .pepper-grid {
+    .chilli-grid {
         grid-template-columns: 1fr;
         gap: 4vw;
     }
 
-    .pepper-card img {
+    .chilli-card img {
         height: 50vw;
     }
 
-    .pepper-info {
+    .chilli-info {
         padding: 4vw;
     }
 
-    .pepper-info h3 {
+    .chilli-info h3 {
         font-size: 5vw;
         margin-bottom: 2vw;
     }
 
-    .pepper-info p {
+    .chilli-info p {
         font-size: 3.7vw;
         margin-bottom: 1.5vw;
     }

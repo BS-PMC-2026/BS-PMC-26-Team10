@@ -15,5 +15,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(chilli.router, prefix="/chilli", tags=["chilli"])
+app.include_router(chilli.router, tags=["chilli"])
 app.mount('/chilli_images', StaticFiles(directory=str(IMAGES_DIR)), name='chilli-images')

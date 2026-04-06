@@ -1,34 +1,34 @@
-async function loadPeppers() {
-    const pepperContainer = document.getElementById("pepperContainer");
+async function loadChillies() {
+    const chilliContainer = document.getElementById("chilliContainer");
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/peppers");
-        const peppers = await response.json();
+        const response = await fetch("http://127.0.0.1:8000/chillies");
+        const chillies = await response.json();
 
-        pepperContainer.innerHTML = "";
+        chilliContainer.innerHTML = "";
 
-        peppers.forEach(pepper => {
+        chillies.forEach(chilli => {
             const card = document.createElement("div");
-            card.className = "pepper-card";
+            card.className = "chilli-card";
 
             card.innerHTML = `
-                <img src="http://127.0.0.1:8000${pepper.image_url}" alt="${pepper.name}">
-                <div class="pepper-info">
-                    <h3>${pepper.name}</h3>
-                    <p>${pepper.description}</p>
-                    <p><strong>Origin:</strong> ${pepper.origin}</p>
-                    <p><strong>Color:</strong> ${pepper.color}</p>
-                    <p><strong>SHU:</strong> ${pepper.shu_min} - ${pepper.shu_max}</p>
-                    <p><strong>Season:</strong> ${pepper.season}</p>
+                <img src="${chilli.image_url}" alt="${chilli.name}">
+                <div class="chilli-info">
+                    <h3>${chilli.name}</h3>
+                    <p>${chilli.description}</p>
+                    <p><strong>Origin:</strong> ${chilli.origin}</p>
+                    <p><strong>Color:</strong> ${chilli.color}</p>
+                    <p><strong>SHU:</strong> ${chilli.shu_min} - ${chilli.shu_max}</p>
+                    <p><strong>Season:</strong> ${chilli.season}</p>
                 </div>
             `;
 
-            pepperContainer.appendChild(card);
+            chilliContainer.appendChild(card);
         });
     } catch (error) {
-        console.error("Error loading peppers:", error);
-        pepperContainer.innerHTML = "<p>Failed to load peppers.</p>";
+        console.error("Error loading chillies:", error);
+        chilliContainer.innerHTML = "<p>Failed to load chillies.</p>";
     }
 }
 
-loadPeppers();
+loadChillies();
