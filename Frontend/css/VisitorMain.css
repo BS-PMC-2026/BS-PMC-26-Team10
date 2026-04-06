@@ -70,94 +70,6 @@ body {
     text-align: center;
 }
 
-<<<<<<< HEAD
-.search-panel {
-    width: min(56rem, 100%);
-    margin: 0 auto 2.2vw;
-    padding: 1.4rem;
-    border: 0.12rem solid #f3c7b8;
-    border-radius: 1.4rem;
-    background: linear-gradient(135deg, #fffdf8 0%, #ffe9de 100%);
-    box-shadow: 0 1rem 2.5rem rgba(122, 17, 17, 0.08);
-}
-
-.search-label {
-    display: block;
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #7a1111;
-    letter-spacing: 0.02em;
-}
-
-.search-bar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    gap: 0.8rem;
-    align-items: center;
-    margin-bottom: 0.8rem;
-}
-
-.search-bar input {
-    width: 100%;
-    min-width: 0;
-    padding: 0.95rem 1rem;
-    border: 0.12rem solid #d94a4a;
-    border-radius: 0.95rem;
-    font-size: 1rem;
-    background-color: white;
-    color: #5a1a1a;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.search-bar input:focus {
-    outline: none;
-    border-color: #8a0000;
-    box-shadow: 0 0 0 0.22rem rgba(179, 0, 0, 0.12);
-}
-
-.search-bar button {
-    background-color: #b30000;
-    color: white;
-    border: none;
-    padding: 0.95rem 1.35rem;
-    border-radius: 0.95rem;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s, opacity 0.2s;
-}
-
-.search-bar button:hover {
-    background-color: #8a0000;
-    transform: translateY(-0.05rem);
-}
-
-.search-bar button:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
-    transform: none;
-}
-
-.secondary-button {
-    background-color: #fff1eb;
-    color: #8a0000;
-    border: 0.12rem solid #d94a4a;
-}
-
-.secondary-button:hover {
-    background-color: #ffd9cb;
-}
-
-.search-status {
-    min-height: 1.4rem;
-    font-size: 0.98rem;
-    color: #7a1111;
-}
-
-.search-status.error {
-    color: #9f1a1a;
-=======
 .filter-panel {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14vw, 1fr));
@@ -250,7 +162,6 @@ body {
 .active-filter-placeholder {
     background-color: #f6dede;
     color: #7a1111;
->>>>>>> BSPMT10-25-usn25
 }
 
 .chilli-grid {
@@ -352,36 +263,6 @@ body {
         margin-bottom: 4vw;
     }
 
-<<<<<<< HEAD
-    .search-panel {
-        width: 100%;
-        margin-bottom: 5vw;
-        padding: 4vw;
-        border-radius: 5vw;
-    }
-
-    .search-label {
-        margin-bottom: 2.5vw;
-        font-size: 3.9vw;
-    }
-
-    .search-bar {
-        grid-template-columns: 1fr;
-        gap: 2.5vw;
-        margin-bottom: 2vw;
-    }
-
-    .search-bar input,
-    .search-bar button {
-        font-size: 3.8vw;
-        padding: 3.2vw 4vw;
-        border-radius: 3.5vw;
-    }
-
-    .search-status {
-        min-height: 5vw;
-        font-size: 3.5vw;
-=======
     .filter-panel {
         grid-template-columns: 1fr;
         gap: 3vw;
@@ -429,7 +310,6 @@ body {
     .filter-chip,
     .active-filter-placeholder {
         padding: 1.6vw 3vw;
->>>>>>> BSPMT10-25-usn25
     }
 
     .chilli-grid {
@@ -454,8 +334,6 @@ body {
         font-size: 3.7vw;
         margin-bottom: 1.5vw;
     }
-<<<<<<< HEAD
-=======
 
     .empty-state {
         padding: 6vw 5vw;
@@ -466,5 +344,4 @@ body {
         font-size: 4.8vw;
         margin-bottom: 2vw;
     }
->>>>>>> BSPMT10-25-usn25
 }
