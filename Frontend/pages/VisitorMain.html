@@ -25,15 +25,27 @@
 
         <section class="catalogue-section">
             <h2>Catalogue</h2>
-            <form class="search-panel" id="searchForm" role="search">
-                <label class="search-label" for="searchInput">Find a pepper</label>
-                <div class="search-bar">
-                    <input type="search" id="searchInput" placeholder="Search peppers by name or description..." autocomplete="off">
-                    <button type="button" id="clearSearchButton" class="secondary-button" aria-label="Clear search">Clear</button>
-                    <button type="submit" id="searchButton">Search</button>
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label for="shuMinFilter">Minimum SHU</label>
+                    <input type="number" id="shuMinFilter" min="0" placeholder="e.g. 1000">
                 </div>
-                <p id="searchStatus" class="search-status" aria-live="polite">Showing all peppers.</p>
-            </form>
+                <div class="filter-group">
+                    <label for="shuMaxFilter">Maximum SHU</label>
+                    <input type="number" id="shuMaxFilter" min="0" placeholder="e.g. 50000">
+                </div>
+                <div class="filter-group">
+                    <label for="originFilter">Origin</label>
+                    <select id="originFilter">
+                        <option value="">All origins</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="button" id="applyFiltersBtn">Apply Filters</button>
+                    <button type="button" id="resetFiltersBtn" class="secondary-button">Reset</button>
+                </div>
+            </div>
+            <div id="activeFilters" class="active-filters" aria-live="polite"></div>
             <div id="chilliContainer" class="chilli-grid"></div>
         </section>
     </main>

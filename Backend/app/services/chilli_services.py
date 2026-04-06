@@ -1,4 +1,5 @@
 from app.db import get_connection
+from typing import Optional
 
 def create_chilli(chilli, is_available,
                   stock_quantity):
@@ -62,6 +63,58 @@ def get_all_chillies():
         return chillies
     except Exception as e:
         print("Error while trying to fetch chillies:\n ", e)
+        return []
+
+
+def filter_chillies(min_shu: Optional[int] = None,
+                    max_shu: Optional[int] = None,
+                    origin: Optional[str] = None):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        query = """
+        SELECT
+            name,
+            description,
+            image_url,
+            shu_min,
+            shu_max,
+            origin,
+            color,
+            is_available,
+            stock_quantity,
+            season
+        FROM chilli
+        """
+        conditions = []
+        values = []
+
+        if min_shu is not None:
+            conditions.append("shu_max >= %s")
+            values.append(min_shu)
+
+        if max_shu is not None:
+            conditions.append("shu_min <= %s")
+            values.append(max_shu)
+
+        if origin:
+            conditions.append("origin ILIKE %s")
+            values.append(origin)
+
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+
+        query += " ORDER BY name ASC"
+
+        cursor.execute(query, tuple(values))
+        chillies = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return chillies
+    except Exception as e:
+        print("Error while trying to filter chillies:\n ", e)
         return []
 
 
