@@ -1,0 +1,445 @@
+.visitor-catalogue {
+  width: 100%;
+  background: #fffaf4;
+  padding: 6vw 0;
+}
+
+.visitor-catalogue-inner {
+  width: 88vw;
+  margin: 0 auto;
+}
+
+.visitor-catalogue-heading {
+  max-width: 42vw;
+  margin-bottom: 3vw;
+}
+
+.visitor-catalogue-kicker {
+  margin: 0 0 0.8vw 0;
+  font-size: 0.95vw;
+  letter-spacing: 0.12vw;
+  text-transform: uppercase;
+  color: #a14d2a;
+  font-weight: 600;
+}
+
+.visitor-catalogue-title {
+  margin: 0;
+  font-size: 3vw;
+  line-height: 1.1;
+  color: #4a2a1f;
+  font-weight: 700;
+}
+
+.visitor-catalogue-subtitle {
+  margin: 1vw 0 0 0;
+  font-size: 1.08vw;
+  line-height: 1.7;
+  color: #6d5447;
+}
+
+.visitor-catalogue-panel {
+  background: #f8f1e7;
+  border-radius: 2vw;
+  padding: 2vw;
+  border: 0.06vw solid rgba(161, 77, 42, 0.08);
+  box-shadow: 0 0.6vw 1.8vw rgba(90, 52, 32, 0.07);
+}
+
+.visitor-catalogue-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2vw;
+  margin-bottom: 2vw;
+}
+
+.visitor-catalogue-topbar-text h3 {
+  margin: 0 0 0.4vw 0;
+  font-size: 1.6vw;
+  color: #4a2a1f;
+}
+
+.visitor-catalogue-topbar-text p {
+  margin: 0;
+  font-size: 1vw;
+  color: #6d5447;
+  line-height: 1.6;
+}
+
+.visitor-catalogue-clear-btn {
+  border: none;
+  background: #bb3e22;
+  color: white;
+  padding: 0.85vw 1.4vw;
+  border-radius: 999vw;
+  font-size: 0.95vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.visitor-catalogue-clear-btn:hover {
+  background: #a8341b;
+  transform: translateY(-0.1vw);
+}
+
+.visitor-catalogue-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1.2vw;
+  margin-bottom: 1.6vw;
+}
+
+.visitor-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45vw;
+}
+
+.visitor-filter-group label {
+  font-size: 0.9vw;
+  font-weight: 600;
+  color: #6a4330;
+}
+
+.visitor-filter-group input,
+.visitor-filter-group select {
+  height: 3.2vw;
+  border-radius: 1vw;
+  border: 0.08vw solid rgba(116, 75, 53, 0.14);
+  background: #fffaf4;
+  padding: 0 1vw;
+  font-size: 0.98vw;
+  color: #4a2a1f;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.visitor-filter-group input:focus,
+.visitor-filter-group select:focus {
+  border-color: #bb3e22;
+  box-shadow: 0 0 0 0.2vw rgba(187, 62, 34, 0.1);
+}
+
+.visitor-catalogue-status {
+  margin-bottom: 1.8vw;
+  font-size: 1vw;
+  color: #6d5447;
+}
+
+.visitor-catalogue-status.error {
+  color: #9f2d20;
+  font-weight: 600;
+}
+
+.visitor-catalogue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6vw;
+}
+
+.visitor-chilli-card {
+  background: #fffdf9;
+  border-radius: 1.5vw;
+  overflow: hidden;
+  border: 0.06vw solid rgba(161, 77, 42, 0.08);
+  box-shadow: 0 0.5vw 1.5vw rgba(90, 52, 32, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.visitor-chilli-card:hover {
+  transform: translateY(-0.3vw);
+  box-shadow: 0 1vw 2vw rgba(90, 52, 32, 0.12);
+}
+
+.visitor-chilli-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 18vw;
+  overflow: hidden;
+}
+
+.visitor-chilli-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.visitor-chilli-card:hover .visitor-chilli-image {
+  transform: scale(1.05);
+}
+
+.visitor-chilli-badge {
+  position: absolute;
+  top: 1vw;
+  left: 1vw;
+  background: rgba(74, 42, 31, 0.84);
+  color: white;
+  font-size: 0.85vw;
+  padding: 0.45vw 0.8vw;
+  border-radius: 999vw;
+}
+
+.visitor-chilli-card-body {
+  padding: 1.3vw;
+}
+
+.visitor-chilli-card-top {
+  margin-bottom: 0.8vw;
+}
+
+.visitor-chilli-name {
+  margin: 0 0 0.25vw 0;
+  font-size: 1.3vw;
+  line-height: 1.2;
+  color: #4a2a1f;
+}
+
+.visitor-chilli-origin {
+  margin: 0;
+  font-size: 0.92vw;
+  color: #a14d2a;
+  font-weight: 600;
+}
+
+.visitor-chilli-description {
+  margin: 0 0 1vw 0;
+  font-size: 0.95vw;
+  line-height: 1.65;
+  color: #6d5447;
+  min-height: 4.4vw;
+}
+
+.visitor-chilli-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6vw;
+  margin-bottom: 1vw;
+}
+
+.visitor-meta-pill {
+  background: #f3dfcc;
+  color: #6a4330;
+  border-radius: 999vw;
+  padding: 0.45vw 0.8vw;
+  font-size: 0.82vw;
+  font-weight: 600;
+}
+
+.visitor-chilli-btn {
+  width: 100%;
+  border: none;
+  background: #bb3e22;
+  color: white;
+  height: 3vw;
+  border-radius: 999vw;
+  font-size: 0.95vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.visitor-chilli-btn:hover {
+  background: #a8341b;
+  transform: translateY(-0.08vw);
+}
+
+.visitor-catalogue-empty {
+  background: #fffdf9;
+  border-radius: 1.5vw;
+  padding: 3vw 2vw;
+  text-align: center;
+  border: 0.06vw solid rgba(161, 77, 42, 0.08);
+}
+
+.visitor-catalogue-empty h3 {
+  margin: 0 0 0.6vw 0;
+  font-size: 1.5vw;
+  color: #4a2a1f;
+}
+
+.visitor-catalogue-empty p {
+  margin: 0;
+  font-size: 1vw;
+  color: #6d5447;
+}
+
+.error-box {
+  background: #fff2ef;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .visitor-catalogue {
+    padding: 12vw 0;
+  }
+
+  .visitor-catalogue-inner {
+    width: 90vw;
+  }
+
+  .visitor-catalogue-heading {
+    max-width: 100%;
+    margin-bottom: 7vw;
+  }
+
+  .visitor-catalogue-kicker {
+    margin: 0 0 2vw 0;
+    font-size: 3.2vw;
+    letter-spacing: 0.35vw;
+  }
+
+  .visitor-catalogue-title {
+    font-size: 8.5vw;
+    line-height: 1.08;
+  }
+
+  .visitor-catalogue-subtitle {
+    margin-top: 3vw;
+    font-size: 4vw;
+    line-height: 1.7;
+  }
+
+  .visitor-catalogue-panel {
+    border-radius: 5vw;
+    padding: 5vw;
+    box-shadow: 0 1.2vw 3vw rgba(90, 52, 32, 0.07);
+    border: 0.2vw solid rgba(161, 77, 42, 0.08);
+  }
+
+  .visitor-catalogue-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4vw;
+    margin-bottom: 5vw;
+  }
+
+  .visitor-catalogue-topbar-text h3 {
+    margin: 0 0 1.5vw 0;
+    font-size: 5.2vw;
+  }
+
+  .visitor-catalogue-topbar-text p {
+    font-size: 3.8vw;
+    line-height: 1.7;
+  }
+
+  .visitor-catalogue-clear-btn {
+    width: 100%;
+    padding: 3.6vw 4vw;
+    font-size: 3.8vw;
+  }
+
+  .visitor-catalogue-filters {
+    grid-template-columns: 1fr;
+    gap: 3.5vw;
+    margin-bottom: 4vw;
+  }
+
+  .visitor-filter-group {
+    gap: 1.4vw;
+  }
+
+  .visitor-filter-group label {
+    font-size: 3.5vw;
+  }
+
+  .visitor-filter-group input,
+  .visitor-filter-group select {
+    height: 12vw;
+    border-radius: 3.2vw;
+    border: 0.2vw solid rgba(116, 75, 53, 0.14);
+    padding: 0 4vw;
+    font-size: 3.8vw;
+  }
+
+  .visitor-filter-group input:focus,
+  .visitor-filter-group select:focus {
+    box-shadow: 0 0 0 0.6vw rgba(187, 62, 34, 0.1);
+  }
+
+  .visitor-catalogue-status {
+    margin-bottom: 5vw;
+    font-size: 3.8vw;
+    line-height: 1.6;
+  }
+
+  .visitor-catalogue-grid {
+    grid-template-columns: 1fr;
+    gap: 4.5vw;
+  }
+
+  .visitor-chilli-card {
+    border-radius: 5vw;
+    border: 0.2vw solid rgba(161, 77, 42, 0.08);
+    box-shadow: 0 1.2vw 3vw rgba(90, 52, 32, 0.08);
+  }
+
+  .visitor-chilli-card:hover {
+    transform: none;
+  }
+
+  .visitor-chilli-image-wrap {
+    height: 60vw;
+  }
+
+  .visitor-chilli-badge {
+    top: 3vw;
+    left: 3vw;
+    font-size: 3.1vw;
+    padding: 1.5vw 2.6vw;
+  }
+
+  .visitor-chilli-card-body {
+    padding: 4vw;
+  }
+
+  .visitor-chilli-name {
+    margin: 0 0 1vw 0;
+    font-size: 5vw;
+  }
+
+  .visitor-chilli-origin {
+    font-size: 3.6vw;
+  }
+
+  .visitor-chilli-description {
+    margin: 0 0 3vw 0;
+    font-size: 3.8vw;
+    line-height: 1.7;
+    min-height: unset;
+  }
+
+  .visitor-chilli-meta {
+    gap: 1.8vw;
+    margin-bottom: 3vw;
+  }
+
+  .visitor-meta-pill {
+    padding: 1.4vw 2.6vw;
+    font-size: 3.1vw;
+  }
+
+  .visitor-chilli-btn {
+    height: 11.5vw;
+    font-size: 3.8vw;
+  }
+
+  .visitor-catalogue-empty {
+    border-radius: 5vw;
+    padding: 8vw 5vw;
+    border: 0.2vw solid rgba(161, 77, 42, 0.08);
+  }
+
+  .visitor-catalogue-empty h3 {
+    margin: 0 0 2vw 0;
+    font-size: 5vw;
+  }
+
+  .visitor-catalogue-empty p {
+    font-size: 3.8vw;
+    line-height: 1.7;
+  }
+}

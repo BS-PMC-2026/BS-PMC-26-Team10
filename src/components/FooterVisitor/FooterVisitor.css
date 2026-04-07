@@ -1,0 +1,111 @@
+.visitor-footer {
+  width: 100%;
+  background: #3b2418;
+  color: #fdf7f2;
+  padding-top: 4vw;
+}
+
+.visitor-footer-inner {
+  width: 88vw;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3vw;
+  padding-bottom: 3vw;
+}
+
+.footer-col h3 {
+  margin-bottom: 1vw;
+  font-size: 1.1vw;
+  letter-spacing: 0.08vw;
+  text-transform: uppercase;
+  color: #ffb38a;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col li {
+  margin-bottom: 0.7vw;
+  font-size: 0.95vw;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.footer-col a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.footer-col a:hover {
+  color: #ff7a3d;
+}
+
+/* BRAND */
+.footer-logo {
+  margin: 0 0 1vw 0;
+  font-size: 2vw;
+  font-weight: 700;
+  color: #ff7a3d;
+}
+
+.footer-tagline {
+  font-size: 1vw;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 22vw;
+}
+
+/* BOTTOM */
+.visitor-footer-bottom {
+  border-top: 0.06vw solid rgba(255, 255, 255, 0.1);
+  padding: 1.5vw 0;
+  text-align: center;
+  font-size: 0.9vw;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===================== */
+/* 📱 MOBILE */
+/* ===================== */
+
+@media (max-width: 768px) {
+  .visitor-footer {
+    padding-top: 10vw;
+  }
+
+  .visitor-footer-inner {
+    width: 90vw;
+    grid-template-columns: 1fr;
+    gap: 8vw;
+    padding-bottom: 8vw;
+  }
+
+  .footer-logo {
+    font-size: 7vw;
+    margin-bottom: 3vw;
+  }
+
+  .footer-tagline {
+    font-size: 4vw;
+    max-width: 100%;
+  }
+
+  .footer-col h3 {
+    font-size: 4.5vw;
+    margin-bottom: 3vw;
+  }
+
+  .footer-col li {
+    font-size: 4vw;
+    margin-bottom: 2vw;
+  }
+
+  .visitor-footer-bottom {
+    padding: 5vw 0;
+    font-size: 3.5vw;
+  }
+}
