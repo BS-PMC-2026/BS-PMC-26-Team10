@@ -1,0 +1,119 @@
+.owner-layout {
+    min-height: 100vh;
+    display: flex;
+    background: linear-gradient(180deg, #fff8f8 0%, #fff1ee 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.owner-content {
+    flex: 1;
+    padding: 3vw;
+    position: relative;
+    z-index: 2;
+}
+
+.owner-header {
+    margin-bottom: 2.5vw;
+    animation: fadeUp 0.6s ease;
+}
+
+.owner-overline {
+    font-size: 1vw;
+    color: #b30000;
+    text-transform: uppercase;
+    letter-spacing: 0.12vw;
+    margin-bottom: 0.5vw;
+    font-weight: bold;
+}
+
+.owner-header h1 {
+    font-size: 3vw;
+    color: #7a1111;
+    margin-bottom: 0.7vw;
+}
+
+.owner-subtitle {
+    font-size: 1.15vw;
+    color: #8a4a4a;
+    max-width: 40vw;
+}
+
+.owner-bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(4vw);
+    opacity: 0.25;
+    z-index: 1;
+}
+
+.owner-bg-shape-1 {
+    width: 18vw;
+    height: 18vw;
+    background-color: #ffb3a7;
+    top: -3vw;
+    right: -4vw;
+}
+
+.owner-bg-shape-2 {
+    width: 16vw;
+    height: 16vw;
+    background-color: #f3c7b8;
+    bottom: 2vw;
+    left: 20vw;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(1vw);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .owner-layout {
+        flex-direction: column;
+    }
+
+    .owner-content {
+        padding: 5vw 4vw;
+    }
+
+    .owner-header {
+        margin-bottom: 5vw;
+    }
+
+    .owner-overline {
+        font-size: 3.2vw;
+        letter-spacing: 0.4vw;
+        margin-bottom: 1.5vw;
+    }
+
+    .owner-header h1 {
+        font-size: 7vw;
+        margin-bottom: 2vw;
+    }
+
+    .owner-subtitle {
+        font-size: 3.8vw;
+        max-width: 100%;
+    }
+
+    .owner-bg-shape-1 {
+        width: 35vw;
+        height: 35vw;
+        top: -10vw;
+        right: -10vw;
+    }
+
+    .owner-bg-shape-2 {
+        width: 30vw;
+        height: 30vw;
+        bottom: 10vw;
+        left: -5vw;
+    }
+}
