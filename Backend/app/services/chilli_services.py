@@ -42,6 +42,7 @@ def get_all_chillies():
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -75,6 +76,7 @@ def filter_chillies(min_shu: Optional[int] = None,
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -126,6 +128,7 @@ def search_chillies(query_string: str):
         # Search for peppers with ILIKE (case-insensitive) for partial matches
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,

@@ -32,16 +32,17 @@ def build_public_image_url(request: Request, image_url: str) -> str:
 def serialize_chillies(chillies, request: Request):
     return [
         {
-            'name': chilli[0],
-            'description': chilli[1],
-            'image_url': build_public_image_url(request, chilli[2] or ''),
-            'shu_min': chilli[3],
-            'shu_max': chilli[4],
-            'origin': chilli[5],
-            'color': chilli[6],
-            'is_available': chilli[7],
-            'stock_quantity': chilli[8],
-            'season': chilli[9],
+            'id': chilli[0],
+            'name': chilli[1],
+            'description': chilli[2],
+            'image_url': build_public_image_url(request, chilli[3] or ''),
+            'shu_min': chilli[4],
+            'shu_max': chilli[5],
+            'origin': chilli[6],
+            'color': chilli[7],
+            'is_available': chilli[8],
+            'stock_quantity': chilli[9],
+            'season': chilli[10],
         }
         for chilli in chillies
     ]

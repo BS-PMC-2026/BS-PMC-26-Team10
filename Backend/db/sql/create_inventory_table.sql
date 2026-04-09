@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS inventory (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    quantity INTEGER NOT NULL,
+    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    restock_date DATE,
+    price NUMERIC(10, 2),
+    image_url TEXT
+);
