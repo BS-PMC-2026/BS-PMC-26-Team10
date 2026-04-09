@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./VisitorCatalogue.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
@@ -15,6 +16,7 @@ function VisitorCatalogue() {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const navigate = useNavigate();
   const debounceTimeoutRef = useRef(null);
 
   const queryString = useMemo(() => {
@@ -205,7 +207,7 @@ function VisitorCatalogue() {
           {!isLoading && !isError && chillies.length > 0 && (
             <div className="visitor-catalogue-grid">
               {chillies.map((chilli) => (
-                <article className="visitor-chilli-card" key={chilli.id}>
+                <article className="visitor-chilli-card" key={chilli.name}>
                   <div className="visitor-chilli-image-wrap">
                     <img
                       src={chilli.image_url}
@@ -213,7 +215,6 @@ function VisitorCatalogue() {
                       className="visitor-chilli-image"
                     />
 
-                    {/* ✅ FIXED SHU */}
                     <span className="visitor-chilli-badge">
                       {chilli.shu_min && chilli.shu_max
                         ? `${Number(chilli.shu_min).toLocaleString()} - ${Number(chilli.shu_max).toLocaleString()} SHU`
@@ -234,7 +235,6 @@ function VisitorCatalogue() {
                     </p>
 
                     <div className="visitor-chilli-meta">
-                      {/* ✅ FIXED SHU */}
                       <div className="visitor-meta-pill">
                         {chilli.shu_min && chilli.shu_max
                           ? `Heat: ${Number(chilli.shu_min).toLocaleString()} - ${Number(chilli.shu_max).toLocaleString()}`
@@ -246,7 +246,11 @@ function VisitorCatalogue() {
                       )}
                     </div>
 
-                    <button type="button" className="visitor-chilli-btn">
+                    <button
+                      type="button"
+                      className="visitor-chilli-btn"
+                      onClick={() => navigate(`/pepper/${encodeURIComponent(chilli.name)}`)}
+                    >
                       Learn More
                     </button>
                   </div>
