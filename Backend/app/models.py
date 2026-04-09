@@ -9,4 +9,10 @@ class Chilli(BaseModel):
     shuMin : str
     shuMax : int
     season : str
-    
+class Product(BaseModel):
+    name : str
+    description : str
+    quantity : int
+    restock_date : str
+    price : float
+    image_url : str
