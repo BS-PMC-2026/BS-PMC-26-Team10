@@ -1,6 +1,6 @@
 # ChiliLand
 
-ChiliLand is a React + Vite frontend with a small FastAPI backend for browsing chilli peppers and supporting future staff flows.
+ChiliLand is a React + Vite frontend with a FastAPI backend for browsing chilli peppers and managing inventory products.
 
 ## Current App Status
 
@@ -72,6 +72,29 @@ uvicorn main:app --reload
 
 The API is expected at `http://127.0.0.1:8000`.
 
+## Database Scripts
+
+Reusable database files now live under `Backend/db/`:
+
+```text
+Backend/db/
+  scripts/
+    create_inventory_table.py
+    load_peppers.py
+  sql/
+    create_inventory_table.sql
+```
+
+Useful commands from the repo root:
+
+```bash
+python3 Backend/db/scripts/create_inventory_table.py
+python3 Backend/db/scripts/load_peppers.py
+```
+
+`create_inventory_table.py` drops and recreates `inventory`.
+`load_peppers.py` drops and recreates `chilli`, then reloads it from `pepper_list.xlsx`.
+
 ## Backend Expectations
 
 The backend reads database settings from [`.env`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/.env) and expects a local PostgreSQL instance:
@@ -95,14 +118,21 @@ The visitor homepage is composed of:
 
 Frontend catalogue code currently uses `http://127.0.0.1:8000` directly.
 
-The intended backend endpoints in the current codebase are:
+The current backend endpoints in the codebase are:
 
 - `GET /chillies`
 - `GET /chillies?shu_min=...&shu_max=...&origin=...`
 - `GET /chillies/search?q=...`
 - `POST /chillies`
+- `GET /inventory`
+- `POST /inventory/add`
 
 There is a current integration mismatch: [`src/components/VisitorCatalogue/VisitorCatalogue.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/components/VisitorCatalogue/VisitorCatalogue.jsx) requests `/chillies/filter`, but the FastAPI router in [`Backend/app/routes/chilli.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/routes/chilli.py) does not define that route.
+
+The backend also serves static files from:
+
+- `/chilli_images`
+- `/product_images`
 
 ## Known Gaps
 
@@ -110,3 +140,4 @@ There is a current integration mismatch: [`src/components/VisitorCatalogue/Visit
 - Auth is client-side only and does not call the backend
 - The auth page navigates to `/visitor`, but the router only defines `/`
 - `src/pages/VisitorMain.jsx` imports `../styles/visitorMain.css` while the file on disk is [`src/styles/VisitorMain.css`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/styles/VisitorMain.css)
+- There is no frontend inventory screen yet, even though the backend now exposes inventory routes

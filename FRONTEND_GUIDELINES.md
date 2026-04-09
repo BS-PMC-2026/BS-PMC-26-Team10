@@ -122,6 +122,8 @@ Current backend routes:
 - `GET /chillies`
 - `GET /chillies/search?q=...`
 - `POST /chillies`
+- `GET /inventory`
+- `POST /inventory/add`
 
 Filtering is implemented on the same `GET /chillies` route via query parameters:
 
@@ -129,7 +131,27 @@ Filtering is implemented on the same `GET /chillies` route via query parameters:
 - `shu_max`
 - `origin`
 
-Static images are served from `/chilli_images`.
+Static images are served from:
+
+- `/chilli_images`
+- `/product_images`
+
+Inventory data lives in the `inventory` table and includes:
+
+- `id`
+- `name`
+- `description`
+- `quantity`
+- `last_updated`
+- `restock_date`
+- `price`
+- `image_url`
+
+Database setup helpers now live under:
+
+- [`Backend/db/sql/create_inventory_table.sql`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/sql/create_inventory_table.sql)
+- [`Backend/db/scripts/create_inventory_table.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/scripts/create_inventory_table.py)
+- [`Backend/db/scripts/load_peppers.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/scripts/load_peppers.py)
 
 ## Important Current Mismatches
 
@@ -137,6 +159,7 @@ Static images are served from `/chilli_images`.
 - The auth page navigates guests and visitors to `/visitor`, but the router only defines `/`
 - [`src/pages/VisitorMain.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/pages/VisitorMain.jsx) imports `../styles/visitorMain.css`, while the actual stylesheet file is [`src/styles/VisitorMain.css`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/styles/VisitorMain.css)
 - [`src/styles/VisitorMain.css`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/styles/VisitorMain.css) looks like legacy styling from an earlier non-React version and does not appear to drive the current visitor components
+- The frontend still has no consumer for `GET /inventory`
 
 ## Change Guidance
 
@@ -156,3 +179,4 @@ At minimum, verify:
 - `/`, `/staffLogin`, `/owner`, and `/tourguide` render without crashes
 - The catalogue shows loading, empty, and error states appropriately
 - The backend is reachable at `http://127.0.0.1:8000` when testing catalogue data
+- Inventory requests should use `GET /inventory` and `POST /inventory/add` if/when a frontend inventory screen is added

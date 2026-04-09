@@ -9,6 +9,7 @@ Use this file as a quick orientation note for AI-assisted work on the ChiliLand 
 - Main implemented experience: visitor landing page
 - Supporting screens: auth page plus placeholder owner and tour guide pages
 - Backend: FastAPI at `http://127.0.0.1:8000`
+- Backend also exposes inventory/product endpoints and static product images
 
 ## Current Routes
 
@@ -90,12 +91,16 @@ Relevant backend files:
 
 - [`Backend/main.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/main.py)
 - [`Backend/app/routes/chilli.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/routes/chilli.py)
+- [`Backend/app/routes/product.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/routes/product.py)
+- [`Backend/app/services/product_services.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/services/product_services.py)
 
 Current routes:
 
 - `GET /chillies`
 - `GET /chillies/search?q=...`
 - `POST /chillies`
+- `GET /inventory`
+- `POST /inventory/add`
 
 `GET /chillies` also supports:
 
@@ -105,6 +110,7 @@ Current routes:
 
 The API returns chilli objects with fields such as:
 
+- `id`
 - `name`
 - `description`
 - `image_url`
@@ -116,12 +122,32 @@ The API returns chilli objects with fields such as:
 - `stock_quantity`
 - `season`
 
+The inventory API returns objects with:
+
+- `id`
+- `name`
+- `description`
+- `quantity`
+- `last_updated`
+- `restock_date`
+- `price`
+- `image_url`
+
+Inventory image URLs are built from an image stem such as `hot_sour` and stored under `../product_images/` with either `.jpg` or `.jpeg`.
+
+Database helpers:
+
+- [`Backend/db/sql/create_inventory_table.sql`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/sql/create_inventory_table.sql)
+- [`Backend/db/scripts/create_inventory_table.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/scripts/create_inventory_table.py)
+- [`Backend/db/scripts/load_peppers.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/scripts/load_peppers.py)
+
 ## Current Risks And Mismatches
 
 - The frontend catalogue requests `/chillies/filter`, but that route does not exist in FastAPI
 - The auth page navigates to `/visitor`, but there is no `/visitor` route in the router
 - `VisitorMain.jsx` imports `../styles/visitorMain.css`, but the actual file name is `VisitorMain.css`
 - `src/styles/VisitorMain.css` appears to be legacy CSS from an older page architecture
+- The frontend does not yet use the inventory API
 
 ## Working Style For Future Changes
 
@@ -147,4 +173,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install fastapi uvicorn psycopg2-binary python-dotenv pydantic
 uvicorn main:app --reload
+```
+
+Database scripts from repo root:
+
+```bash
+python3 Backend/db/scripts/create_inventory_table.py
+python3 Backend/db/scripts/load_peppers.py
 ```
