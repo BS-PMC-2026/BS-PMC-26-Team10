@@ -143,9 +143,7 @@ Database helpers:
 
 ## Current Risks And Mismatches
 
-- The frontend catalogue requests `/chillies/filter`, but that route does not exist in FastAPI
 - The auth page navigates to `/visitor`, but there is no `/visitor` route in the router
-- `VisitorMain.jsx` imports `../styles/visitorMain.css`, but the actual file name is `VisitorMain.css`
 - `src/styles/VisitorMain.css` appears to be legacy CSS from an older page architecture
 - The frontend does not yet use the inventory API
 
