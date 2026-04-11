@@ -54,6 +54,7 @@ def get_all_chillies():
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -90,6 +91,7 @@ def filter_chillies(
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -141,6 +143,7 @@ def search_chillies(query_string: str):
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,

@@ -3,15 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
-from app.routes import chilli
+from app.routes import chilli, product
 from app.db import get_connection
-from load_peppers import main as load_data
-
+from db.scripts.load_peppers import main as load_data
 app = FastAPI()
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BACKEND_DIR = Path(__file__).resolve().parent
-IMAGES_DIR = PROJECT_ROOT / "chilli_images"
+CHILLI_IMAGES_DIR = PROJECT_ROOT / "chilli_images"
+PRODUCT_IMAGES_DIR = PROJECT_ROOT / "product_images"
 SEED_SQL_PATH = BACKEND_DIR / "seed_descriptions.sql"
 
 
@@ -46,4 +46,7 @@ app.add_middleware(
 )
 
 app.include_router(chilli.router, tags=["chilli"])
-app.mount("/chilli_images", StaticFiles(directory=str(IMAGES_DIR)), name="chilli-images")
+app.include_router(product.router, tags=["product"])
+
+app.mount("/chilli_images", StaticFiles(directory=str(CHILLI_IMAGES_DIR)), name="chilli-images")
+app.mount("/product_images", StaticFiles(directory=str(PRODUCT_IMAGES_DIR)), name="product-images")
