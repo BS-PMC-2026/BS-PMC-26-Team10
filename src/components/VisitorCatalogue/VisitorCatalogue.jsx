@@ -367,12 +367,10 @@ function VisitorCatalogue() {
                         className="visitor-chilli-image"
                       />
 
-                    <span className="visitor-chilli-badge">
-                      {chilli.shu_min && chilli.shu_max
-                        ? `${Number(chilli.shu_min).toLocaleString()} - ${Number(chilli.shu_max).toLocaleString()} SHU`
-                        : "SHU unavailable"}
-                    </span>
-                  </div>
+                      <span className="visitor-chilli-badge">
+                        {formatHeatRange(chilli)}
+                      </span>
+                    </div>
 
                     <div className="visitor-chilli-card-body">
                       <div className="visitor-chilli-card-controls">
@@ -414,16 +412,13 @@ function VisitorCatalogue() {
                         )}
                       </div>
 
-                    <button
-                      type="button"
-                      className="visitor-chilli-btn"
-                      onClick={() => navigate(`/pepper/${encodeURIComponent(chilli.name)}`)}
-                    >
-                      Learn More
-                    </button>
-                  </div>
-                </article>
-              ))}
+                      <button type="button" className="visitor-chilli-btn">
+                        Learn More
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
 
