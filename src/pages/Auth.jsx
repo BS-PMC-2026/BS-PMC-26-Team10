@@ -90,9 +90,7 @@ function Auth() {
                 placeholder="Email"
                 id="email"
                 value={loginData.email}
-                onChange={(e) =>
-                  setLoginData((prev) => ({ ...prev, email: e.target.value }))
-                }
+                onChange={handleLoginChange}
               />
 
               <input
@@ -100,9 +98,7 @@ function Auth() {
                 placeholder="Password"
                 id="password"
                 value={loginData.password}
-                onChange={(e) =>
-                  setLoginData((prev) => ({ ...prev, password: e.target.value }))
-                }
+                onChange={handleLoginChange}
               />
 
               <button id="loginBtn" onClick={handleLogin}>
