@@ -3,8 +3,6 @@ from typing import Optional
 from app.models import Chilli
 from app.services.chilli_services import create_chilli, filter_chillies, get_all_chillies, search_chillies
 
-
-
 router = APIRouter()
 
 DEFAULT_IMAGE_URL = "../chilli_images/default.jpg"
@@ -32,23 +30,25 @@ def build_public_image_url(request: Request, image_url: str) -> str:
 def serialize_chillies(chillies, request: Request):
     return [
         {
-            'id': chilli[0],
-            'name': chilli[1],
-            'description': chilli[2],
-            'image_url': build_public_image_url(request, chilli[3] or ''),
-            'shu_min': chilli[4],
-            'shu_max': chilli[5],
-            'origin': chilli[6],
-            'color': chilli[7],
-            'is_available': chilli[8],
-            'stock_quantity': chilli[9],
-            'season': chilli[10],
+            "id": chilli[0],
+            "name": chilli[1],
+            "description": chilli[2],
+            "image_url": build_public_image_url(request, chilli[3] or ""),
+            "shu_min": chilli[4],
+            "shu_max": chilli[5],
+            "origin": chilli[6],
+            "color": chilli[7],
+            "is_available": chilli[8],
+            "stock_quantity": chilli[9],
+            "season": chilli[10],
+            "full_description": chilli[11],
         }
         for chilli in chillies
     ]
 
-@router.post('/chillies')
-def add_chilli(chilli : Chilli):
+
+@router.post("/chillies")
+def add_chilli(chilli: Chilli):
     chilli.shuMin = int(chilli.shuMin)
     chilli.shuMax = int(chilli.shuMax)
     chilli.image_url = normalize_image_url(chilli.image_url)
@@ -58,11 +58,11 @@ def add_chilli(chilli : Chilli):
     response = create_chilli(chilli, is_available, stock_quantity)
 
     return {
-        'message' : response
+        "message": response
     }
 
 
-@router.get('/chillies')
+@router.get("/chillies")
 def list_chillies(
     request: Request,
     shu_min: Optional[int] = Query(default=None, ge=0),
@@ -80,16 +80,11 @@ def list_chillies(
     return serialize_chillies(chillies, request)
 
 
-@router.get('/chillies/search')
+@router.get("/chillies/search")
 def search(q: str, request: Request):
-    """
-    Search for peppers by name or description.
-    Query parameter: q (the search string)
-    Example: /chillies/search?q=habanero
-    """
     if not q or len(q.strip()) == 0:
         return []
-    
+
     chillies = search_chillies(q)
 
     return serialize_chillies(chillies, request)

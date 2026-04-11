@@ -1,0 +1,19 @@
+UPDATE chilli SET full_description = 'Aji Fantasy is a mild Capsicum baccatum pepper originating from Peru, known for its citrusy sweetness and low heat level. It was developed as a modern hybrid variety aimed at combining ornamental appeal with culinary versatility. The pepper is commonly used fresh in salads, salsas, and light dishes where flavor is preferred over extreme heat.' WHERE name = 'Aji Fantasy';
+
+UPDATE chilli SET full_description = 'Bhut Jolokia Peach is a variation of the famous Ghost Pepper discovered in Northeast India. It gained global recognition in the early 2000s as one of the hottest peppers in the world. The peach-colored variant offers a slightly fruitier aroma while maintaining intense heat, and is mainly used in extreme hot sauces and spicy challenges.' WHERE name = 'Bhut Jolokia Peach';
+
+UPDATE chilli SET full_description = 'Bishop''s Crown is a distinctive heirloom chilli named after its unique three-lobed shape resembling a bishop''s hat. It originates from South America and is believed to have been cultivated for centuries. The pepper has mild heat and a sweet flavor, making it ideal for stuffing, pickling, and decorative culinary uses.' WHERE name LIKE 'Bishop%';
+
+UPDATE chilli SET full_description = 'Cherry Bomb Orange is a Hungarian pepper bred for its thick flesh and mild heat. It is widely used in pickling and stuffing due to its round shape and sweet flavor. The orange variety adds visual appeal and is often used in salads, preserves, and roasted dishes.' WHERE name = 'Cherry Bomb Orange';
+
+UPDATE chilli SET full_description = 'Datil pepper is closely associated with St. Augustine, Florida, where it has been cultivated for over two centuries. It is believed to have been brought by settlers from the Mediterranean. Despite its strong heat, it has a noticeable sweetness, making it popular in sauces, marinades, and local cuisine.' WHERE name = 'Datil';
+
+UPDATE chilli SET full_description = 'Devil''s Tongue is a hot chilli similar to habanero peppers, known for its wrinkled texture and fruity aroma. It is believed to have originated in the Caribbean region. It is commonly used in hot sauces and spicy recipes where both flavor and heat intensity are desired.' WHERE name LIKE 'Devil%';
+
+UPDATE chilli SET full_description = 'Jamaican Mushroom pepper is a Caribbean variety known for its unique shape and balanced heat. It offers a fruity flavor profile and is widely used in traditional Caribbean cooking, including jerk seasoning and sauces. It is valued for both its taste and its moderate spiciness.' WHERE name = 'Jamaican Mushroom';
+
+UPDATE chilli SET full_description = 'Long Horn is a cayenne-type chilli pepper known for its elongated shape and medium heat. It is widely cultivated in Asia and commonly used dried or fresh in cooking. It is a staple in spice production and is often ground into powders or used in stir-fry dishes.' WHERE name = 'Long Horn';
+
+UPDATE chilli SET full_description = 'Naga peppers originate from Northeast India and Bangladesh and are closely related to the Ghost Pepper family. They are among the hottest chillies in the world and are used primarily in extreme spice dishes and hot sauces. Their intense heat is accompanied by a deep, slightly smoky flavor.' WHERE name = 'Naga';
+
+UPDATE chilli SET full_description = 'Wiri Wiri is a small, round chilli pepper native to Guyana in South America. Despite its size, it delivers strong heat and a fruity taste. It is commonly used in Caribbean cuisine, especially in sauces and stews, and is valued for its bold flavor and aroma.' WHERE name = 'Wiri Wiri';
