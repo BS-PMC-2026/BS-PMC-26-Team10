@@ -13,7 +13,7 @@ function App() {
         <Route path="/owner" element={<OwnerMain />} />
         <Route path="/tourguide" element={<TourguideMain />} />
         <Route path="/staffLogin" element={<Auth />} />
-        <Route path="/pepper/:name" element={<PepperDetailsPage />} />
+        <Route path="/pepper/:id" element={<PepperDetailsPage />} />
       </Routes>
     </BrowserRouter>
   );

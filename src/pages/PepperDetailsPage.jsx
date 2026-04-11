@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "../styles/pepperDetailsPage.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
 function PepperDetailsPage() {
-  const { name } = useParams();
-  const [pepper, setPepper] = useState(null);
+  const { id } = useParams();
+  const location = useLocation();
+  const initialPepper = location.state?.pepper ?? null;
+  const [pepper, setPepper] = useState(initialPepper);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     async function fetchPepperDetails() {
+      if (initialPepper && String(initialPepper.id) === String(id)) {
+        setPepper(initialPepper);
+        setIsError(false);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setIsError(false);
 
@@ -23,11 +32,7 @@ function PepperDetailsPage() {
         }
 
         const data = await response.json();
-        const decodedName = decodeURIComponent(name);
-
-        const matchedPepper = data.find(
-          (item) => item.name?.toLowerCase() === decodedName.toLowerCase()
-        );
+        const matchedPepper = data.find((item) => String(item.id) === String(id));
 
         if (!matchedPepper) {
           setPepper(null);
@@ -44,7 +49,7 @@ function PepperDetailsPage() {
     }
 
     fetchPepperDetails();
-  }, [name]);
+  }, [id, initialPepper]);
 
   if (isLoading) {
     return (

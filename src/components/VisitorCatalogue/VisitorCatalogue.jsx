@@ -412,7 +412,15 @@ function VisitorCatalogue() {
                         )}
                       </div>
 
-                      <button type="button" className="visitor-chilli-btn">
+                      <button
+                        type="button"
+                        className="visitor-chilli-btn"
+                        onClick={() =>
+                          navigate(`/pepper/${chilli.id}`, {
+                            state: { pepper: chilli },
+                          })
+                        }
+                      >
                         Learn More
                       </button>
                     </div>
