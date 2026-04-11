@@ -155,9 +155,7 @@ Database setup helpers now live under:
 
 ## Important Current Mismatches
 
-- The catalogue component currently calls `/chillies/filter`, but the backend does not expose that path
 - The auth page navigates guests and visitors to `/visitor`, but the router only defines `/`
-- [`src/pages/VisitorMain.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/pages/VisitorMain.jsx) imports `../styles/visitorMain.css`, while the actual stylesheet file is [`src/styles/VisitorMain.css`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/styles/VisitorMain.css)
 - [`src/styles/VisitorMain.css`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/styles/VisitorMain.css) looks like legacy styling from an earlier non-React version and does not appear to drive the current visitor components
 - The frontend still has no consumer for `GET /inventory`
 

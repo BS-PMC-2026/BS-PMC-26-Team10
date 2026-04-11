@@ -1,4 +1,4 @@
-import "../styles/visitorMain.css";
+import "../styles/VisitorMain.css";
 
 // components
 import HeaderVisitor from "/src/components/HeaderVisitor/HeaderVisitor";
