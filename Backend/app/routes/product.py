@@ -4,7 +4,12 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Request
 
 from app.models import Product
-from app.services.product_services import create_product, get_all_products
+from app.services.product_services import (
+    create_product,
+    get_all_products,
+    delete_product,
+    update_product
+)
 
 router = APIRouter()
 
@@ -68,26 +73,26 @@ def build_public_product_image_url(request: Request, image_url: str) -> str:
 def serialize_products(products, request: Request):
     return [
         {
-            'id': product[0],
-            'name': product[1],
-            'description': product[2],
-            'quantity': product[3],
-            'last_updated': product[4],
-            'restock_date': product[5],
-            'price': float(product[6]) if product[6] is not None else None,
-            'image_url': build_public_product_image_url(request, product[7] or ''),
+            "id": product[0],
+            "name": product[1],
+            "description": product[2],
+            "quantity": product[3],
+            "last_updated": product[4],
+            "restock_date": product[5],
+            "price": float(product[6]) if product[6] is not None else None,
+            "image_url": build_public_product_image_url(request, product[7] or ""),
         }
         for product in products
     ]
 
 
-@router.get('/inventory')
+@router.get("/inventory")
 def list_inventory(request: Request):
     products = get_all_products()
     return serialize_products(products, request)
 
 
-@router.post('/inventory/add')
+@router.post("/inventory/add")
 def add_product(product: Product):
     product.quantity = int(product.quantity)
     product.price = float(product.price)
@@ -96,5 +101,40 @@ def add_product(product: Product):
     response = create_product(product)
 
     return {
-        'message': response
+        "message": response
+    }
+
+
+@router.put("/inventory/{product_id}")
+def edit_product(product_id: int, product: Product):
+    product.quantity = int(product.quantity)
+    product.price = float(product.price)
+    product.restock_date = parse_restock_date(product.restock_date)
+    product.image_url = normalize_product_image_url(product.image_url or product.name)
+
+    response = update_product(product_id, product)
+
+    if response is None:
+        raise HTTPException(status_code=404, detail="Product not found.")
+
+    if response is False:
+        raise HTTPException(status_code=500, detail="Failed to update product.")
+
+    return {
+        "message": response
+    }
+
+
+@router.delete("/inventory/{product_id}")
+def remove_product(product_id: int):
+    response = delete_product(product_id)
+
+    if response is None:
+        raise HTTPException(status_code=404, detail="Product not found.")
+
+    if response is False:
+        raise HTTPException(status_code=500, detail="Failed to delete product.")
+
+    return {
+        "message": response
     }

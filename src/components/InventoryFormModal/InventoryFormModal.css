@@ -1,0 +1,199 @@
+.inventory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 28, 20, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 2vw;
+}
+
+.inventory-modal {
+  width: 100%;
+  max-width: 42vw;
+  background: #fffaf6;
+  border-radius: 1.6vw;
+  box-shadow: 0 1.2vw 3vw rgba(53, 31, 21, 0.2);
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.8vw);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inventory-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4vw 1.6vw;
+  background: linear-gradient(135deg, #fff2e8, #fffaf6);
+  border-bottom: 0.08vw solid #efd8cc;
+}
+
+.inventory-modal-header h2 {
+  margin: 0;
+  font-size: 1.4vw;
+  color: #3a2a20;
+}
+
+.inventory-modal-close {
+  border: none;
+  background: transparent;
+  font-size: 1.8vw;
+  cursor: pointer;
+  color: #7b5c4d;
+}
+
+.inventory-modal-form {
+  padding: 1.6vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1vw;
+}
+
+.inventory-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vw;
+}
+
+.inventory-form-group label {
+  font-size: 0.9vw;
+  font-weight: 600;
+  color: #5a4134;
+}
+
+.inventory-form-group input,
+.inventory-form-group textarea {
+  width: 100%;
+  border: 0.08vw solid #e6d3c6;
+  border-radius: 0.9vw;
+  background: #ffffff;
+  padding: 0.85vw 1vw;
+  font-size: 0.92vw;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.inventory-form-group input:focus,
+.inventory-form-group textarea:focus {
+  border-color: #c55b3c;
+  box-shadow: 0 0 0 0.15vw rgba(197, 91, 60, 0.12);
+}
+
+.inventory-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1vw;
+}
+
+.inventory-form-error {
+  background: #fdecec;
+  color: #a23b3b;
+  padding: 0.9vw 1vw;
+  border-radius: 0.9vw;
+  font-size: 0.9vw;
+}
+
+.inventory-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8vw;
+  margin-top: 0.5vw;
+}
+
+.inventory-cancel-btn,
+.inventory-save-btn {
+  border: none;
+  border-radius: 0.95vw;
+  padding: 0.85vw 1.3vw;
+  font-size: 0.92vw;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inventory-cancel-btn {
+  background: #efe3da;
+  color: #6a4939;
+}
+
+.inventory-save-btn {
+  background: linear-gradient(135deg, #b6462f, #d96b4d);
+  color: white;
+}
+
+.inventory-save-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .inventory-modal-overlay {
+    padding: 4vw;
+  }
+
+  .inventory-modal {
+    max-width: 100%;
+    border-radius: 4vw;
+  }
+
+  .inventory-modal-header {
+    padding: 4vw;
+  }
+
+  .inventory-modal-header h2 {
+    font-size: 4.5vw;
+  }
+
+  .inventory-modal-close {
+    font-size: 6vw;
+  }
+
+  .inventory-modal-form {
+    padding: 4vw;
+    gap: 3vw;
+  }
+
+  .inventory-form-group label {
+    font-size: 3vw;
+  }
+
+  .inventory-form-group input,
+  .inventory-form-group textarea {
+    padding: 3vw;
+    font-size: 3vw;
+    border-radius: 3vw;
+  }
+
+  .inventory-form-row {
+    grid-template-columns: 1fr;
+    gap: 3vw;
+  }
+
+  .inventory-form-error {
+    font-size: 3vw;
+    padding: 3vw;
+    border-radius: 3vw;
+  }
+
+  .inventory-modal-actions {
+    gap: 2vw;
+  }
+
+  .inventory-cancel-btn,
+  .inventory-save-btn {
+    padding: 2.8vw 4vw;
+    font-size: 3vw;
+    border-radius: 3vw;
+  }
+}

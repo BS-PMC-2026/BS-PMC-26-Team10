@@ -16,6 +16,7 @@ const panels = [
     title: "Stock Status",
     desc: "Track products, low inventory and item availability.",
     tag: "2 low stock",
+    route: "/owner/inventory",
   },
   {
     title: "Team Schedule",
@@ -31,6 +32,7 @@ const panels = [
     title: "View Public Site",
     desc: "Open the visitor-facing side and review the experience.",
     tag: "Live",
+    route: "/",
   },
 ];
 
