@@ -1,6 +1,6 @@
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 import OwnerCardsGrid from "../components/OwnerCardsGrid/OwnerCardsGrid";
-import "../styles/ownerMain.css";
+import "../styles/OwnerMain.css";
 
 function OwnerMain() {
   return (

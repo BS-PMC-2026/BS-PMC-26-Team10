@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 import InventoryGrid from "../components/InventoryGrid/InventoryGrid";
 import InventoryFormModal from "../components/InventoryFormModal/InventoryFormModal";
-import "../styles/ownerInventory.css";
+import "../styles/OwnerInventory.css";
 
 function OwnerInventory() {
   const [inventory, setInventory] = useState([]);
