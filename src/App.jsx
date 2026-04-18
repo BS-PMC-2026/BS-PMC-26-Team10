@@ -5,11 +5,13 @@ import OwnerMain from "./pages/OwnerMain";
 import TourguideMain from "./pages/TourguideMain";
 import PepperDetailsPage from "./pages/PepperDetailsPage";
 import OwnerInventory from "./pages/OwnerInventory";
+import OwnerOrders from "./pages/OwnerOrders";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/owner/orders" element={<OwnerOrders />} />
         <Route path="/" element={<VisitorMain />} />
         <Route path="/owner" element={<OwnerMain />} />
         <Route path="/owner/inventory" element={<OwnerInventory />} />

@@ -8,6 +8,12 @@ const panels = [
     tag: "12 today",
   },
   {
+  title: "Orders Overview",
+  desc: "Track recent orders and delivery status.",
+  tag: "Recent",
+  route: "/owner/orders",
+},
+  {
     title: "Booking Requests",
     desc: "Check new reservations and visitor activity.",
     tag: "5 pending",
