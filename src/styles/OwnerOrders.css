@@ -1,0 +1,255 @@
+.owner-orders-layout {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(180deg, #fffaf5 0%, #fffdf8 100%);
+  overflow: hidden;
+}
+
+.owner-orders-content {
+  flex: 1;
+  padding: 3vw;
+  position: relative;
+  z-index: 2;
+}
+
+.owner-orders-header {
+  margin-bottom: 2vw;
+}
+
+.owner-orders-overline {
+  font-size: 0.95vw;
+  font-weight: 700;
+  letter-spacing: 0.08vw;
+  text-transform: uppercase;
+  color: #b6462f;
+  margin-bottom: 0.5vw;
+}
+
+.owner-orders-header h1 {
+  margin: 0 0 0.8vw 0;
+  font-size: 2.6vw;
+  color: #3a2a20;
+}
+
+.owner-orders-subtitle {
+  margin: 0;
+  max-width: 45vw;
+  font-size: 1vw;
+  line-height: 1.6;
+  color: #6f5a4d;
+}
+
+.owner-orders-summary {
+  display: flex;
+  gap: 1.2vw;
+  flex-wrap: wrap;
+  margin: 2vw 0;
+}
+
+.owner-orders-stat-card {
+  min-width: 14vw;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.08vw solid #efdfd2;
+  border-radius: 1.2vw;
+  padding: 1.4vw;
+  box-shadow: 0 0.4vw 1.2vw rgba(96, 52, 32, 0.06);
+}
+
+.owner-orders-stat-card p {
+  margin: 0 0 0.6vw 0;
+  font-size: 0.95vw;
+  color: #7a6253;
+}
+
+.owner-orders-stat-card h2 {
+  margin: 0;
+  font-size: 1.9vw;
+  color: #3a2a20;
+}
+
+.owner-orders-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1vw;
+  margin: 2vw 0;
+  flex-wrap: wrap;
+}
+
+.owner-orders-search {
+  flex: 1;
+  min-width: 18vw;
+  padding: 0.95vw 1.1vw;
+  border-radius: 1vw;
+  border: 0.08vw solid #ead9cd;
+  background: #ffffff;
+  font-size: 0.95vw;
+  outline: none;
+  box-shadow: 0 0.25vw 1vw rgba(96, 52, 32, 0.06);
+}
+
+.owner-orders-search:focus {
+  border-color: #c55b3c;
+  box-shadow: 0 0 0 0.15vw rgba(197, 91, 60, 0.14);
+}
+
+.owner-orders-message {
+  padding: 1.2vw;
+  border-radius: 1vw;
+  background: #fff7ef;
+  color: #6a4b3a;
+  font-size: 1vw;
+  margin-top: 1vw;
+}
+
+.owner-orders-message.error {
+  background: #fdecec;
+  color: #a23b3b;
+}
+
+.owner-orders-empty {
+  padding: 2vw;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.08vw dashed #e4cfc2;
+  border-radius: 1.5vw;
+  color: #6d5a4e;
+}
+
+.owner-orders-empty h2 {
+  margin: 0 0 0.6vw 0;
+  color: #3d2c22;
+}
+
+.owner-orders-table-wrap {
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 1.4vw;
+  border: 0.08vw solid #efdfd2;
+  box-shadow: 0 0.4vw 1.2vw rgba(96, 52, 32, 0.06);
+}
+
+.owner-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.owner-orders-table th,
+.owner-orders-table td {
+  padding: 1vw;
+  text-align: left;
+  border-bottom: 0.08vw solid #f1e3d8;
+  font-size: 0.95vw;
+  color: #4c382d;
+}
+
+.owner-orders-table th {
+  background: #fff4ea;
+  color: #7f4a35;
+  font-weight: 700;
+}
+
+.owner-orders-customer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25vw;
+}
+
+.owner-orders-customer small {
+  color: #8f7667;
+  font-size: 0.82vw;
+}
+
+.owner-orders-bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0.45;
+}
+
+.owner-orders-bg-shape-1 {
+  width: 20vw;
+  height: 20vw;
+  background: rgba(214, 118, 89, 0.18);
+  top: -4vw;
+  right: -3vw;
+}
+
+.owner-orders-bg-shape-2 {
+  width: 16vw;
+  height: 16vw;
+  background: rgba(124, 170, 92, 0.15);
+  bottom: -3vw;
+  left: 18vw;
+}
+
+@media (max-width: 900px) {
+  .owner-orders-content {
+    padding: 6vw 4vw;
+  }
+
+  .owner-orders-overline {
+    font-size: 2.5vw;
+  }
+
+  .owner-orders-header h1 {
+    font-size: 6vw;
+  }
+
+  .owner-orders-subtitle {
+    max-width: 100%;
+    font-size: 3.2vw;
+  }
+
+  .owner-orders-summary {
+    flex-direction: column;
+    gap: 3vw;
+    margin: 5vw 0;
+  }
+
+  .owner-orders-stat-card {
+    min-width: 100%;
+    padding: 4vw;
+    border-radius: 4vw;
+  }
+
+  .owner-orders-stat-card p {
+    font-size: 3vw;
+    margin-bottom: 1vw;
+  }
+
+  .owner-orders-stat-card h2 {
+    font-size: 6vw;
+  }
+
+  .owner-orders-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3vw;
+    margin: 5vw 0;
+  }
+
+  .owner-orders-search {
+    font-size: 3vw;
+    padding: 3vw 4vw;
+    border-radius: 3vw;
+  }
+
+  .owner-orders-message,
+  .owner-orders-empty {
+    font-size: 3vw;
+    padding: 4vw;
+    border-radius: 4vw;
+  }
+
+  .owner-orders-table th,
+  .owner-orders-table td {
+    padding: 3vw;
+    font-size: 2.8vw;
+  }
+
+  .owner-orders-customer small {
+    font-size: 2.4vw;
+  }
+}
