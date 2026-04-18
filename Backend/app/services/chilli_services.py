@@ -1,37 +1,49 @@
 from app.db import get_connection
 from typing import Optional
 
-def create_chilli(chilli, is_available,
-                  stock_quantity):
+
+def create_chilli(chilli, is_available, stock_quantity):
     try:
         conn = get_connection()
         cursor = conn.cursor()
 
         query = """
-        INSERT INTO chilli (name, description, image_url, 
-        shu_min, shu_max, origin, color, is_available,
-        stock_quantity, season)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query,(
-            chilli.name,
-            chilli.description,
-            chilli.image_url,
-            chilli.shuMin,
-            chilli.shuMax,
-            chilli.origin,
-            chilli.color,
+        INSERT INTO chilli (
+            name,
+            description,
+            image_url,
+            shu_min,
+            shu_max,
+            origin,
+            color,
             is_available,
             stock_quantity,
-            chilli.season
-        ))
+            season
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(
+            query,
+            (
+                chilli.name,
+                chilli.description,
+                chilli.image_url,
+                chilli.shuMin,
+                chilli.shuMax,
+                chilli.origin,
+                chilli.color,
+                is_available,
+                stock_quantity,
+                chilli.season,
+            ),
+        )
         conn.commit()
         cursor.close()
         conn.close()
 
         return "Chilli has been created!"
     except Exception as e:
-        print("Error while trying to create a chilli:\n ",e)
+        print("Error while trying to create a chilli:\n", e)
         return "Chilli has not been created = ERROR!"
 
 
@@ -42,6 +54,7 @@ def get_all_chillies():
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -51,7 +64,8 @@ def get_all_chillies():
             color,
             is_available,
             stock_quantity,
-            season
+            season,
+            full_description
         FROM chilli
         ORDER BY name ASC
         """
@@ -62,19 +76,22 @@ def get_all_chillies():
 
         return chillies
     except Exception as e:
-        print("Error while trying to fetch chillies:\n ", e)
+        print("Error while trying to fetch chillies:\n", e)
         return []
 
 
-def filter_chillies(min_shu: Optional[int] = None,
-                    max_shu: Optional[int] = None,
-                    origin: Optional[str] = None):
+def filter_chillies(
+    min_shu: Optional[int] = None,
+    max_shu: Optional[int] = None,
+    origin: Optional[str] = None,
+):
     try:
         conn = get_connection()
         cursor = conn.cursor()
 
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -84,7 +101,8 @@ def filter_chillies(min_shu: Optional[int] = None,
             color,
             is_available,
             stock_quantity,
-            season
+            season,
+            full_description
         FROM chilli
         """
         conditions = []
@@ -114,7 +132,7 @@ def filter_chillies(min_shu: Optional[int] = None,
 
         return chillies
     except Exception as e:
-        print("Error while trying to filter chillies:\n ", e)
+        print("Error while trying to filter chillies:\n", e)
         return []
 
 
@@ -123,9 +141,9 @@ def search_chillies(query_string: str):
         conn = get_connection()
         cursor = conn.cursor()
 
-        # Search for peppers with ILIKE (case-insensitive) for partial matches
         query = """
         SELECT
+            id,
             name,
             description,
             image_url,
@@ -135,7 +153,8 @@ def search_chillies(query_string: str):
             color,
             is_available,
             stock_quantity,
-            season
+            season,
+            full_description
         FROM chilli
         WHERE name ILIKE %s OR description ILIKE %s
         ORDER BY name ASC
@@ -148,5 +167,5 @@ def search_chillies(query_string: str):
 
         return chillies
     except Exception as e:
-        print("Error while trying to search chillies:\n ", e)
+        print("Error while trying to search chillies:\n", e)
         return []

@@ -1,0 +1,12 @@
+.owner-inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18vw, 1fr));
+  gap: 1.5vw;
+}
+
+@media (max-width: 900px) {
+  .owner-inventory-grid {
+    grid-template-columns: 1fr;
+    gap: 4vw;
+  }
+}

@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
-BACKEND_DIR = Path(__file__).resolve().parent
+BACKEND_DIR = Path(__file__).resolve().parents[2]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
@@ -175,6 +175,7 @@ def create_chilli_table() -> None:
                 cursor.execute(
                     """
                     CREATE TABLE chilli (
+                        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                         name TEXT NOT NULL,
                         description TEXT NOT NULL,
                         image_url TEXT NOT NULL,
@@ -184,7 +185,8 @@ def create_chilli_table() -> None:
                         color TEXT NOT NULL,
                         is_available BOOLEAN NOT NULL,
                         stock_quantity INTEGER NOT NULL,
-                        season TEXT NOT NULL
+                        season TEXT NOT NULL,
+                        full_description TEXT
                     )
                     """
                 )
@@ -214,9 +216,10 @@ def insert_rows(rows: list[dict[str, str]]) -> tuple[int, int]:
                     color,
                     is_available,
                     stock_quantity,
-                    season
+                    season,
+                    full_description
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
 
                 for row in rows:
@@ -238,6 +241,7 @@ def insert_rows(rows: list[dict[str, str]]) -> tuple[int, int]:
                             parse_bool(row["is_available"]),
                             parse_int(row["stock_quantity"]),
                             row["season"],
+                            None,
                         ),
                     )
                     inserted += 1

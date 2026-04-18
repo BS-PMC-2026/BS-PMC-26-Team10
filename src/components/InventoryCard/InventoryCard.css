@@ -1,0 +1,176 @@
+.inventory-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 0.08vw solid rgba(232, 214, 202, 0.85);
+  border-radius: 1.5vw;
+  overflow: hidden;
+  box-shadow: 0 0.8vw 2vw rgba(71, 42, 28, 0.08);
+  transition: 0.22s ease;
+}
+
+.inventory-card:hover {
+  transform: translateY(-0.18vw);
+  box-shadow: 0 1vw 2.2vw rgba(71, 42, 28, 0.13);
+}
+
+.inventory-card-image-wrapper {
+  width: 100%;
+  height: 14vw;
+  background: #f7eee7;
+  overflow: hidden;
+}
+
+.inventory-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.inventory-card-body {
+  padding: 1.2vw;
+}
+
+.inventory-card-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.8vw;
+}
+
+.inventory-card-stock {
+  font-size: 0.78vw;
+  font-weight: 700;
+  padding: 0.35vw 0.75vw;
+  border-radius: 1vw;
+}
+
+.inventory-card-stock.in {
+  background: #ecf8ee;
+  color: #2c7a3f;
+}
+
+.inventory-card-stock.low {
+  background: #fff5df;
+  color: #a66a00;
+}
+
+.inventory-card-stock.out {
+  background: #fdecec;
+  color: #b53a3a;
+}
+
+.inventory-card-body h3 {
+  margin: 0 0 0.6vw 0;
+  font-size: 1.15vw;
+  color: #35251b;
+}
+
+.inventory-card-description {
+  margin: 0 0 1vw 0;
+  font-size: 0.9vw;
+  line-height: 1.5;
+  color: #6d5a4e;
+  min-height: 3vw;
+}
+
+.inventory-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95vw;
+  font-weight: 600;
+  color: #4a3428;
+  margin-bottom: 0.9vw;
+}
+
+.inventory-card-extra {
+  background: #fff7f1;
+  border-radius: 1vw;
+  padding: 0.8vw;
+  margin-bottom: 1vw;
+}
+
+.inventory-card-extra p {
+  margin: 0.2vw 0;
+  font-size: 0.82vw;
+  color: #6a5245;
+}
+
+.inventory-card-actions {
+  display: flex;
+  gap: 0.7vw;
+}
+
+.inventory-card-actions button {
+  flex: 1;
+  padding: 0.75vw 0.9vw;
+  border: none;
+  border-radius: 0.9vw;
+  background: #b6462f;
+  color: white;
+  font-size: 0.88vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.inventory-card-actions button:hover {
+  opacity: 0.92;
+}
+
+.inventory-card-actions .secondary {
+  background: #efe3da;
+  color: #6a4939;
+}
+
+@media (max-width: 900px) {
+  .inventory-card {
+    border-radius: 4vw;
+  }
+
+  .inventory-card-image-wrapper {
+    height: 46vw;
+  }
+
+  .inventory-card-body {
+    padding: 4vw;
+  }
+
+  .inventory-card-stock {
+    font-size: 2.4vw;
+    padding: 1vw 2vw;
+    border-radius: 4vw;
+  }
+
+  .inventory-card-body h3 {
+    font-size: 4vw;
+    margin-bottom: 2vw;
+  }
+
+  .inventory-card-description {
+    font-size: 3vw;
+    margin-bottom: 3vw;
+    min-height: auto;
+  }
+
+  .inventory-card-info {
+    font-size: 3vw;
+    margin-bottom: 3vw;
+  }
+
+  .inventory-card-extra {
+    padding: 3vw;
+    border-radius: 3vw;
+    margin-bottom: 3vw;
+  }
+
+  .inventory-card-extra p {
+    font-size: 2.7vw;
+    margin: 1vw 0;
+  }
+
+  .inventory-card-actions button {
+    font-size: 2.8vw;
+    padding: 2.5vw;
+    border-radius: 3vw;
+  }
+}

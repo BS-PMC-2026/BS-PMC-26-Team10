@@ -1,0 +1,175 @@
+.owner-inventory-layout {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(180deg, #fffaf5 0%, #fffdf8 100%);
+  overflow: hidden;
+}
+
+.owner-inventory-content {
+  flex: 1;
+  padding: 3vw;
+  position: relative;
+  z-index: 2;
+}
+
+.owner-inventory-header {
+  margin-bottom: 2vw;
+}
+
+.owner-inventory-overline {
+  font-size: 0.95vw;
+  font-weight: 700;
+  letter-spacing: 0.08vw;
+  text-transform: uppercase;
+  color: #b6462f;
+  margin-bottom: 0.5vw;
+}
+
+.owner-inventory-header h1 {
+  margin: 0 0 0.8vw 0;
+  font-size: 2.6vw;
+  color: #3a2a20;
+}
+
+.owner-inventory-subtitle {
+  margin: 0;
+  max-width: 45vw;
+  font-size: 1vw;
+  line-height: 1.6;
+  color: #6f5a4d;
+}
+
+.owner-inventory-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1vw;
+  margin: 2vw 0;
+  flex-wrap: wrap;
+}
+
+.owner-inventory-search {
+  flex: 1;
+  min-width: 18vw;
+  padding: 0.95vw 1.1vw;
+  border-radius: 1vw;
+  border: 0.08vw solid #ead9cd;
+  background: #ffffff;
+  font-size: 0.95vw;
+  outline: none;
+  box-shadow: 0 0.25vw 1vw rgba(96, 52, 32, 0.06);
+}
+
+.owner-inventory-search:focus {
+  border-color: #c55b3c;
+  box-shadow: 0 0 0 0.15vw rgba(197, 91, 60, 0.14);
+}
+
+.owner-inventory-add-btn {
+  border: none;
+  border-radius: 1vw;
+  padding: 0.95vw 1.5vw;
+  background: linear-gradient(135deg, #b6462f, #d96b4d);
+  color: white;
+  font-size: 0.95vw;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0.5vw 1.4vw rgba(182, 70, 47, 0.2);
+  transition: 0.2s ease;
+}
+
+.owner-inventory-add-btn:hover {
+  transform: translateY(-0.12vw);
+}
+
+.owner-inventory-message {
+  padding: 1.2vw;
+  border-radius: 1vw;
+  background: #fff7ef;
+  color: #6a4b3a;
+  font-size: 1vw;
+  margin-top: 1vw;
+}
+
+.owner-inventory-message.error {
+  background: #fdecec;
+  color: #a23b3b;
+}
+
+.owner-inventory-empty {
+  padding: 2vw;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.08vw dashed #e4cfc2;
+  border-radius: 1.5vw;
+  color: #6d5a4e;
+}
+
+.owner-inventory-empty h2 {
+  margin: 0 0 0.6vw 0;
+  color: #3d2c22;
+}
+
+.owner-inventory-bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0.45;
+}
+
+.owner-inventory-bg-shape-1 {
+  width: 20vw;
+  height: 20vw;
+  background: rgba(214, 118, 89, 0.18);
+  top: -4vw;
+  right: -3vw;
+}
+
+.owner-inventory-bg-shape-2 {
+  width: 16vw;
+  height: 16vw;
+  background: rgba(124, 170, 92, 0.15);
+  bottom: -3vw;
+  left: 18vw;
+}
+
+@media (max-width: 900px) {
+  .owner-inventory-content {
+    padding: 6vw 4vw;
+  }
+
+  .owner-inventory-overline {
+    font-size: 2.5vw;
+  }
+
+  .owner-inventory-header h1 {
+    font-size: 6vw;
+  }
+
+  .owner-inventory-subtitle {
+    max-width: 100%;
+    font-size: 3.2vw;
+  }
+
+  .owner-inventory-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3vw;
+    margin: 5vw 0;
+  }
+
+  .owner-inventory-search,
+  .owner-inventory-add-btn {
+    font-size: 3vw;
+    padding: 3vw 4vw;
+    border-radius: 3vw;
+  }
+
+  .owner-inventory-message,
+  .owner-inventory-empty {
+    font-size: 3vw;
+    padding: 4vw;
+    border-radius: 4vw;
+  }
+}
