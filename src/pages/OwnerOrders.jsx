@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
-import "../styles/ownerOrders.css";
+import "../styles/OwnerOrders.css";
 
 function OwnerOrders() {
   const [orders, setOrders] = useState([]);
