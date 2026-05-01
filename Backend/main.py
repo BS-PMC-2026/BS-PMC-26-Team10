@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.db import get_connection
-from app.routes import chilli, product, order
+from app.routes import chilli, product, order, tour
 from db.scripts.load_peppers import main as load_data
 
 app = FastAPI()
@@ -50,6 +50,7 @@ app.add_middleware(
 app.include_router(chilli.router, tags=["chilli"])
 app.include_router(product.router, tags=["product"])
 app.include_router(order.router, tags=["order"])
+app.include_router(tour.router, tags=["tour"])
 
 app.mount(
     "/chilli_images",
