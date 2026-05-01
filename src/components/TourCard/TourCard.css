@@ -1,0 +1,101 @@
+.tour-card {
+  background: #ffffff;
+  border: 0.08vw solid #efd8cc;
+  border-radius: 1.4vw;
+  padding: 1.4vw 1.6vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9vw;
+  box-shadow: 0 0.3vw 1.2vw rgba(96, 52, 32, 0.07);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tour-card:hover {
+  box-shadow: 0 0.6vw 2vw rgba(96, 52, 32, 0.13);
+  transform: translateY(-0.1vw);
+}
+
+.tour-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1vw;
+}
+
+.tour-card-title {
+  margin: 0;
+  font-size: 1.15vw;
+  color: #3a2a20;
+  font-weight: 700;
+  flex: 1;
+}
+
+.tour-card-actions {
+  display: flex;
+  gap: 0.5vw;
+  flex-shrink: 0;
+}
+
+.tour-card-edit-btn,
+.tour-card-delete-btn {
+  border: none;
+  border-radius: 0.7vw;
+  padding: 0.45vw 0.9vw;
+  font-size: 0.8vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.tour-card-edit-btn {
+  background: #efe3da;
+  color: #6a4939;
+}
+
+.tour-card-delete-btn {
+  background: #fdecec;
+  color: #a23b3b;
+}
+
+.tour-card-edit-btn:hover,
+.tour-card-delete-btn:hover {
+  opacity: 0.8;
+}
+
+.tour-card-description {
+  margin: 0;
+  font-size: 0.88vw;
+  color: #7b5c4d;
+  line-height: 1.5;
+}
+
+.tour-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1vw;
+  padding-top: 0.6vw;
+  border-top: 0.06vw solid #f2e4db;
+}
+
+.tour-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+  font-size: 0.88vw;
+  color: #5a4134;
+}
+
+.tour-card-meta-icon {
+  font-size: 0.9vw;
+}
+
+@media (max-width: 900px) {
+  .tour-card { border-radius: 4vw; padding: 4vw; gap: 2.5vw; }
+  .tour-card-title { font-size: 4vw; }
+  .tour-card-edit-btn,
+  .tour-card-delete-btn { font-size: 2.8vw; padding: 1.5vw 2.5vw; border-radius: 2vw; }
+  .tour-card-description { font-size: 3vw; }
+  .tour-card-meta { gap: 3vw; }
+  .tour-card-meta-item { font-size: 3vw; gap: 1.5vw; }
+  .tour-card-meta-icon { font-size: 3vw; }
+}

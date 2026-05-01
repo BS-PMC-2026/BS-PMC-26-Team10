@@ -1,0 +1,12 @@
+.tour-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22vw, 1fr));
+  gap: 1.4vw;
+}
+
+@media (max-width: 900px) {
+  .tour-grid {
+    grid-template-columns: 1fr;
+    gap: 4vw;
+  }
+}

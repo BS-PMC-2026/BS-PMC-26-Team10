@@ -16,3 +16,17 @@ class Product(BaseModel):
     restock_date : str
     price : float
     image_url : str
+
+class Tour(BaseModel):
+    title: str
+    kind: str = "field-tasting"
+    description: str = ""
+    date: str
+    time: str
+    duration: str = "90 min"
+    capacity: int
+    price: float = 0
+    meeting_point: str = ""
+    includes: str = ""
+    accessibility: str = "mostly-yes"
+    visibility: str = "draft"
