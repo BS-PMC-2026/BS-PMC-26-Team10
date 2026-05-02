@@ -49,6 +49,7 @@ function WelcomeStrip() {
 
         <div className="welcome-strip-cta">
           <Link to="/tours" className="welcome-strip-cta-btn">View Tours &amp; Book a Spot</Link>
+          <Link to="/about" className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary">About the Farm</Link>
         </div>
       </div>
     </section>

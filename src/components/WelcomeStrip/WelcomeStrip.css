@@ -98,6 +98,8 @@
   margin-top: 3vw;
   display: flex;
   justify-content: flex-start;
+  gap: 1vw;
+  flex-wrap: wrap;
 }
 
 .welcome-strip-cta-btn {
@@ -114,6 +116,16 @@
 
 .welcome-strip-cta-btn:hover {
   background: #8a3d1e;
+}
+
+.welcome-strip-cta-btn--secondary {
+  background: transparent;
+  color: #a14d2a;
+  border: 0.1vw solid #a14d2a;
+}
+
+.welcome-strip-cta-btn--secondary:hover {
+  background: #f3dfcc;
 }
 
 /* mobile */
@@ -188,11 +200,16 @@
 
   .welcome-strip-cta {
     margin-top: 8vw;
+    gap: 3vw;
   }
 
   .welcome-strip-cta-btn {
     font-size: 4vw;
     padding: 3.5vw 7vw;
     border-radius: 3vw;
+  }
+
+  .welcome-strip-cta-btn--secondary {
+    border-width: 0.35vw;
   }
 }
