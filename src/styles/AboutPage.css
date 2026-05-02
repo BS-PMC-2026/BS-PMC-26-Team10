@@ -1,0 +1,436 @@
+/* ── About Page ──────────────────────────────────── */
+.about-page {
+  font-family: inherit;
+  color: #3a2a20;
+}
+
+/* shared section wrapper */
+.about-section-inner {
+  width: 88vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-section-kicker {
+  margin: 0 0 0.7vw;
+  font-size: 0.85vw;
+  letter-spacing: 0.14vw;
+  text-transform: uppercase;
+  color: #a14d2a;
+  font-weight: 600;
+}
+
+.about-section-kicker--light {
+  color: #e8c4a0;
+}
+
+.about-section-title {
+  margin: 0 0 1vw;
+  font-size: 2.4vw;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #3a2a20;
+}
+
+.about-section-title--light {
+  color: #fff;
+}
+
+.about-section-sub {
+  margin: 0 0 2.8vw;
+  font-size: 1.05vw;
+  color: #7b5c4d;
+  line-height: 1.65;
+  max-width: 50vw;
+}
+
+/* shared buttons */
+.about-btn {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 999vw;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  font-size: 0.95vw;
+  padding: 0.85vw 2vw;
+}
+
+.about-btn--primary {
+  background: #a14d2a;
+  color: #fff;
+  border: none;
+}
+
+.about-btn--primary:hover {
+  background: #8a3d1e;
+}
+
+.about-btn--ghost {
+  background: transparent;
+  color: #fff;
+  border: 0.1vw solid rgba(255,255,255,0.7);
+}
+
+.about-btn--ghost:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.about-btn--large {
+  font-size: 1.05vw;
+  padding: 1vw 2.8vw;
+  border-radius: 999vw;
+}
+
+/* ── Hero ───────────────────────────────────── */
+.about-hero {
+  background: #4a2a1f;
+  padding: 6vw 6vw 6.5vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(161,77,42,0.25) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.about-hero-inner {
+  position: relative;
+  max-width: 700px;
+}
+
+.about-back {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.88vw;
+  margin-bottom: 1.8vw;
+  transition: color 0.15s;
+}
+
+.about-back:hover {
+  color: #fff;
+}
+
+.about-kicker {
+  margin: 0 0 1vw;
+  font-size: 0.85vw;
+  letter-spacing: 0.16vw;
+  text-transform: uppercase;
+  color: #e4a97a;
+  font-weight: 600;
+}
+
+.about-hero-title {
+  margin: 0 0 1.2vw;
+  font-size: 3.2vw;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+}
+
+.about-hero-sub {
+  margin: 0 0 2.5vw;
+  font-size: 1.1vw;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.8);
+  max-width: 560px;
+}
+
+.about-hero-actions {
+  display: flex;
+  gap: 1vw;
+  flex-wrap: wrap;
+}
+
+/* ── Our Story ──────────────────────────────── */
+.about-story {
+  background: #fdf7f0;
+  padding: 5vw 6vw;
+}
+
+.about-story-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 4vw;
+  align-items: start;
+}
+
+.about-story-body {
+  margin: 0 0 1.1vw;
+  font-size: 1vw;
+  line-height: 1.75;
+  color: #5a4134;
+}
+
+.about-story-highlight {
+  font-weight: 600;
+  color: #3a2a20;
+  font-style: italic;
+}
+
+.about-story-card {
+  background: #fff;
+  border: 0.07vw solid #efd8cc;
+  border-radius: 1.4vw;
+  padding: 2vw;
+  box-shadow: 0 0.4vw 1.4vw rgba(96,52,32,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vw;
+}
+
+.about-story-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2vw;
+  padding-bottom: 1.2vw;
+  border-bottom: 0.06vw solid #f2e4db;
+}
+
+.about-story-stat:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.about-stat-number {
+  font-size: 2.2vw;
+  font-weight: 800;
+  color: #a14d2a;
+  line-height: 1;
+}
+
+.about-stat-label {
+  font-size: 0.82vw;
+  color: #a07060;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08vw;
+}
+
+.about-quote {
+  margin: 1vw 0 0;
+  padding: 1.2vw 1.4vw;
+  background: #f8f1e7;
+  border-left: 0.3vw solid #a14d2a;
+  border-radius: 0 0.8vw 0.8vw 0;
+  font-size: 0.92vw;
+  line-height: 1.6;
+  color: #5a4134;
+  font-style: italic;
+}
+
+/* ── What We Offer ──────────────────────────── */
+.about-offers {
+  background: #fff;
+  padding: 5vw 6vw;
+}
+
+.about-offers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6vw;
+}
+
+.about-offer-card {
+  background: #fdf7f0;
+  border: 0.07vw solid #efd8cc;
+  border-radius: 1.4vw;
+  padding: 1.8vw 1.6vw;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.about-offer-card:hover {
+  transform: translateY(-0.2vw);
+  box-shadow: 0 0.6vw 2vw rgba(96,52,32,0.1);
+}
+
+.about-offer-icon {
+  font-size: 1.8vw;
+  margin-bottom: 0.9vw;
+}
+
+.about-offer-title {
+  margin: 0 0 0.6vw;
+  font-size: 1.05vw;
+  font-weight: 700;
+  color: #3a2a20;
+}
+
+.about-offer-text {
+  margin: 0;
+  font-size: 0.9vw;
+  color: #7b5c4d;
+  line-height: 1.6;
+}
+
+/* ── The Experience ─────────────────────────── */
+.about-experience {
+  background: #4a2a1f;
+  padding: 5vw 6vw;
+}
+
+.about-experience-inner {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 4vw;
+  align-items: center;
+}
+
+.about-experience-body {
+  margin: 0 0 1.2vw;
+  font-size: 1vw;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.8);
+}
+
+.about-experience-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+}
+
+.about-experience-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.9vw;
+  background: rgba(255,255,255,0.07);
+  border: 0.07vw solid rgba(255,255,255,0.12);
+  border-radius: 1vw;
+  padding: 1vw 1.2vw;
+  font-size: 0.92vw;
+  color: rgba(255,255,255,0.9);
+  transition: background 0.15s;
+}
+
+.about-experience-badge:hover {
+  background: rgba(255,255,255,0.11);
+}
+
+.about-experience-badge-icon {
+  font-size: 1.3vw;
+  flex-shrink: 0;
+}
+
+/* ── Why Visit ──────────────────────────────── */
+.about-why {
+  background: #f8f1e7;
+  padding: 5vw 6vw;
+}
+
+.about-why-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+  max-width: 700px;
+}
+
+.about-why-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1vw;
+  font-size: 1.05vw;
+  color: #3a2a20;
+  line-height: 1.5;
+}
+
+.about-why-check {
+  flex-shrink: 0;
+  width: 1.6vw;
+  height: 1.6vw;
+  background: #a14d2a;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75vw;
+  font-weight: 700;
+  margin-top: 0.1vw;
+}
+
+/* ── Closing CTA ────────────────────────────── */
+.about-closing {
+  background: #3a2a20;
+  padding: 6vw;
+  text-align: center;
+}
+
+.about-closing-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.about-closing-title {
+  margin: 0 0 1.2vw;
+  font-size: 2.6vw;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.about-closing-text {
+  margin: 0 0 2.5vw;
+  font-size: 1.05vw;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.78);
+}
+
+/* ── Mobile ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .about-section-kicker { font-size: 3vw; letter-spacing: 0.4vw; margin-bottom: 2.5vw; }
+  .about-section-title { font-size: 7vw; margin-bottom: 3vw; }
+  .about-section-sub { font-size: 3.8vw; max-width: 100%; margin-bottom: 6vw; }
+  .about-btn { font-size: 3.8vw; padding: 3.5vw 7vw; }
+  .about-btn--large { font-size: 4vw; padding: 4vw 8vw; }
+
+  /* hero */
+  .about-hero { padding: 14vw 6vw 12vw; }
+  .about-back { font-size: 3.2vw; margin-bottom: 4vw; }
+  .about-kicker { font-size: 3vw; }
+  .about-hero-title { font-size: 9vw; margin-bottom: 4vw; }
+  .about-hero-sub { font-size: 4vw; margin-bottom: 7vw; }
+  .about-hero-actions { flex-direction: column; gap: 3vw; }
+
+  /* story */
+  .about-story { padding: 10vw 6vw; }
+  .about-story-grid { grid-template-columns: 1fr; gap: 8vw; }
+  .about-story-body { font-size: 3.8vw; margin-bottom: 3.5vw; }
+  .about-story-card { border-radius: 5vw; padding: 5vw; gap: 4vw; }
+  .about-stat-number { font-size: 8vw; }
+  .about-stat-label { font-size: 3vw; }
+  .about-quote { font-size: 3.5vw; padding: 4vw; border-left-width: 1vw; }
+
+  /* offers */
+  .about-offers { padding: 10vw 6vw; }
+  .about-offers-grid { grid-template-columns: 1fr; gap: 4vw; }
+  .about-offer-card { border-radius: 5vw; padding: 5vw; }
+  .about-offer-icon { font-size: 7vw; margin-bottom: 3vw; }
+  .about-offer-title { font-size: 4.5vw; }
+  .about-offer-text { font-size: 3.6vw; }
+
+  /* experience */
+  .about-experience { padding: 10vw 6vw; }
+  .about-experience-inner { grid-template-columns: 1fr; gap: 7vw; }
+  .about-experience-body { font-size: 3.8vw; }
+  .about-experience-badge { font-size: 3.5vw; padding: 3.5vw 4vw; border-radius: 4vw; gap: 3vw; }
+  .about-experience-badge-icon { font-size: 5vw; }
+
+  /* why */
+  .about-why { padding: 10vw 6vw; }
+  .about-why-item { font-size: 4vw; gap: 3.5vw; }
+  .about-why-check { width: 6vw; height: 6vw; font-size: 3vw; }
+
+  /* closing */
+  .about-closing { padding: 12vw 6vw; }
+  .about-closing-title { font-size: 8vw; }
+  .about-closing-text { font-size: 4vw; margin-bottom: 7vw; }
+}

@@ -8,6 +8,7 @@ import OwnerInventory from "./pages/OwnerInventory";
 import OwnerOrders from "./pages/OwnerOrders";
 import ToursPage from "./pages/ToursPage";
 import TourDetailPage from "./pages/TourDetailPage";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/pepper/:id" element={<PepperDetailsPage />} />
         <Route path="/tours" element={<ToursPage />} />
         <Route path="/tours/:id" element={<TourDetailPage />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
     </BrowserRouter>
   );

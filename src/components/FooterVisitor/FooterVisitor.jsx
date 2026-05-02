@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./FooterVisitor.css";
 
 function FooterVisitor() {
@@ -18,9 +19,9 @@ function FooterVisitor() {
         <div className="footer-col">
           <h3>Explore</h3>
           <ul>
-            <li><a href="#">Catalogue</a></li>
-            <li><a href="#">Tours</a></li>
-            <li><a href="#">Workshops</a></li>
+            <li><Link to="/">Catalogue</Link></li>
+            <li><Link to="/tours">Tours</Link></li>
+            <li><Link to="/about">About the Farm</Link></li>
           </ul>
         </div>
 
