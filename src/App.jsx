@@ -6,6 +6,8 @@ import TourguideMain from "./pages/TourguideMain";
 import PepperDetailsPage from "./pages/PepperDetailsPage";
 import OwnerInventory from "./pages/OwnerInventory";
 import OwnerOrders from "./pages/OwnerOrders";
+import ToursPage from "./pages/ToursPage";
+import TourDetailPage from "./pages/TourDetailPage";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/tourguide" element={<TourguideMain />} />
         <Route path="/staffLogin" element={<Auth />} />
         <Route path="/pepper/:id" element={<PepperDetailsPage />} />
+        <Route path="/tours" element={<ToursPage />} />
+        <Route path="/tours/:id" element={<TourDetailPage />} />
       </Routes>
     </BrowserRouter>
   );

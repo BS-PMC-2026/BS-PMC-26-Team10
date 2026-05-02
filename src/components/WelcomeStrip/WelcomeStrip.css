@@ -93,6 +93,29 @@
   color: #6d5447;
 }
 
+/* CTA */
+.welcome-strip-cta {
+  margin-top: 3vw;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.welcome-strip-cta-btn {
+  display: inline-block;
+  padding: 0.85vw 2.2vw;
+  background: #a14d2a;
+  color: #fff;
+  border-radius: 0.8vw;
+  text-decoration: none;
+  font-size: 1vw;
+  font-weight: 700;
+  transition: background 0.15s ease;
+}
+
+.welcome-strip-cta-btn:hover {
+  background: #8a3d1e;
+}
+
 /* mobile */
 @media (max-width: 768px) {
   .welcome-strip {
@@ -161,5 +184,15 @@
   .welcome-strip-card-text {
     font-size: 3.8vw;
     line-height: 1.7;
+  }
+
+  .welcome-strip-cta {
+    margin-top: 8vw;
+  }
+
+  .welcome-strip-cta-btn {
+    font-size: 4vw;
+    padding: 3.5vw 7vw;
+    border-radius: 3vw;
   }
 }

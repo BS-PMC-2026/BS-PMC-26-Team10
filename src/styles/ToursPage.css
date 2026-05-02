@@ -1,0 +1,230 @@
+/* ── Tours Page layout ──────────────────────────── */
+.tours-page {
+  min-height: 100vh;
+  background: #fdf7f0;
+  font-family: inherit;
+}
+
+/* header */
+.tours-page-header {
+  background: #4a2a1f;
+  padding: 3vw 6vw 3.5vw;
+  position: relative;
+}
+
+.tours-page-back {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9vw;
+  margin-bottom: 1.8vw;
+  transition: color 0.15s;
+}
+
+.tours-page-back:hover {
+  color: #fff;
+}
+
+.tours-page-kicker {
+  margin: 0 0 0.6vw;
+  font-size: 0.85vw;
+  letter-spacing: 0.14vw;
+  text-transform: uppercase;
+  color: #e4a97a;
+  font-weight: 600;
+}
+
+.tours-page-title {
+  margin: 0;
+  font-size: 2.6vw;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.tours-page-subtitle {
+  margin: 0.8vw 0 0;
+  font-size: 1vw;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+}
+
+/* main */
+.tours-page-main {
+  padding: 3.5vw 6vw 5vw;
+}
+
+.tours-page-status {
+  text-align: center;
+  font-size: 1.05vw;
+  color: #7b5c4d;
+  padding: 4vw 0;
+}
+
+.tours-page-error {
+  color: #a23b3b;
+}
+
+/* grid */
+.tours-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6vw;
+}
+
+/* card */
+.tours-grid-card {
+  background: #fff;
+  border: 0.07vw solid #efd8cc;
+  border-radius: 1.4vw;
+  padding: 1.6vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vw;
+  box-shadow: 0 0.3vw 1.2vw rgba(96, 52, 32, 0.07);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tours-grid-card:hover {
+  box-shadow: 0 0.6vw 2vw rgba(96, 52, 32, 0.13);
+  transform: translateY(-0.15vw);
+}
+
+.tours-grid-card--past {
+  opacity: 0.65;
+}
+
+/* badges */
+.tours-grid-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4vw;
+  margin-bottom: 0.6vw;
+}
+
+.tours-grid-badge {
+  display: inline-block;
+  padding: 0.2vw 0.7vw;
+  border-radius: 999vw;
+  font-size: 0.72vw;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.tours-grid-badge--kind {
+  background: #f3dfcc;
+  color: #7a4020;
+}
+
+.tours-grid-badge--full {
+  background: #fdecea;
+  color: #a23b3b;
+}
+
+.tours-grid-badge--past {
+  background: #ebebeb;
+  color: #777;
+}
+
+/* text */
+.tours-grid-card-title {
+  margin: 0;
+  font-size: 1.15vw;
+  color: #3a2a20;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tours-grid-card-description {
+  margin: 0;
+  font-size: 0.88vw;
+  color: #7b5c4d;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* meta table */
+.tours-grid-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45vw;
+  padding: 0.9vw 0;
+  border-top: 0.06vw solid #f2e4db;
+  border-bottom: 0.06vw solid #f2e4db;
+}
+
+.tours-grid-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86vw;
+  color: #5a4134;
+}
+
+.tours-grid-meta-label {
+  color: #a07060;
+  font-weight: 500;
+}
+
+.tours-grid-spots--ok {
+  color: #3a7a3a;
+  font-weight: 600;
+}
+
+.tours-grid-spots--none {
+  color: #a23b3b;
+  font-weight: 600;
+}
+
+/* footer / CTA */
+.tours-grid-card-footer {
+  margin-top: auto;
+}
+
+.tours-grid-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.7vw 0;
+  border-radius: 0.8vw;
+  background: #a14d2a;
+  color: #fff;
+  font-size: 0.9vw;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.tours-grid-btn:hover {
+  background: #8a3d1e;
+}
+
+.tours-grid-btn--disabled {
+  background: #d8ccc7;
+  color: #9a8a84;
+  cursor: not-allowed;
+}
+
+/* ── mobile ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .tours-page-header { padding: 8vw 6vw 9vw; }
+  .tours-page-back { font-size: 3.2vw; margin-bottom: 4vw; }
+  .tours-page-kicker { font-size: 2.8vw; letter-spacing: 0.4vw; }
+  .tours-page-title { font-size: 7.5vw; }
+  .tours-page-subtitle { font-size: 3.6vw; }
+  .tours-page-main { padding: 7vw 5vw 10vw; }
+  .tours-page-status { font-size: 4vw; }
+
+  .tours-grid { grid-template-columns: 1fr; gap: 5vw; }
+  .tours-grid-card { border-radius: 4.5vw; padding: 5vw; gap: 4vw; }
+  .tours-grid-badge { font-size: 2.8vw; padding: 0.8vw 2.5vw; }
+  .tours-grid-card-title { font-size: 5vw; }
+  .tours-grid-card-description { font-size: 3.5vw; }
+  .tours-grid-meta-row { font-size: 3.4vw; }
+  .tours-grid-btn { font-size: 3.8vw; padding: 3.5vw; border-radius: 3vw; }
+}

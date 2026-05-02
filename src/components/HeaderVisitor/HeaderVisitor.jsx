@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./HeaderVisitor.css";
 import headerDeskVideo from "/src/assets/header-desk.mp4";
 import headerMobVideo from "/src/assets/header-mob.mp4";
@@ -41,7 +42,7 @@ function HeaderVisitor() {
         </p>
 
         <div className="farm-buttons">
-          <button className="farm-btn primary">Book a Tour</button>
+          <Link to="/tours" className="farm-btn primary">Book a Tour</Link>
           <button className="farm-btn secondary">Browse Products</button>
         </div>
       </div>

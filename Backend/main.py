@@ -5,8 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.db import get_connection
-from app.routes import chilli, product, order, tour
+from app.routes import chilli, product, order, tour, booking
 from db.scripts.load_peppers import main as load_data
+from db.scripts.create_bookings_table import main as create_bookings_table
 
 app = FastAPI()
 
@@ -38,6 +39,7 @@ def run_seed_descriptions() -> None:
 
 load_data()
 run_seed_descriptions()
+create_bookings_table()
 
 app.add_middleware(
     CORSMiddleware,
@@ -51,6 +53,7 @@ app.include_router(chilli.router, tags=["chilli"])
 app.include_router(product.router, tags=["product"])
 app.include_router(order.router, tags=["order"])
 app.include_router(tour.router, tags=["tour"])
+app.include_router(booking.router, tags=["booking"])
 
 app.mount(
     "/chilli_images",
