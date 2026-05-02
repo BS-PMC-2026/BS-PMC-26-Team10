@@ -69,7 +69,9 @@ describe("TourDetailPage", () => {
 
   test("displays tour title after loading", async () => {
     renderDetailPage();
-    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Field Walk" })).toBeInTheDocument()
+    );
   });
 
   test("displays tour description and meeting point", async () => {
