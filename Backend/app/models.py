@@ -30,3 +30,10 @@ class Tour(BaseModel):
     includes: str = ""
     accessibility: str = "mostly-yes"
     visibility: str = "draft"
+
+class BookingCreate(BaseModel):
+    tour_id: int
+    email: str
+    full_name: str
+    phone: str
+    participants_count: int

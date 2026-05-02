@@ -27,6 +27,7 @@ class SerializeToursTests(unittest.TestCase):
             "mostly-yes",           # accessibility
             "public",               # visibility
             "2026-05-01 10:00:00",  # created_at
+            0,                      # booked_count (from LEFT JOIN bookings)
         )
         if overrides:
             row = list(row)
@@ -65,6 +66,32 @@ class SerializeToursTests(unittest.TestCase):
         result = serialize_tours([self._make_row()])
         self.assertIsInstance(result[0]["date"], str)
         self.assertIsInstance(result[0]["time"], str)
+
+
+    def test_remaining_spots_equals_capacity_when_no_bookings(self):
+        result = serialize_tours([self._make_row()])
+        self.assertEqual(result[0]["remaining_spots"], 12)
+
+    def test_remaining_spots_decreases_with_bookings(self):
+        row = self._make_row({14: 5})  # 5 participants already booked
+        result = serialize_tours([row])
+        self.assertEqual(result[0]["remaining_spots"], 7)
+
+    def test_is_full_false_when_spots_available(self):
+        result = serialize_tours([self._make_row()])
+        self.assertFalse(result[0]["is_full"])
+
+    def test_is_full_true_when_capacity_reached(self):
+        row = self._make_row({14: 12})  # all 12 spots booked
+        result = serialize_tours([row])
+        self.assertTrue(result[0]["is_full"])
+        self.assertEqual(result[0]["remaining_spots"], 0)
+
+    def test_remaining_spots_never_negative(self):
+        row = self._make_row({14: 20})  # overbooking guard
+        result = serialize_tours([row])
+        self.assertEqual(result[0]["remaining_spots"], 0)
+        self.assertTrue(result[0]["is_full"])
 
 
 class TourModelValidationTests(unittest.TestCase):

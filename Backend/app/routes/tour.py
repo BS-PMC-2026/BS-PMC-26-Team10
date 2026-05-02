@@ -9,8 +9,12 @@ router = APIRouter()
 
 
 def serialize_tours(tours):
-    return [
-        {
+    result = []
+    for t in tours:
+        capacity = int(t[7])
+        booked = int(t[14]) if len(t) > 14 else 0
+        remaining = max(0, capacity - booked)
+        result.append({
             "id": t[0],
             "title": t[1],
             "kind": t[2],
@@ -18,16 +22,17 @@ def serialize_tours(tours):
             "date": str(t[4]),
             "time": str(t[5]),
             "duration": t[6],
-            "capacity": t[7],
+            "capacity": capacity,
             "price": float(t[8]) if t[8] is not None else 0,
             "meeting_point": t[9],
             "includes": t[10],
             "accessibility": t[11],
             "visibility": t[12],
             "created_at": str(t[13]),
-        }
-        for t in tours
-    ]
+            "remaining_spots": remaining,
+            "is_full": remaining == 0,
+        })
+    return result
 
 
 @router.get("/tours")
