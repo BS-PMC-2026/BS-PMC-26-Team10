@@ -1,5 +1,5 @@
 // Tests for ToursPage component (BSPMT10-12-usn12)
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, test, expect, vi, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ToursPage from "../pages/ToursPage";
