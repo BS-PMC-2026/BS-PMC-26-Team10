@@ -127,7 +127,7 @@ export default function VisitorProducts() {
         if (!res.ok) throw new Error("Failed to load products");
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
-      } catch (err) {
+      } catch {
         setError("Could not load products. Please try again shortly.");
       } finally {
         setLoading(false);

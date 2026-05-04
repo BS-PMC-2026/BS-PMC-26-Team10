@@ -203,7 +203,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
-        onSuccess={(orderId) => {
+        onSuccess={(_orderId) => {
           setIsCheckoutOpen(false);
           setTimeout(() => onClose(), 2500); // let success screen show first
         }}
