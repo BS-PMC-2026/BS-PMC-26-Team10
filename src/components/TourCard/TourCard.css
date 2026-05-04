@@ -89,6 +89,68 @@
   font-size: 0.9vw;
 }
 
+/* bookings toggle */
+.tour-card-bookings-toggle {
+  align-self: flex-start;
+  background: none;
+  border: 0.07vw solid #d4b8a8;
+  border-radius: 0.6vw;
+  padding: 0.4vw 0.9vw;
+  font-size: 0.8vw;
+  color: #7b5c4d;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tour-card-bookings-toggle:hover {
+  background: #f3dfcc;
+  color: #4a2a1f;
+}
+
+/* bookings panel */
+.tour-card-bookings {
+  border-top: 0.06vw solid #f2e4db;
+  padding-top: 0.9vw;
+}
+
+.tour-card-bookings-empty {
+  margin: 0;
+  font-size: 0.85vw;
+  color: #a07060;
+  font-style: italic;
+}
+
+.tour-card-bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82vw;
+}
+
+.tour-card-bookings-table th {
+  text-align: left;
+  padding: 0.35vw 0.6vw;
+  color: #a07060;
+  font-weight: 600;
+  border-bottom: 0.06vw solid #efd8cc;
+}
+
+.tour-card-bookings-table td {
+  padding: 0.45vw 0.6vw;
+  color: #3a2a20;
+  border-bottom: 0.04vw solid #f7efe8;
+}
+
+.tour-card-bookings-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tour-card-ref {
+  font-family: monospace;
+  font-size: 0.78vw;
+  color: #7b5c4d;
+  letter-spacing: 0.05vw;
+}
+
 @media (max-width: 900px) {
   .tour-card { border-radius: 4vw; padding: 4vw; gap: 2.5vw; }
   .tour-card-title { font-size: 4vw; }
@@ -98,4 +160,9 @@
   .tour-card-meta { gap: 3vw; }
   .tour-card-meta-item { font-size: 3vw; gap: 1.5vw; }
   .tour-card-meta-icon { font-size: 3vw; }
+  .tour-card-bookings-toggle { font-size: 3vw; padding: 1.5vw 3vw; border-radius: 2vw; }
+  .tour-card-bookings-table { font-size: 3vw; }
+  .tour-card-bookings-table th,
+  .tour-card-bookings-table td { padding: 1.5vw 2vw; }
+  .tour-card-ref { font-size: 2.8vw; }
 }

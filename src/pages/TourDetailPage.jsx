@@ -1,0 +1,318 @@
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import "../styles/TourDetailPage.css";
+
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-");
+  return new Date(year, month - 1, day).toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function formatTime(timeStr) {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  const hour = parseInt(h, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const display = hour % 12 || 12;
+  return `${display}:${m} ${ampm}`;
+}
+
+function isPast(dateStr) {
+  if (!dateStr) return false;
+  const [year, month, day] = dateStr.split("-");
+  const tourDate = new Date(year, month - 1, day);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return tourDate < today;
+}
+
+const INITIAL_FORM = { email: "", full_name: "", phone: "", participants_count: 1 };
+
+function TourDetailPage() {
+  const { id } = useParams();
+  const [tour, setTour] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState(null); // { success, message, reference }
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/tours")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load tour.");
+        return res.json();
+      })
+      .then((data) => {
+        const found = data.find((t) => String(t.id) === String(id));
+        if (!found) throw new Error("Tour not found.");
+        setTour(found);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setFetchError(err.message);
+        setLoading(false);
+      });
+  }, [id]);
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitting(true);
+    setResult(null);
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tour_id: tour.id,
+          email: form.email.trim(),
+          full_name: form.full_name.trim(),
+          phone: form.phone.trim(),
+          participants_count: parseInt(form.participants_count, 10),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setResult({ success: false, message: data.detail || "Booking failed. Please try again." });
+      } else {
+        setResult({ success: true, message: "Booking confirmed!", reference: data.booking_reference });
+        setForm(INITIAL_FORM);
+        // Refresh tour to show updated remaining spots
+        setTour((prev) => ({
+          ...prev,
+          remaining_spots: Math.max(0, prev.remaining_spots - parseInt(form.participants_count, 10)),
+          is_full: prev.remaining_spots - parseInt(form.participants_count, 10) <= 0,
+        }));
+      }
+    } catch {
+      setResult({ success: false, message: "Network error. Please check your connection." });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (loading) return <div className="tdp-status">Loading tour…</div>;
+  if (fetchError) return <div className="tdp-status tdp-status--error">{fetchError}</div>;
+
+  const past = isPast(tour.date);
+  const full = tour.is_full;
+  const canBook = !past && !full && !result?.success;
+
+  return (
+    <div className="tdp">
+      <div className="tdp-inner">
+        {/* breadcrumb */}
+        <nav className="tdp-breadcrumb">
+          <Link to="/">Home</Link>
+          <span> / </span>
+          <Link to="/tours">Tours</Link>
+          <span> / </span>
+          <span>{tour.title}</span>
+        </nav>
+
+        <div className="tdp-layout">
+          {/* ── left: tour info ── */}
+          <aside className="tdp-info">
+            <div className="tdp-info-badges">
+              <span className="tdp-badge tdp-badge--kind">{tour.kind.replace(/-/g, " ")}</span>
+              {full && <span className="tdp-badge tdp-badge--full">Full</span>}
+              {past && <span className="tdp-badge tdp-badge--past">Past tour</span>}
+            </div>
+
+            <h1 className="tdp-title">{tour.title}</h1>
+
+            {tour.description && <p className="tdp-description">{tour.description}</p>}
+
+            <dl className="tdp-details">
+              <div className="tdp-detail-row">
+                <dt>Date</dt>
+                <dd>{formatDate(tour.date)}</dd>
+              </div>
+              <div className="tdp-detail-row">
+                <dt>Time</dt>
+                <dd>{formatTime(tour.time)}</dd>
+              </div>
+              <div className="tdp-detail-row">
+                <dt>Duration</dt>
+                <dd>{tour.duration}</dd>
+              </div>
+              <div className="tdp-detail-row">
+                <dt>Price</dt>
+                <dd>{tour.price > 0 ? `$${Number(tour.price).toFixed(2)} per person` : "Free"}</dd>
+              </div>
+              <div className="tdp-detail-row">
+                <dt>Capacity</dt>
+                <dd>{tour.capacity} total spots</dd>
+              </div>
+              <div className="tdp-detail-row">
+                <dt>Available</dt>
+                <dd className={full ? "tdp-spots--none" : "tdp-spots--ok"}>
+                  {full ? "0 — Fully booked" : `${tour.remaining_spots} spot${tour.remaining_spots !== 1 ? "s" : ""} left`}
+                </dd>
+              </div>
+              {tour.meeting_point && (
+                <div className="tdp-detail-row">
+                  <dt>Meeting point</dt>
+                  <dd>{tour.meeting_point}</dd>
+                </div>
+              )}
+              {tour.includes && (
+                <div className="tdp-detail-row">
+                  <dt>Includes</dt>
+                  <dd>{tour.includes}</dd>
+                </div>
+              )}
+              {tour.accessibility && (
+                <div className="tdp-detail-row">
+                  <dt>Accessibility</dt>
+                  <dd>{tour.accessibility.replace(/-/g, " ")}</dd>
+                </div>
+              )}
+            </dl>
+          </aside>
+
+          {/* ── right: booking form or result ── */}
+          <section className="tdp-form-panel">
+            {result?.success ? (
+              /* success state */
+              <div className="tdp-result tdp-result--success">
+                <div className="tdp-result-icon">&#10003;</div>
+                <h2 className="tdp-result-title">Booking Confirmed!</h2>
+                <p className="tdp-result-text">
+                  Your booking reference is:
+                </p>
+                <p className="tdp-result-reference">{result.reference}</p>
+                <p className="tdp-result-text">
+                  Save this reference for future use.
+                </p>
+                <div className="tdp-result-actions">
+                  <Link to="/tours" className="tdp-result-btn">View More Tours</Link>
+                  <Link to="/" className="tdp-result-btn tdp-result-btn--secondary">Back to Home</Link>
+                </div>
+              </div>
+            ) : (
+              /* booking form */
+              <>
+                <h2 className="tdp-form-heading">
+                  {past ? "Tour has passed" : full ? "Tour is fully booked" : "Book this tour"}
+                </h2>
+
+                {!canBook && !result && (
+                  <p className="tdp-unavailable">
+                    {past
+                      ? "This tour has already taken place and is no longer available for booking."
+                      : "All spots for this tour have been filled."}
+                  </p>
+                )}
+
+                {result && !result.success && (
+                  <div className="tdp-result tdp-result--error">
+                    <p>{result.message}</p>
+                  </div>
+                )}
+
+                {canBook && (
+                  <form className="tdp-form" onSubmit={handleSubmit} noValidate>
+                    <div className="tdp-field">
+                      <label htmlFor="email" className="tdp-label">Email address</label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        className="tdp-input"
+                        value={form.email}
+                        onChange={handleChange}
+                        placeholder="you@example.com"
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+
+                    <div className="tdp-field">
+                      <label htmlFor="full_name" className="tdp-label">Full name</label>
+                      <input
+                        id="full_name"
+                        name="full_name"
+                        type="text"
+                        className="tdp-input"
+                        value={form.full_name}
+                        onChange={handleChange}
+                        placeholder="Jane Smith"
+                        required
+                        autoComplete="name"
+                      />
+                    </div>
+
+                    <div className="tdp-field">
+                      <label htmlFor="phone" className="tdp-label">Phone number</label>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        className="tdp-input"
+                        value={form.phone}
+                        onChange={handleChange}
+                        placeholder="0549164691"
+                        pattern="\d{10}"
+                        maxLength={10}
+                        title="Phone must be exactly 10 digits"
+                        required
+                        autoComplete="tel"
+                      />
+                    </div>
+
+                    <div className="tdp-field">
+                      <label htmlFor="participants_count" className="tdp-label">
+                        Number of participants
+                        <span className="tdp-label-hint"> (max {tour.remaining_spots})</span>
+                      </label>
+                      <input
+                        id="participants_count"
+                        name="participants_count"
+                        type="number"
+                        className="tdp-input"
+                        value={form.participants_count}
+                        onChange={handleChange}
+                        min={1}
+                        max={tour.remaining_spots}
+                        required
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="tdp-submit"
+                      disabled={submitting}
+                    >
+                      {submitting ? "Confirming…" : "Confirm Booking"}
+                    </button>
+
+                    <p className="tdp-form-note">
+                      No account required. Booking is instant.
+                    </p>
+                  </form>
+                )}
+              </>
+            )}
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default TourDetailPage;

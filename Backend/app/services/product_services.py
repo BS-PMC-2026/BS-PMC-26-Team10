@@ -1,6 +1,23 @@
 from app.db import get_connection
 
-
+def get_product_by_id(product_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, name, description, quantity,
+                   last_updated, restock_date, price, image_url
+            FROM inventory
+            WHERE id = %s
+        """, (product_id,))
+        product = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return product
+    except Exception as e:
+        print("Error fetching product by id\n", e)
+        return None
+        
 def create_product(product):
     try:
         conn = get_connection()

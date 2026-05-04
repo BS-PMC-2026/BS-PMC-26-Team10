@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./WelcomeStrip.css";
 
 function WelcomeStrip() {
@@ -44,6 +45,11 @@ function WelcomeStrip() {
               <p className="welcome-strip-card-text">{item.text}</p>
             </article>
           ))}
+        </div>
+
+        <div className="welcome-strip-cta">
+          <Link to="/tours" className="welcome-strip-cta-btn">View Tours &amp; Book a Spot</Link>
+          <Link to="/about" className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary">About the Farm</Link>
         </div>
       </div>
     </section>

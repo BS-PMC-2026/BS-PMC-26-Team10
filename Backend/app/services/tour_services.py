@@ -29,10 +29,14 @@ def get_all_tours():
         conn = get_connection()
         cursor = conn.cursor()
         query = """
-        SELECT id, title, kind, description, date, time, duration,
-               capacity, price, meeting_point, includes, accessibility, visibility, created_at
-        FROM tours
-        ORDER BY date ASC, time ASC
+        SELECT t.id, t.title, t.kind, t.description, t.date, t.time, t.duration,
+               t.capacity, t.price, t.meeting_point, t.includes, t.accessibility,
+               t.visibility, t.created_at,
+               COALESCE(SUM(CASE WHEN b.status = 'confirmed' THEN b.participants_count ELSE 0 END), 0) AS booked_count
+        FROM tours t
+        LEFT JOIN bookings b ON b.tour_id = t.id
+        GROUP BY t.id
+        ORDER BY t.date ASC, t.time ASC
         """
         cursor.execute(query)
         tours = cursor.fetchall()

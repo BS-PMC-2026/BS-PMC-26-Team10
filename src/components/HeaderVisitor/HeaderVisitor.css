@@ -84,6 +84,9 @@
 }
 
 .farm-btn {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
   padding: 0.95vw 1.7vw;
   border-radius: 999vw;
   font-size: 1vw;
