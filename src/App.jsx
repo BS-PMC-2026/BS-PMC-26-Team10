@@ -9,6 +9,7 @@ import OwnerOrders from "./pages/OwnerOrders";
 import ToursPage from "./pages/ToursPage";
 import TourDetailPage from "./pages/TourDetailPage";
 import AboutPage from "./pages/AboutPage";
+import FarmLocation from "./pages/FarmLocation";
 import VisitorProducts from "./pages/VisitorProducts";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/tours" element={<ToursPage />} />
         <Route path="/tours/:id" element={<TourDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/farm-location" element={<FarmLocation />} />
       </Routes>
     </BrowserRouter>
   );
