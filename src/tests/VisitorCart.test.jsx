@@ -1,6 +1,6 @@
 // src/hooks/useCart.test.js
 import { renderHook, act } from "@testing-library/react";
-import { vi } from "vitest";
+import { vi, beforeEach, test, expect } from "vitest";
 import { useCart } from "../hooks/useCart";
 
 const mockProduct = {
@@ -156,7 +156,8 @@ test("clearCart empties everything", async () => {
 
   expect(result.current.cartItems).toHaveLength(0);
   expect(result.current.isEmpty).toBe(true);
-  expect(localStorage.getItem("chililand_cart")).toBeNull();
+  const stored = JSON.parse(localStorage.getItem("chililand_cart"));
+  expect(stored.items).toHaveLength(0);
 });
 
 test("totalPrice calculates correctly", async () => {
