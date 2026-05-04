@@ -12,7 +12,7 @@ function VisitorMain() {
     <>
       <HeaderVisitor />
       <WelcomeStrip />
-      <VisitorCatalogue />
+      <div id="products"><VisitorCatalogue /></div>
       {/* <WhyVisitUs /> */}
       <FooterVisitor />
     </>

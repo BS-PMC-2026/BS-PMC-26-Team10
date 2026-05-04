@@ -1,6 +1,6 @@
 .ctp-page {
   flex: 1;
-  background: linear-gradient(180deg, #fff8f8 0%, #fff1ee 100%);
+  background: linear-gradient(180deg, #fdf7f0 0%, #f8f1e7 100%);
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -17,7 +17,7 @@
 .ctp-blob-1 {
   width: 280px;
   height: 280px;
-  background: #ffb3a7;
+  background: #d4a882;
   filter: blur(80px);
   opacity: 0.25;
   top: -40px;
@@ -27,7 +27,7 @@
 .ctp-blob-2 {
   width: 240px;
   height: 240px;
-  background: #f3c7b8;
+  background: #c9956a;
   filter: blur(80px);
   opacity: 0.3;
   bottom: -40px;
@@ -42,7 +42,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 32px;
-  border-bottom: 1px solid rgba(178, 34, 34, 0.08);
+  border-bottom: 1px solid rgba(74, 42, 31, 0.08);
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(8px);
   flex-wrap: wrap;
@@ -54,20 +54,20 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #b30000;
+  color: #a14d2a;
 }
 
 .ctp-title {
   font-weight: 800;
   font-size: 28px;
-  color: #7a1111;
+  color: #4a2a1f;
   margin: 4px 0 0;
   letter-spacing: -0.02em;
 }
 
 .ctp-sub {
   font-size: 13px;
-  color: #8a4a4a;
+  color: #6b4c3a;
   margin: 4px 0 0;
 }
 
@@ -212,7 +212,7 @@
   font-weight: 700;
   cursor: pointer;
   background: #fff;
-  color: #8a4a4a;
+  color: #6b4c3a;
   border: 1px solid #e6d3c6;
   font-family: inherit;
   transition: all 0.15s ease;
@@ -246,8 +246,8 @@
   height: 34px;
   border-radius: 10px;
   border: none;
-  background: #fff0eb;
-  color: #b30000;
+  background: #fdf0e0;
+  color: #a14d2a;
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
@@ -256,7 +256,7 @@
 }
 
 .ctp-step-btn:hover {
-  background: #ffd6d6;
+  background: #f3dfcc;
 }
 
 .ctp-step-input {
@@ -307,9 +307,9 @@
 }
 
 .ctp-btn-secondary {
-  background: #fff0eb;
-  color: #b30000;
-  border: 1px solid #f3c7b8;
+  background: #fdf0e0;
+  color: #a14d2a;
+  border: 1px solid #e8d0ba;
   border-radius: 12px;
   padding: 12px 18px;
   font-weight: 700;
@@ -320,7 +320,7 @@
 }
 
 .ctp-btn-secondary:hover:not(:disabled) {
-  background: #ffd6d6;
+  background: #f3dfcc;
 }
 
 .ctp-btn-secondary:disabled {
@@ -442,7 +442,7 @@
 .ctp-preview-price {
   font-weight: 800;
   font-size: 26px;
-  color: #7a1111;
+  color: #4a2a1f;
   letter-spacing: -0.02em;
 }
 
@@ -462,18 +462,18 @@
 
 /* Tips */
 .ctp-tips {
-  background: rgba(255, 243, 237, 0.7);
-  border: 1px dashed #f3c7b8;
+  background: rgba(253, 240, 224, 0.7);
+  border: 1px dashed #e8d0ba;
   border-radius: 16px;
   padding: 16px;
   font-size: 12px;
-  color: #8a4a4a;
+  color: #6b4c3a;
   line-height: 1.6;
 }
 
 .ctp-tips-head {
   font-weight: 700;
-  color: #b30000;
+  color: #a14d2a;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
