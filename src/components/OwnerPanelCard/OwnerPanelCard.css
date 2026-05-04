@@ -1,10 +1,10 @@
 .owner-panel-card {
     position: relative;
-    background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,245,243,0.96) 100%);
-    border: 0.12vw solid #efc0b5;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(253,247,240,0.96) 100%);
+    border: 0.12vw solid #e6d0be;
     border-radius: 1.6vw;
     padding: 1.6vw;
-    box-shadow: 0 1vw 2vw rgba(122, 17, 17, 0.08);
+    box-shadow: 0 1vw 2vw rgba(74, 42, 31, 0.08);
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
@@ -18,7 +18,7 @@
     left: 0;
     width: 100%;
     height: 0.45vw;
-    background: linear-gradient(90deg, #b30000 0%, #ff8a65 100%);
+    background: linear-gradient(90deg, #a14d2a 0%, #c97a50 100%);
 }
 
 .owner-panel-card::after {
@@ -27,15 +27,15 @@
     width: 8vw;
     height: 8vw;
     border-radius: 50%;
-    background-color: rgba(217, 74, 74, 0.08);
+    background-color: rgba(161, 77, 42, 0.08);
     right: -2vw;
     bottom: -2vw;
 }
 
 .owner-panel-card:hover {
     transform: translateY(-0.35vw);
-    box-shadow: 0 1.2vw 2.4vw rgba(122, 17, 17, 0.13);
-    border-color: #d94a4a;
+    box-shadow: 0 1.2vw 2.4vw rgba(74, 42, 31, 0.13);
+    border-color: #a14d2a;
 }
 
 .owner-panel-top {
@@ -47,9 +47,9 @@
 }
 
 .owner-panel-tag {
-    background-color: #fff0eb;
-    color: #b30000;
-    border: 0.08vw solid #f0c3b5;
+    background-color: #fdf0e0;
+    color: #a14d2a;
+    border: 0.08vw solid #e8d0ba;
     border-radius: 999vw;
     padding: 0.4vw 0.9vw;
     font-size: 0.9vw;
@@ -58,7 +58,7 @@
 
 .owner-panel-card h3 {
     font-size: 1.55vw;
-    color: #7a1111;
+    color: #4a2a1f;
     margin-bottom: 0.8vw;
     position: relative;
     z-index: 2;
@@ -66,7 +66,7 @@
 
 .owner-panel-card p {
     font-size: 1vw;
-    color: #7d5555;
+    color: #6b4c3a;
     line-height: 1.6;
     margin-bottom: 1.5vw;
     max-width: 85%;
@@ -75,7 +75,7 @@
 }
 
 .owner-panel-link {
-    color: #b30000;
+    color: #a14d2a;
     font-size: 1vw;
     font-weight: 700;
     display: inline-flex;
@@ -109,7 +109,7 @@
         border-radius: 4vw;
         padding: 4vw;
         border-width: 0.25vw;
-        box-shadow: 0 2vw 5vw rgba(122, 17, 17, 0.09);
+        box-shadow: 0 2vw 5vw rgba(74, 42, 31, 0.09);
     }
 
     .owner-panel-card::before {

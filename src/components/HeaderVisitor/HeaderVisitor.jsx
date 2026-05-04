@@ -43,7 +43,12 @@ function HeaderVisitor() {
 
         <div className="farm-buttons">
           <Link to="/tours" className="farm-btn primary">Book a Tour</Link>
-          <button className="farm-btn secondary">Browse Products</button>
+          <button
+            className="farm-btn secondary"
+            onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Browse Products
+          </button>
         </div>
       </div>
 

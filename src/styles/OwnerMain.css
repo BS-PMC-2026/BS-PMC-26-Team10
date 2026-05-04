@@ -1,7 +1,7 @@
 .owner-layout {
     min-height: 100vh;
     display: flex;
-    background: linear-gradient(180deg, #fff8f8 0%, #fff1ee 100%);
+    background: linear-gradient(180deg, #fdf7f0 0%, #f8f1e7 100%);
     position: relative;
     overflow: hidden;
 }
@@ -20,7 +20,7 @@
 
 .owner-overline {
     font-size: 1vw;
-    color: #b30000;
+    color: #a14d2a;
     text-transform: uppercase;
     letter-spacing: 0.12vw;
     margin-bottom: 0.5vw;
@@ -29,13 +29,13 @@
 
 .owner-header h1 {
     font-size: 3vw;
-    color: #7a1111;
+    color: #4a2a1f;
     margin-bottom: 0.7vw;
 }
 
 .owner-subtitle {
     font-size: 1.15vw;
-    color: #8a4a4a;
+    color: #6b4c3a;
     max-width: 40vw;
 }
 
@@ -50,7 +50,7 @@
 .owner-bg-shape-1 {
     width: 18vw;
     height: 18vw;
-    background-color: #ffb3a7;
+    background-color: #d4a882;
     top: -3vw;
     right: -4vw;
 }
@@ -58,7 +58,7 @@
 .owner-bg-shape-2 {
     width: 16vw;
     height: 16vw;
-    background-color: #f3c7b8;
+    background-color: #c9956a;
     bottom: 2vw;
     left: 20vw;
 }

@@ -2,11 +2,11 @@
     width: 24vw;
     min-height: 100vh;
     padding: 2vw 1.4vw;
-    background: linear-gradient(180deg, #a80d0d 0%, #7a1111 100%);
+    background: linear-gradient(180deg, #4a2a1f 0%, #3a2a20 100%);
     color: white;
     position: relative;
     z-index: 2;
-    box-shadow: 0.6vw 0 2vw rgba(122, 17, 17, 0.18);
+    box-shadow: 0.6vw 0 2vw rgba(74, 42, 31, 0.18);
     display: flex;
     flex-direction: column;
     gap: 2vw;
@@ -42,7 +42,7 @@
 
 .owner-sidebar-top p {
     font-size: 1vw;
-    color: #ffdede;
+    color: #f3dfcc;
     line-height: 1.5;
 }
 

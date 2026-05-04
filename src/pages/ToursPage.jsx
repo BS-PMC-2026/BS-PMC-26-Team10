@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import FooterVisitor from "../components/FooterVisitor/FooterVisitor";
 import "../styles/ToursPage.css";
 
 function formatDate(dateStr) {
@@ -134,6 +135,7 @@ function ToursPage() {
           </div>
         )}
       </main>
+      <FooterVisitor />
     </div>
   );
 }

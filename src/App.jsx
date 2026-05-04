@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 import Auth from "./pages/Auth";
 import VisitorMain from "./pages/VisitorMain";
 import OwnerMain from "./pages/OwnerMain";
@@ -13,6 +14,7 @@ import AboutPage from "./pages/AboutPage";
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/owner/orders" element={<OwnerOrders />} />
         <Route path="/" element={<VisitorMain />} />

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import FooterVisitor from "../components/FooterVisitor/FooterVisitor";
 import "../styles/AboutPage.css";
 
 function scrollTo(id) {
@@ -225,6 +226,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <FooterVisitor />
     </div>
   );
 }
