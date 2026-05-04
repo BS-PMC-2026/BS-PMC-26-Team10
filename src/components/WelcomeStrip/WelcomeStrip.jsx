@@ -26,7 +26,9 @@ function WelcomeStrip() {
     <section className="welcome-strip">
       <div className="welcome-strip-inner">
         <div className="welcome-strip-heading">
-          <p className="welcome-strip-kicker">A place to taste, explore, and enjoy</p>
+          <p className="welcome-strip-kicker">
+            A place to taste, explore, and enjoy
+          </p>
           <h2 className="welcome-strip-title">More than a farm visit</h2>
           <p className="welcome-strip-subtitle">
             ChiliLand brings together local flavors, beautiful scenery, and
@@ -48,8 +50,23 @@ function WelcomeStrip() {
         </div>
 
         <div className="welcome-strip-cta">
-          <Link to="/tours" className="welcome-strip-cta-btn">View Tours &amp; Book a Spot</Link>
-          <Link to="/about" className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary">About the Farm</Link>
+          <Link to="/tours" className="welcome-strip-cta-btn">
+            View Tours &amp; Book a Spot
+          </Link>
+
+          <Link
+            to="/about"
+            className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary"
+          >
+            About the Farm
+          </Link>
+
+          <Link
+            to="/farm-location"
+            className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary"
+          >
+            Farm Location
+          </Link>
         </div>
       </div>
     </section>
