@@ -1,10 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-
+import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <PayPalScriptProvider options={{
+        "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
+      currency: "ILS",
+      intent: "capture"
+    }}>
+      <App />
+    </PayPalScriptProvider>
   </StrictMode>,
 )

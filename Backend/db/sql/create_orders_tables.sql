@@ -23,3 +23,4 @@ CREATE TABLE order_items (
     unit_price NUMERIC(10, 2) NOT NULL,
     total_price NUMERIC(10, 2) NOT NULL
 );
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS paypal_order_id VARCHAR(100);
