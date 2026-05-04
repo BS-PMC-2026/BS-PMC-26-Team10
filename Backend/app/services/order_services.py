@@ -141,9 +141,10 @@ def create_order(order_data):
             payment_method,
             payment_status,
             shipping_address,
-            delivery_status
+            delivery_status,
+            paypal_order_id
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING order_id
         """
 
@@ -156,7 +157,8 @@ def create_order(order_data):
             order_data["payment_method"],
             order_data["payment_status"],
             order_data["shipping_address"],
-            order_data["delivery_status"]
+            order_data["delivery_status"],
+            order_data.get("paypal_order_id", None)
         ))
 
         order_id = cursor.fetchone()[0]

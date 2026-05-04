@@ -43,7 +43,7 @@ function HeaderVisitor() {
 
         <div className="farm-buttons">
           <Link to="/tours" className="farm-btn primary">Book a Tour</Link>
-          <button className="farm-btn secondary">Browse Products</button>
+          <Link to="/products" className="farm-btn secondary">Browse Products</Link>
         </div>
       </div>
 

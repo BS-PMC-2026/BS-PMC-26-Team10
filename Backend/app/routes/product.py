@@ -90,7 +90,14 @@ def serialize_products(products, request: Request):
 def list_inventory(request: Request):
     products = get_all_products()
     return serialize_products(products, request)
-
+    
+@router.get("/inventory/{product_id}")
+def get_single_product(product_id: int, request: Request):
+    from app.services.product_services import get_product_by_id
+    product = get_product_by_id(product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found.")
+    return serialize_products([product], request)[0]
 
 @router.post("/inventory/add")
 def add_product(product: Product):

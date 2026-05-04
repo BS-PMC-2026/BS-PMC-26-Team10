@@ -9,6 +9,7 @@ import OwnerOrders from "./pages/OwnerOrders";
 import ToursPage from "./pages/ToursPage";
 import TourDetailPage from "./pages/TourDetailPage";
 import AboutPage from "./pages/AboutPage";
+import VisitorProducts from "./pages/VisitorProducts";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/owner/orders" element={<OwnerOrders />} />
         <Route path="/" element={<VisitorMain />} />
+        <Route path="/products" element={<VisitorProducts />} />
         <Route path="/owner" element={<OwnerMain />} />
         <Route path="/owner/inventory" element={<OwnerInventory />} />
         <Route path="/tourguide" element={<TourguideMain />} />
