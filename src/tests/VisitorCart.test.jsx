@@ -1,7 +1,7 @@
 // src/hooks/useCart.test.js
 import { renderHook, act } from "@testing-library/react";
 import { vi } from "vitest";
-import { useCart } from "./useCart";
+import { useCart } from "../hooks/useCart";
 
 const mockProduct = {
   id: 1,

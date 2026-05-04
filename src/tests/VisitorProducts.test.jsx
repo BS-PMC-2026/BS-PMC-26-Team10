@@ -2,7 +2,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
-import VisitorProducts from "./VisitorProducts";
+import VisitorProducts from "../pages/VisitorProducts";
 
 // mock useCart hook
 vi.mock("../hooks/useCart", () => ({
