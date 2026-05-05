@@ -53,4 +53,7 @@ jobs:
 
       - name: Run backend unit tests
         working-directory: Backend
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python -m unittest discover -s tests -v
