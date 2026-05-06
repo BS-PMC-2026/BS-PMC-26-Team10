@@ -1,7 +1,7 @@
 // src/pages/VisitorProducts.test.jsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { vi } from "vitest";
+import { vi, beforeEach, afterEach, test, expect } from "vitest";
 import VisitorProducts from "../pages/VisitorProducts";
 
 // mock useCart hook

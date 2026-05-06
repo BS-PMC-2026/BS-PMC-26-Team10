@@ -1,6 +1,6 @@
 // src/hooks/useCart.test.js
 import { renderHook, act } from "@testing-library/react";
-import { vi } from "vitest";
+import { vi, beforeEach, test, expect } from "vitest";
 import { useCart } from "../hooks/useCart";
 
 const mockProduct = {

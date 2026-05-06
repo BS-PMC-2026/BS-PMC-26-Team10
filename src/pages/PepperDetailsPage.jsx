@@ -1,45 +1,24 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "../styles/pepperDetailsPage.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
 function PepperDetailsPage() {
   const { id } = useParams();
-  const location = useLocation();
-  const initialPepper = location.state?.pepper ?? null;
-  const [pepper, setPepper] = useState(initialPepper);
+  const [pepper, setPepper] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     async function fetchPepperDetails() {
-      if (initialPepper && String(initialPepper.id) === String(id)) {
-        setPepper(initialPepper);
-        setIsError(false);
-        setIsLoading(false);
-        return;
-      }
-
       setIsLoading(true);
       setIsError(false);
-
       try {
-        const response = await fetch(`${API_BASE_URL}/chillies`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch peppers.");
-        }
-
+        const response = await fetch(`${API_BASE_URL}/chillies/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch pepper.");
         const data = await response.json();
-        const matchedPepper = data.find((item) => String(item.id) === String(id));
-
-        if (!matchedPepper) {
-          setPepper(null);
-          setIsError(true);
-        } else {
-          setPepper(matchedPepper);
-        }
+        setPepper(data);
       } catch (error) {
         console.error(error);
         setIsError(true);
@@ -49,7 +28,7 @@ function PepperDetailsPage() {
     }
 
     fetchPepperDetails();
-  }, [id, initialPepper]);
+  }, [id]);
 
   if (isLoading) {
     return (
