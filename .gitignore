@@ -27,3 +27,5 @@ dist-ssr
 #env for codes
 .env
 .env.local
+*.env
+*.env.*.local
