@@ -1,7 +1,8 @@
 from datetime import date, datetime
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, UploadFile, File, Form
+from app.db2 import upload_image
 
 from app.models import Product
 from app.services.product_services import (
@@ -48,10 +49,14 @@ def parse_restock_date(value):
 
 
 def normalize_product_image_url(image_name: str) -> str:
-    cleaned_name = str(image_name).strip().lower()
-    if not cleaned_name:
+    cleaned = str(image_name).strip()
+    if not cleaned:
         raise HTTPException(status_code=400, detail="Product image name is required.")
 
+    if "://" in cleaned:
+        return cleaned
+
+    cleaned_name = cleaned.lower()
     for extension in (".jpg", ".jpeg"):
         if (PRODUCT_IMAGES_DIR / f"{cleaned_name}{extension}").exists():
             return f"{PRODUCT_IMAGE_PREFIX}{cleaned_name}{extension}"
@@ -84,6 +89,15 @@ def serialize_products(products, request: Request):
         }
         for product in products
     ]
+
+
+@router.post("/inventory/upload-image")
+async def upload_product_image(file: UploadFile = File(...), filename: str = Form(None)):
+    try:
+        url = await upload_image(file, "product-images", filename)
+        return {"image_url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image upload failed: {e}")
 
 
 @router.get("/inventory")

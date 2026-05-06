@@ -59,13 +59,14 @@ function OwnerInventory() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete product");
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to delete product");
       }
 
       fetchInventory();
     } catch (err) {
       console.error(err);
-      alert("Could not delete product.");
+      alert(err.message || "Could not delete product.");
     }
   };
 

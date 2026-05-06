@@ -6,9 +6,10 @@ class Chilli(BaseModel):
     image_url : str = ''
     origin : str
     color : str
-    shuMin : str
+    shuMin : int
     shuMax : int
     season : str
+    full_description : str = ''
 class Product(BaseModel):
     name : str
     description : str

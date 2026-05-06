@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, UploadFile, File, Form
 from typing import Optional
 from app.models import Chilli
-from app.services.chilli_services import create_chilli, filter_chillies, get_all_chillies, search_chillies
+from app.services.chilli_services import create_chilli, delete_chilli, filter_chillies, get_all_chillies, get_chilli_by_id, search_chillies
+from app.db2 import upload_image
 
 router = APIRouter()
 
@@ -45,6 +46,33 @@ def serialize_chillies(chillies, request: Request):
         }
         for chilli in chillies
     ]
+
+
+@router.post("/chillies/upload-image")
+async def upload_chilli_image(file: UploadFile = File(...), filename: str = Form(None)):
+    try:
+        url = await upload_image(file, "chilli-images", filename)
+        return {"image_url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image upload failed: {e}")
+
+
+@router.get("/chillies/{chilli_id}")
+def get_chilli(chilli_id: int, request: Request):
+    chilli = get_chilli_by_id(chilli_id)
+    if not chilli:
+        raise HTTPException(status_code=404, detail="Pepper not found.")
+    return serialize_chillies([chilli], request)[0]
+
+
+@router.delete("/chillies/{chilli_id}")
+def remove_chilli(chilli_id: int):
+    response = delete_chilli(chilli_id)
+    if response is None:
+        raise HTTPException(status_code=404, detail="Pepper not found.")
+    if response is False:
+        raise HTTPException(status_code=500, detail="Failed to delete pepper.")
+    return {"message": response}
 
 
 @router.post("/chillies")

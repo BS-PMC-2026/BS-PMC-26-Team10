@@ -1,5 +1,5 @@
 # from app.db import get_connection
-from app.db2 import supabase
+from app.db2 import supabase, delete_image
 
 
 def get_product_by_id(product_id):
@@ -69,9 +69,13 @@ def create_product(product):
 
 def delete_product(product_id):
     try:
-        response = supabase.table("inventory").delete().eq("id", product_id).execute()
-        if not response.data:
+        check = supabase.table("inventory").select("id, image_url").eq("id", product_id).limit(1).execute()
+        if not check.data:
             return None
+        image_url = check.data[0].get("image_url", "")
+        supabase.table("order_items").update({"product_id": None}).eq("product_id", product_id).execute()
+        supabase.table("inventory").delete().eq("id", product_id).execute()
+        delete_image(image_url, "product-images")
         return "Product deleted successfully!"
     except Exception as e:
         print("Error while trying to delete product from db\n", e)

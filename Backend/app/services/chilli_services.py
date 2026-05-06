@@ -1,5 +1,5 @@
 # from app.db import get_connection
-from app.db2 import supabase
+from app.db2 import supabase, delete_image
 from typing import Optional
 
 
@@ -16,6 +16,7 @@ def create_chilli(chilli, is_available, stock_quantity):
             "is_available": is_available,
             "stock_quantity": stock_quantity,
             "season": chilli.season,
+            "full_description": chilli.full_description,
         }).execute()
         return "Chilli has been created!"
     except Exception as e:
@@ -44,6 +45,36 @@ def create_chilli(chilli, is_available, stock_quantity):
     # except Exception as e:
     #     print("Error while trying to create a chilli:\n", e)
     #     return "Chilli has not been created = ERROR!"
+
+
+def get_chilli_by_id(chilli_id):
+    try:
+        response = supabase.table("chilli").select(
+            "id, name, description, image_url, shu_min, shu_max, origin, color, is_available, stock_quantity, season, full_description"
+        ).eq("id", chilli_id).limit(1).execute()
+        if not response.data:
+            return None
+        r = response.data[0]
+        return (r["id"], r["name"], r["description"], r["image_url"], r["shu_min"],
+                r["shu_max"], r["origin"], r["color"], r["is_available"],
+                r["stock_quantity"], r["season"], r["full_description"])
+    except Exception as e:
+        print("Error while trying to fetch chilli by id:\n", e)
+        return None
+
+
+def delete_chilli(chilli_id):
+    try:
+        check = supabase.table("chilli").select("id, image_url").eq("id", chilli_id).limit(1).execute()
+        if not check.data:
+            return None
+        image_url = check.data[0].get("image_url", "")
+        supabase.table("chilli").delete().eq("id", chilli_id).execute()
+        delete_image(image_url, "chilli-images")
+        return "Chilli deleted successfully!"
+    except Exception as e:
+        print("Error while trying to delete chilli:\n", e)
+        return False
 
 
 def get_all_chillies():

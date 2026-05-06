@@ -45,6 +45,21 @@ class ProductImageNormalizationTests(unittest.TestCase):
         )
 
 
+class ProductHttpsImageNormalizationTests(unittest.TestCase):
+    def test_https_url_passes_through_unchanged(self):
+        url = "https://proj.supabase.co/storage/v1/object/sign/product-images/sauce.jpg?token=abc"
+        self.assertEqual(normalize_product_image_url(url), url)
+
+    def test_signed_supabase_url_passes_through_unchanged(self):
+        url = "https://example.com/product-images/my-product.png"
+        self.assertEqual(normalize_product_image_url(url), url)
+
+    def test_empty_string_raises_http_exception(self):
+        with self.assertRaises(HTTPException) as context:
+            normalize_product_image_url("")
+        self.assertEqual(context.exception.status_code, 400)
+
+
 class ChilliImageNormalizationTests(unittest.TestCase):
     def test_returns_default_image_for_blank_value(self):
         self.assertEqual(normalize_image_url("   "), DEFAULT_IMAGE_URL)
