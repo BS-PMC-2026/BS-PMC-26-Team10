@@ -25,6 +25,12 @@ const panels = [
     route: "/owner/inventory",
   },
   {
+    title: "Pepper Catalogue",
+    desc: "Add and manage the chilli collection shown to visitors.",
+    tag: "Chillies",
+    route: "/owner/chillies",
+  },
+  {
     title: "Team Schedule",
     desc: "See who works today and upcoming shift coverage.",
     tag: "8 workers",

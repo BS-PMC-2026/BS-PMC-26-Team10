@@ -11,6 +11,7 @@ import TourDetailPage from "./pages/TourDetailPage";
 import AboutPage from "./pages/AboutPage";
 import FarmLocation from "./pages/FarmLocation";
 import VisitorProducts from "./pages/VisitorProducts";
+import OwnerChillies from "./pages/OwnerChillies";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/products" element={<VisitorProducts />} />
         <Route path="/owner" element={<OwnerMain />} />
         <Route path="/owner/inventory" element={<OwnerInventory />} />
+        <Route path="/owner/chillies" element={<OwnerChillies />} />
         <Route path="/tourguide" element={<TourguideMain />} />
         <Route path="/staffLogin" element={<Auth />} />
         <Route path="/pepper/:id" element={<PepperDetailsPage />} />
