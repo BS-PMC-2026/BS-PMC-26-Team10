@@ -1,7 +1,7 @@
 // src/pages/VisitorProducts.test.jsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { vi } from "vitest";
+import { vi, beforeEach, afterEach, test, expect } from "vitest";
 import VisitorProducts from "../pages/VisitorProducts";
 
 // mock useCart hook
@@ -113,10 +113,10 @@ test("out of stock product shows Sold Out button", async () => {
   });
 });
 
-test("in stock product shows Add to Cart button", async () => {
+test("in stock product shows Add button on card", async () => {
   renderPage();
   await waitFor(() => {
-    const addBtns = screen.getAllByText("Add to Cart");
+    const addBtns = screen.getAllByText("Add");
     expect(addBtns.length).toBeGreaterThan(0);
   });
 });
@@ -171,4 +171,175 @@ test("placeholder shown when product has no image", async () => {
   // Ghost Pepper has empty image_url so placeholder renders
   const placeholders = document.querySelectorAll(".vp-card-img-placeholder");
   expect(placeholders.length).toBeGreaterThan(0);
+});
+
+// ── PRODUCT MODAL TESTS ───────────────────────────────────────────────────
+
+test("clicking Details button opens the product modal", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  const detailsBtns = screen.getAllByText("Details");
+  fireEvent.click(detailsBtns[0]);
+
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+});
+
+test("modal displays the product name", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getByLabelText("View details for Red Habanero"));
+
+  expect(screen.getByRole("dialog")).toHaveTextContent("Red Habanero");
+});
+
+test("modal displays the product description", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getByLabelText("View details for Red Habanero"));
+
+  expect(screen.getByRole("dialog")).toHaveTextContent("Very hot chili");
+});
+
+test("modal displays the product price", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getByLabelText("View details for Red Habanero"));
+
+  expect(screen.getByRole("dialog")).toHaveTextContent("₪25.00");
+});
+
+test("clicking the X button closes the modal", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getAllByText("Details")[0]);
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+  fireEvent.click(screen.getByLabelText("Close"));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+test("pressing Escape closes the modal", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getAllByText("Details")[0]);
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+  fireEvent.keyDown(window, { key: "Escape" });
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+test("clicking the backdrop closes the modal", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getAllByText("Details")[0]);
+  const backdrop = document.querySelector(".vp-modal-backdrop");
+  fireEvent.click(backdrop);
+
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+test("clicking the product image opens the modal", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  const imgBtn = screen.getByLabelText("View details for Red Habanero");
+  fireEvent.click(imgBtn);
+
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+});
+
+test("modal shows Add to Cart button for in-stock product", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Red Habanero"));
+
+  fireEvent.click(screen.getAllByText("Details")[0]);
+
+  const dialog = screen.getByRole("dialog");
+  expect(dialog).toHaveTextContent("Add to Cart");
+});
+
+test("modal shows Sold Out button for out-of-stock product", async () => {
+  renderPage();
+  await waitFor(() => screen.getByText("Mild Jalapeño"));
+
+  const detailsBtns = screen.getAllByText("Details");
+  fireEvent.click(detailsBtns[1]);
+
+  const dialog = screen.getByRole("dialog");
+  expect(dialog).toHaveTextContent("Sold Out");
+});
+
+// ── CATEGORY FILTER TESTS ─────────────────────────────────────────────────
+
+const categoryProducts = [
+  { id: 10, name: "Habanero Sauce", description: "Hot sauce", price: 20, quantity: 5, image_url: "" },
+  { id: 11, name: "Ghost Powder", description: "Ghost pepper powder", price: 15, quantity: 3, image_url: "" },
+  { id: 12, name: "Fresh Jalapeño", description: "Farm fresh", price: 8, quantity: 10, image_url: "" },
+  { id: 13, name: "Pickled Chili", description: "Pickled variety", price: 12, quantity: 7, image_url: "" },
+];
+
+const renderWithCategoryProducts = () => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => categoryProducts,
+  });
+  return render(<MemoryRouter><VisitorProducts /></MemoryRouter>);
+};
+
+test("category filter Sauce shows only sauce products", async () => {
+  renderWithCategoryProducts();
+  await waitFor(() => screen.getByText("Habanero Sauce"));
+
+  fireEvent.click(screen.getByText("Sauce"));
+
+  expect(screen.getByText("Habanero Sauce")).toBeInTheDocument();
+  expect(screen.queryByText("Ghost Powder")).not.toBeInTheDocument();
+});
+
+test("category filter Powder shows only powder products", async () => {
+  renderWithCategoryProducts();
+  await waitFor(() => screen.getByText("Ghost Powder"));
+
+  fireEvent.click(screen.getByText("Powder"));
+
+  expect(screen.getByText("Ghost Powder")).toBeInTheDocument();
+  expect(screen.queryByText("Habanero Sauce")).not.toBeInTheDocument();
+});
+
+test("category filter Pickled shows only pickled products", async () => {
+  renderWithCategoryProducts();
+  await waitFor(() => screen.getByText("Pickled Chili"));
+
+  fireEvent.click(screen.getByText("Pickled"));
+
+  expect(screen.getByText("Pickled Chili")).toBeInTheDocument();
+  expect(screen.queryByText("Habanero Sauce")).not.toBeInTheDocument();
+});
+
+test("clicking All after category filter shows all products", async () => {
+  renderWithCategoryProducts();
+  await waitFor(() => screen.getByText("Habanero Sauce"));
+
+  fireEvent.click(screen.getByText("Sauce"));
+  expect(screen.queryByText("Ghost Powder")).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByText("All"));
+  expect(screen.getByText("Ghost Powder")).toBeInTheDocument();
+  expect(screen.getByText("Habanero Sauce")).toBeInTheDocument();
+});
+
+test("results count shows active category name when filtered", async () => {
+  renderWithCategoryProducts();
+  await waitFor(() => screen.getByText("Habanero Sauce"));
+
+  fireEvent.click(screen.getByText("Sauce"));
+
+  expect(screen.getByText(/in "Sauce"/i)).toBeInTheDocument();
 });

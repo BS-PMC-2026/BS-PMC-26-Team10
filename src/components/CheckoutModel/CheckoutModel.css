@@ -99,6 +99,10 @@
   font-size: 0.88rem;
   color: #5a4134;
 }
+.cm-summary-item--discount {
+  color: #27ae60;
+  font-weight: 600;
+}
 .cm-summary-total {
   display: flex;
   justify-content: space-between;

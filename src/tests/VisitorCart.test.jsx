@@ -1,6 +1,6 @@
 // src/hooks/useCart.test.js
 import { renderHook, act } from "@testing-library/react";
-import { vi } from "vitest";
+import { vi, beforeEach, test, expect } from "vitest";
 import { useCart } from "../hooks/useCart";
 
 const mockProduct = {
@@ -156,7 +156,8 @@ test("clearCart empties everything", async () => {
 
   expect(result.current.cartItems).toHaveLength(0);
   expect(result.current.isEmpty).toBe(true);
-  expect(localStorage.getItem("chililand_cart")).toBeNull();
+  const stored = JSON.parse(localStorage.getItem("chililand_cart"));
+  expect(stored.items).toHaveLength(0);
 });
 
 test("totalPrice calculates correctly", async () => {
@@ -252,4 +253,138 @@ test("validateCart passes when stock is sufficient", async () => {
 
   expect(validation.isValid).toBe(true);
   expect(Object.keys(validation.errors)).toHaveLength(0);
+});
+
+// ── PROMO CODE ────────────────────────────────────
+
+test("applyPromoCode sets discount and message on valid code", async () => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      valid: true,
+      code: "SAVE10",
+      discount_amount: 10.0,
+      message: "10% discount applied!",
+    }),
+  });
+
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.applyPromoCode("SAVE10", 100);
+  });
+
+  expect(result.current.promoCode).toBe("SAVE10");
+  expect(result.current.discountAmount).toBe(10.0);
+  expect(result.current.promoMessage).toBe("10% discount applied!");
+  expect(result.current.promoError).toBe("");
+});
+
+test("applyPromoCode sets error on invalid code", async () => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ valid: false, message: "This promo code has expired." }),
+  });
+
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.applyPromoCode("OLD10", 100);
+  });
+
+  expect(result.current.promoCode).toBe("");
+  expect(result.current.discountAmount).toBe(0);
+  expect(result.current.promoError).toBe("This promo code has expired.");
+});
+
+test("applyPromoCode sets error on network failure", async () => {
+  global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
+
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.applyPromoCode("SAVE10", 100);
+  });
+
+  expect(result.current.promoError).toBeTruthy();
+  expect(result.current.discountAmount).toBe(0);
+});
+
+test("removePromoCode clears discount state", async () => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ valid: true, code: "SAVE10", discount_amount: 10, message: "10% off!" }),
+  });
+
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.applyPromoCode("SAVE10", 100);
+  });
+
+  act(() => {
+    result.current.removePromoCode();
+  });
+
+  expect(result.current.promoCode).toBe("");
+  expect(result.current.discountAmount).toBe(0);
+  expect(result.current.promoMessage).toBe("");
+});
+
+test("discountedTotal is totalPrice minus discountAmount", async () => {
+  mockFetch(mockProduct); // price 25
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.addToCart(mockProduct);
+    await result.current.addToCart(mockProduct); // totalPrice = 50
+  });
+
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ valid: true, code: "SAVE10", discount_amount: 10, message: "10% off!" }),
+  });
+
+  await act(async () => {
+    await result.current.applyPromoCode("SAVE10", 50);
+  });
+
+  expect(result.current.totalPrice).toBe(50);
+  expect(result.current.discountedTotal).toBe(40);
+});
+
+test("discountedTotal is never negative", async () => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ valid: true, code: "BIG", discount_amount: 999, message: "Big discount!" }),
+  });
+
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.applyPromoCode("BIG", 10);
+  });
+
+  expect(result.current.discountedTotal).toBe(0);
+});
+
+test("clearCart also resets promo state", async () => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ valid: true, code: "SAVE10", discount_amount: 10, message: "10% off!" }),
+  });
+
+  const { result } = renderHook(() => useCart());
+
+  await act(async () => {
+    await result.current.applyPromoCode("SAVE10", 100);
+  });
+
+  act(() => {
+    result.current.clearCart();
+  });
+
+  expect(result.current.promoCode).toBe("");
+  expect(result.current.discountAmount).toBe(0);
+  expect(result.current.promoMessage).toBe("");
 });

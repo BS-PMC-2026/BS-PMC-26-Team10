@@ -25,6 +25,12 @@ const panels = [
     route: "/owner/inventory",
   },
   {
+    title: "Pepper Catalogue",
+    desc: "Add and manage the chilli collection shown to visitors.",
+    tag: "Chillies",
+    route: "/owner/chillies",
+  },
+  {
     title: "Team Schedule",
     desc: "See who works today and upcoming shift coverage.",
     tag: "8 workers",
@@ -33,6 +39,12 @@ const panels = [
     title: "Recent Reviews",
     desc: "Read the newest visitor feedback from the site.",
     tag: "4 new",
+  },
+  {
+    title: "Promo Codes",
+    desc: "Create and manage discount codes for customer orders.",
+    tag: "Coupons",
+    route: "/owner/promo-codes",
   },
   {
     title: "View Public Site",

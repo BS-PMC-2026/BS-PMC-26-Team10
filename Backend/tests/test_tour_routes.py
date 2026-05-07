@@ -139,5 +139,163 @@ class TourModelValidationTests(unittest.TestCase):
         self.assertEqual(tour.visibility, "public")
 
 
+class SerializeTourCalendarFieldsTests(unittest.TestCase):
+    """Tests that serialize_tours returns fields the calendar sidebar depends on."""
+
+    def _make_row(self, overrides=None):
+        row = (
+            1, "Field Walk", "field-tasting", "A nice walk",
+            date(2026, 6, 1), time(10, 0), "90 min", 12, 28.0,
+            "Main gate", "5 tastings", "mostly-yes", "public",
+            "2026-05-01 10:00:00", 0,
+        )
+        if overrides:
+            row = list(row)
+            for idx, val in overrides.items():
+                row[idx] = val
+            row = tuple(row)
+        return row
+
+    def test_date_format_is_yyyy_mm_dd(self):
+        result = serialize_tours([self._make_row()])
+        date_str = result[0]["date"]
+        parts = date_str.split("-")
+        self.assertEqual(len(parts), 3)
+        self.assertEqual(len(parts[0]), 4)   # YYYY
+        self.assertEqual(len(parts[1]), 2)   # MM
+        self.assertEqual(len(parts[2]), 2)   # DD
+
+    def test_date_value_matches_source(self):
+        result = serialize_tours([self._make_row()])
+        self.assertEqual(result[0]["date"], "2026-06-01")
+
+    def test_visibility_field_preserved_as_public(self):
+        result = serialize_tours([self._make_row()])
+        self.assertEqual(result[0]["visibility"], "public")
+
+    def test_visibility_field_preserved_as_draft(self):
+        result = serialize_tours([self._make_row({12: "draft"})])
+        self.assertEqual(result[0]["visibility"], "draft")
+
+    def test_visibility_field_preserved_as_published(self):
+        result = serialize_tours([self._make_row({12: "published"})])
+        self.assertEqual(result[0]["visibility"], "published")
+
+    def test_multiple_tours_same_date_all_serialized(self):
+        row1 = self._make_row({0: 1, 1: "Morning Walk"})
+        row2 = self._make_row({0: 2, 1: "Afternoon Walk", 5: time(14, 0)})
+        result = serialize_tours([row1, row2])
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]["date"], result[1]["date"])
+
+    def test_all_calendar_required_fields_present(self):
+        result = serialize_tours([self._make_row()])
+        tour = result[0]
+        for field in ("id", "title", "date", "time", "visibility", "remaining_spots", "is_full"):
+            self.assertIn(field, tour)
+
+    def test_time_format_is_hh_mm(self):
+        result = serialize_tours([self._make_row()])
+        time_str = result[0]["time"]
+        parts = time_str.split(":")
+        self.assertGreaterEqual(len(parts), 2)
+        self.assertTrue(parts[0].isdigit())
+        self.assertTrue(parts[1].isdigit())
+
+    def test_tours_with_mixed_visibility_all_returned(self):
+        rows = [
+            self._make_row({0: 1, 12: "public"}),
+            self._make_row({0: 2, 12: "draft"}),
+            self._make_row({0: 3, 12: "published"}),
+        ]
+        result = serialize_tours(rows)
+        self.assertEqual(len(result), 3)
+        visibilities = {t["visibility"] for t in result}
+        self.assertEqual(visibilities, {"public", "draft", "published"})
+
+
+class GetAllToursServiceTests(unittest.TestCase):
+    """Tests for get_all_tours with mocked Supabase (no DB required)."""
+
+    def _make_supabase_tour(self, overrides=None):
+        t = {
+            "id": 1, "title": "Field Walk", "kind": "field-tasting",
+            "description": "A walk", "date": "2026-06-01", "time": "10:00:00",
+            "duration": "90 min", "capacity": 12, "price": 28.0,
+            "meeting_point": "Main gate", "includes": "5 tastings",
+            "accessibility": "mostly-yes", "visibility": "public",
+            "created_at": "2026-05-01T10:00:00",
+        }
+        if overrides:
+            t.update(overrides)
+        return t
+
+    def _mock_supabase(self, tours, bookings):
+        from unittest.mock import patch, MagicMock
+        mock_sb = MagicMock()
+
+        tours_resp = MagicMock()
+        tours_resp.data = tours
+
+        bookings_resp = MagicMock()
+        bookings_resp.data = bookings
+
+        (mock_sb.table.return_value
+             .select.return_value
+             .order.return_value
+             .order.return_value
+             .execute.return_value) = tours_resp
+
+        (mock_sb.table.return_value
+             .select.return_value
+             .eq.return_value
+             .execute.return_value) = bookings_resp
+
+        return mock_sb
+
+    def test_returns_empty_list_when_no_tours(self):
+        from unittest.mock import patch, MagicMock
+        mock_sb = MagicMock()
+        resp = MagicMock()
+        resp.data = []
+        mock_sb.table.return_value.select.return_value.order.return_value.order.return_value.execute.return_value = resp
+        mock_sb.table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[])
+
+        with patch("app.services.tour_services.supabase", mock_sb):
+            from app.services.tour_services import get_all_tours
+            result = get_all_tours()
+        self.assertEqual(result, [])
+
+    def test_booked_count_aggregated_per_tour(self):
+        from unittest.mock import patch
+        from app.services.tour_services import get_all_tours
+        tours = [self._make_supabase_tour({"id": 1})]
+        bookings = [
+            {"tour_id": 1, "participants_count": 3},
+            {"tour_id": 1, "participants_count": 2},
+        ]
+        with patch("app.services.tour_services.supabase", self._mock_supabase(tours, bookings)):
+            result = get_all_tours()
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][14], 5)
+
+    def test_tour_with_no_bookings_has_zero_booked_count(self):
+        from unittest.mock import patch
+        from app.services.tour_services import get_all_tours
+        tours = [self._make_supabase_tour({"id": 2})]
+        with patch("app.services.tour_services.supabase", self._mock_supabase(tours, [])):
+            result = get_all_tours()
+        self.assertEqual(result[0][14], 0)
+
+    def test_bookings_for_other_tours_not_counted(self):
+        from unittest.mock import patch
+        from app.services.tour_services import get_all_tours
+        tours = [self._make_supabase_tour({"id": 1})]
+        bookings = [{"tour_id": 99, "participants_count": 10}]
+        with patch("app.services.tour_services.supabase", self._mock_supabase(tours, bookings)):
+            result = get_all_tours()
+        self.assertEqual(result[0][14], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

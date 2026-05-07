@@ -1,7 +1,7 @@
 import { describe, test, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import InventoryCard from "./InventoryCard";
+import InventoryCard from "../components/InventoryCard/InventoryCard";
 
 
 describe("InventoryCard", () => {
