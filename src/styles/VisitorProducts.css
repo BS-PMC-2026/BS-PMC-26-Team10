@@ -503,7 +503,276 @@
 }
 .vp-footer-link:hover { color: var(--vp-orange); }
 
+/* ===== CARD DETAILS BUTTON ===== */
+.vp-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vp-card-details-btn {
+  background: transparent;
+  border: 1.5px solid var(--vp-card-border);
+  color: var(--vp-muted);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-family: var(--vp-font-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.vp-card-details-btn:hover {
+  border-color: var(--vp-amber);
+  color: var(--vp-red);
+}
+
+/* image wrap as button */
+.vp-card-img-wrap {
+  all: unset;
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+.vp-card-img-hover-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74, 42, 31, 0.45);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  backdrop-filter: blur(2px);
+}
+.vp-card-img-wrap:hover .vp-card-img-hover-hint {
+  opacity: 1;
+}
+.vp-card-img-wrap:hover .vp-card-img {
+  transform: scale(1.06);
+}
+
+/* ===== MODAL ===== */
+.vp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 14, 7, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2vw;
+  animation: vpModalBackdropIn 0.25s ease both;
+}
+
+.vp-modal-panel {
+  background: #fff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 880px;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 32px 80px rgba(30, 14, 7, 0.35);
+  animation: vpModalIn 0.3s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+
+.vp-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1rem;
+  color: var(--vp-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: background 0.15s, transform 0.15s;
+}
+.vp-modal-close:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.vp-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* image side */
+.vp-modal-img-side {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  background: linear-gradient(135deg, #f3dfcc, #fdf0e6);
+}
+.vp-modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.vp-modal-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 60%, rgba(255,255,255,0.08));
+  pointer-events: none;
+}
+.vp-modal-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6rem;
+}
+.vp-modal-img-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+/* info side */
+.vp-modal-info {
+  padding: 2.5rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.vp-modal-name {
+  font-family: var(--vp-font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--vp-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.vp-modal-desc {
+  font-size: 0.97rem;
+  color: var(--vp-muted);
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+}
+
+/* meta rows */
+.vp-modal-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 0;
+  border-top: 1px solid #f2e4db;
+  border-bottom: 1px solid #f2e4db;
+}
+.vp-modal-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+}
+.vp-modal-meta-icon {
+  font-size: 1rem;
+  width: 1.4rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.vp-modal-meta-label {
+  color: var(--vp-light-muted);
+  font-weight: 500;
+  min-width: 90px;
+}
+.vp-modal-meta-value {
+  color: var(--vp-text);
+  font-weight: 600;
+}
+
+/* footer */
+.vp-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.vp-modal-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.vp-modal-price-label {
+  font-size: 0.72rem;
+  color: var(--vp-light-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+.vp-modal-price {
+  font-family: var(--vp-font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--vp-red);
+  line-height: 1;
+}
+.vp-modal-btn {
+  background: var(--vp-red);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  font-family: var(--vp-font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+.vp-modal-btn:hover:not(:disabled) {
+  background: var(--vp-red-hot);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(161, 77, 42, 0.4);
+}
+.vp-modal-btn:disabled {
+  background: #d8ccc7;
+  color: #9a8a84;
+  cursor: not-allowed;
+}
+.vp-modal-btn--added {
+  background: #2e7d32 !important;
+}
+
 /* ===== ANIMATIONS ===== */
+@keyframes vpModalBackdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes vpModalIn {
+  from { opacity: 0; transform: scale(0.94) translateY(24px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
 @keyframes vpFadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -550,6 +819,24 @@
     gap: 3vw;
     padding: 5vw;
   }
+}
+
+@media (max-width: 700px) {
+  .vp-modal-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .vp-modal-img-side {
+    min-height: 240px;
+    max-height: 280px;
+  }
+  .vp-modal-info {
+    padding: 1.5rem;
+  }
+  .vp-modal-name { font-size: 1.5rem; }
+  .vp-modal-price { font-size: 1.8rem; }
+  .vp-modal-footer { flex-direction: column; align-items: stretch; }
+  .vp-modal-btn { text-align: center; }
 }
 
 @media (max-width: 600px) {
