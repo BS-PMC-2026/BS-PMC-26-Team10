@@ -41,6 +41,12 @@ const panels = [
     tag: "4 new",
   },
   {
+    title: "Promo Codes",
+    desc: "Create and manage discount codes for customer orders.",
+    tag: "Coupons",
+    route: "/owner/promo-codes",
+  },
+  {
     title: "View Public Site",
     desc: "Open the visitor-facing side and review the experience.",
     tag: "Live",

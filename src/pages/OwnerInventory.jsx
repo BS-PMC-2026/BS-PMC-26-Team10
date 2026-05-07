@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 import InventoryGrid from "../components/InventoryGrid/InventoryGrid";
 import InventoryFormModal from "../components/InventoryFormModal/InventoryFormModal";
@@ -89,6 +90,16 @@ function OwnerInventory() {
 
       <main className="owner-inventory-content">
         <div className="owner-inventory-header">
+          <Link
+            to="/owner"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "0.35rem",
+              color: "#888", fontSize: "0.88rem", textDecoration: "none",
+              marginBottom: "0.75rem",
+            }}
+          >
+            ← Back to Owner Panel
+          </Link>
           <p className="owner-inventory-overline">Owner Control Center</p>
           <h1>Inventory</h1>
           <p className="owner-inventory-subtitle">

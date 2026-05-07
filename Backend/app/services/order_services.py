@@ -1,5 +1,6 @@
 # from app.db import get_connection
 from app.db2 import supabase
+from app.services.promo_services import validate_promo_code, increment_promo_usage
 
 
 def get_all_orders():
@@ -123,12 +124,23 @@ def create_order(order_data):
 
         print("Total amount:", total_amount)
 
+        promo_code = order_data.get("promo_code", "").strip() if order_data.get("promo_code") else ""
+        final_amount = total_amount
+        if promo_code:
+            promo_result = validate_promo_code(promo_code, total_amount)
+            if promo_result.get("valid"):
+                final_amount = round(total_amount - promo_result["discount_amount"], 2)
+                print(f"Promo '{promo_code}' applied: -{promo_result['discount_amount']}, final={final_amount}")
+            else:
+                print(f"Promo '{promo_code}' rejected at order time: {promo_result.get('message')}")
+                promo_code = ""
+
         order_resp = supabase.table("orders").insert({
             "customer_email": order_data["customer_email"],
             "customer_name": order_data["customer_name"],
             "customer_phone": order_data["customer_phone"],
             "status": order_data["status"],
-            "total_amount": total_amount,
+            "total_amount": final_amount,
             "payment_method": order_data["payment_method"],
             "payment_status": order_data["payment_status"],
             "shipping_address": order_data["shipping_address"],
@@ -155,6 +167,9 @@ def create_order(order_data):
             supabase.table("inventory").update({"quantity": new_qty}).eq(
                 "id", item["product_id"]
             ).execute()
+
+        if promo_code:
+            increment_promo_usage(promo_code)
 
         return {"message": "Order created successfully!", "order_id": order_id}
 

@@ -427,6 +427,90 @@
   display: inline-block;
 }
 
+/* ===== PROMO CODE ===== */
+.vc-promo-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.vc-promo-input {
+  flex: 1;
+  border: 1px solid var(--vc-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--vc-font-body);
+  font-size: 0.88rem;
+  color: var(--vc-text);
+  background: var(--vc-bg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.vc-promo-input:focus {
+  border-color: var(--vc-red);
+}
+.vc-promo-btn {
+  background: var(--vc-dark);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: var(--vc-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+}
+.vc-promo-btn:hover:not(:disabled) {
+  background: #3a1d12;
+}
+.vc-promo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.vc-promo-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0faf0;
+  border: 1px solid #b6dbb6;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  color: #2e6b2e;
+}
+.vc-promo-applied-text {
+  flex: 1;
+}
+.vc-promo-remove {
+  background: none;
+  border: none;
+  color: #6a9a6a;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+.vc-promo-remove:hover {
+  color: #2e6b2e;
+}
+.vc-promo-error {
+  font-size: 0.8rem;
+  color: var(--vc-error);
+  margin: -0.3rem 0 0;
+}
+.vc-totals-row--discount {
+  font-size: 0.88rem;
+  color: #2e6b2e;
+}
+.vc-discount-value {
+  font-weight: 600;
+  color: #2e6b2e;
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes vcItemIn {
   from { opacity: 0; transform: translateY(10px); }

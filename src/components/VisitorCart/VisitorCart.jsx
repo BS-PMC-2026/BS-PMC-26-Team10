@@ -7,16 +7,25 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
     cartItems,
     totalItems,
     totalPrice,
+    discountedTotal,
     isEmpty,
     stockErrors,
     isValidating,
+    promoCode,
+    discountAmount,
+    promoMessage,
+    promoError,
+    promoLoading,
     removeFromCart,
     updateQuantity,
     clearCart,
     validateCart,
+    applyPromoCode,
+    removePromoCode,
   } = cart;
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [promoInput, setPromoInput] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -164,18 +173,54 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
               </div>
             )}
 
+            {/* promo code section */}
+            {promoCode ? (
+              <div className="vc-promo-applied">
+                <span className="vc-promo-applied-text">
+                  🏷️ <strong>{promoCode}</strong> — {promoMessage}
+                </span>
+                <button className="vc-promo-remove" onClick={removePromoCode} aria-label="Remove promo">
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <div className="vc-promo-row">
+                <input
+                  className="vc-promo-input"
+                  placeholder="Promo code"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && applyPromoCode(promoInput, totalPrice)}
+                />
+                <button
+                  className="vc-promo-btn"
+                  onClick={() => applyPromoCode(promoInput, totalPrice)}
+                  disabled={promoLoading || !promoInput.trim()}
+                >
+                  {promoLoading ? <span className="vc-btn-spinner" /> : "Apply"}
+                </button>
+              </div>
+            )}
+            {promoError && <p className="vc-promo-error">{promoError}</p>}
+
             <div className="vc-totals">
               <div className="vc-totals-row">
                 <span>Subtotal</span>
                 <span>₪{totalPrice.toFixed(2)}</span>
               </div>
+              {discountAmount > 0 && (
+                <div className="vc-totals-row vc-totals-row--discount">
+                  <span>Discount</span>
+                  <span className="vc-discount-value">−₪{discountAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="vc-totals-row vc-totals-row--shipping">
                 <span>Shipping</span>
                 <span className="vc-shipping-note">calculated at checkout</span>
               </div>
               <div className="vc-totals-row vc-totals-row--total">
                 <span>Total</span>
-                <span>₪{totalPrice.toFixed(2)}</span>
+                <span>₪{discountedTotal.toFixed(2)}</span>
               </div>
             </div>
 
