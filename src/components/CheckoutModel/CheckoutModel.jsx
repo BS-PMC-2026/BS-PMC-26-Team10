@@ -4,7 +4,7 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import "./CheckoutModel.css";
 
 export default function CheckoutModel({ isOpen, onClose, cart, onSuccess }) {
-  const { cartItems, totalPrice, discountedTotal, discountAmount, promoCode, clearCart } = cart;
+  const { cartItems, discountedTotal, discountAmount, promoCode, clearCart } = cart;
 
   const [form, setForm] = useState({
     customer_name: "",
