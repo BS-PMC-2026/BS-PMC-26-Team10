@@ -4,7 +4,7 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import "./CheckoutModel.css";
 
 export default function CheckoutModel({ isOpen, onClose, cart, onSuccess }) {
-  const { cartItems, totalPrice, clearCart } = cart;
+  const { cartItems, discountedTotal, discountAmount, promoCode, clearCart } = cart;
 
   const [form, setForm] = useState({
     customer_name: "",
@@ -41,7 +41,7 @@ export default function CheckoutModel({ isOpen, onClose, cart, onSuccess }) {
       purchase_units: [
         {
           amount: {
-            value: totalPrice.toFixed(2),
+            value: discountedTotal.toFixed(2),
             currency_code: "ILS",
           },
           description: "ChiliLand Farm Products",
@@ -64,6 +64,7 @@ const onApprove = async (data, actions) => {
     payment_status: "paid",
     delivery_status: "pending",
     paypal_order_id: paypalOrder.id,
+    promo_code: promoCode || null,
     items: cartItems.map((item) => ({
       product_id: item.id,
       quantity: item.quantity,
@@ -146,9 +147,15 @@ const onApprove = async (data, actions) => {
               </li>
             ))}
           </ul>
+          {discountAmount > 0 && (
+            <li className="cm-summary-item cm-summary-item--discount">
+              <span>Discount ({promoCode})</span>
+              <span>−₪{discountAmount.toFixed(2)}</span>
+            </li>
+          )}
           <div className="cm-summary-total">
             <span>Total</span>
-            <span>₪{totalPrice.toFixed(2)}</span>
+            <span>₪{discountedTotal.toFixed(2)}</span>
           </div>
         </div>
 
