@@ -78,21 +78,6 @@ function FarmLocation() {
           </div>
         </section>
 
-        <section className="farm-gallery-section">
-          <div className="farm-gallery-header">
-            <h2>Chili Experience</h2>
-            <p>Explore some of the peppers grown on our farm.</p>
-          </div>
-
-          <div className="farm-gallery-grid">
-            {farmImages.map((img, i) => (
-              <div key={i} className="farm-gallery-card">
-                <img src={img} alt={`ChiliLand pepper ${i + 1}`} />
-              </div>
-            ))}
-          </div>
-        </section>
-
         <section className="farm-map-section">
           <div className="farm-map-header">
             <div>
@@ -113,6 +98,21 @@ function FarmLocation() {
               loading="lazy"
               allowFullScreen
             />
+          </div>
+        </section>
+
+        <section className="farm-gallery-section">
+          <div className="farm-gallery-header">
+            <h2>Chili Experience</h2>
+            <p>Explore some of the peppers grown on our farm.</p>
+          </div>
+
+          <div className="farm-gallery-grid">
+            {farmImages.map((img, i) => (
+              <div key={i} className="farm-gallery-card">
+                <img src={img} alt={`ChiliLand pepper ${i + 1}`} />
+              </div>
+            ))}
           </div>
         </section>
 
