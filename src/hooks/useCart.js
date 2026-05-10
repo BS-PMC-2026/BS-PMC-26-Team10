@@ -31,6 +31,11 @@ export function useCart() {
   const [cartItems, setCartItems] = useState(getStoredCart);
   const [stockErrors, setStockErrors] = useState({});
   const [isValidating, setIsValidating] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [promoMessage, setPromoMessage] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
 
   // persist to localStorage on every change
   useEffect(() => {
@@ -161,7 +166,47 @@ export function useCart() {
   const clearCart = useCallback(() => {
     setCartItems([]);
     setStockErrors({});
+    setPromoCode("");
+    setDiscountAmount(0);
+    setPromoMessage("");
+    setPromoError("");
     localStorage.removeItem(CART_KEY);
+  }, []);
+
+  // ── PROMO CODE ───────────────────────────────────────────
+  const applyPromoCode = useCallback(async (code, currentTotal) => {
+    if (!code.trim()) return;
+    setPromoLoading(true);
+    setPromoError("");
+    setPromoMessage("");
+    try {
+      const res = await fetch(`${BASE_URL}/promo/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: code.trim(), order_amount: currentTotal }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setPromoCode(data.code);
+        setDiscountAmount(data.discount_amount);
+        setPromoMessage(data.message);
+      } else {
+        setPromoCode("");
+        setDiscountAmount(0);
+        setPromoError(data.message || "Invalid promo code.");
+      }
+    } catch {
+      setPromoError("Could not validate promo code. Try again.");
+    } finally {
+      setPromoLoading(false);
+    }
+  }, []);
+
+  const removePromoCode = useCallback(() => {
+    setPromoCode("");
+    setDiscountAmount(0);
+    setPromoMessage("");
+    setPromoError("");
   }, []);
 
   // ── VALIDATE ENTIRE CART ─────────────────────────────────
@@ -223,19 +268,28 @@ export function useCart() {
     (sum, i) => sum + parseFloat(i.price) * i.quantity,
     0
   );
+  const discountedTotal = Math.max(0, totalPrice - discountAmount);
   const isEmpty = cartItems.length === 0;
 
   return {
     cartItems,
     totalItems,
     totalPrice,
+    discountedTotal,
     isEmpty,
     stockErrors,
     isValidating,
+    promoCode,
+    discountAmount,
+    promoMessage,
+    promoError,
+    promoLoading,
     addToCart,
     removeFromCart,
     updateQuantity,
     clearCart,
     validateCart,
+    applyPromoCode,
+    removePromoCode,
   };
 }
