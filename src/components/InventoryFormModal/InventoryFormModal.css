@@ -97,6 +97,30 @@
   gap: 1vw;
 }
 
+.inventory-ingredients-toggle {
+  display: flex;
+  gap: 0.5vw;
+  margin-bottom: 0.6vw;
+}
+
+.inv-toggle-btn {
+  border: 0.08vw solid #e6d3c6;
+  background: #fff;
+  color: #7b5c4d;
+  border-radius: 0.7vw;
+  padding: 0.4vw 1vw;
+  font-size: 0.85vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.inv-toggle-btn.active {
+  background: linear-gradient(135deg, #b6462f, #d96b4d);
+  color: #fff;
+  border-color: #b6462f;
+}
+
 .inventory-form-error {
   background: #fdecec;
   color: #a23b3b;
@@ -178,6 +202,17 @@
   .inventory-form-row {
     grid-template-columns: 1fr;
     gap: 3vw;
+  }
+
+  .inventory-ingredients-toggle {
+    gap: 2vw;
+    margin-bottom: 2vw;
+  }
+
+  .inv-toggle-btn {
+    border-radius: 2vw;
+    padding: 1.5vw 3vw;
+    font-size: 3vw;
   }
 
   .inventory-form-error {

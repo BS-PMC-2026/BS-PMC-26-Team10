@@ -17,6 +17,8 @@ class Product(BaseModel):
     restock_date : str
     price : float
     image_url : str
+    ingredients : str = ''
+    ingredients_image_url : str = ''
 
 class Tour(BaseModel):
     title: str
