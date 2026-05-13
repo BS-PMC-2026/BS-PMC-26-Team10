@@ -32,7 +32,13 @@ function renderDetailPage(tour = availableTour, fetchOverride = null) {
     if (url.includes("/bookings")) {
       return Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({ success: true, booking_reference: "ABC12345", message: "Booking confirmed." }),
+        json: () => Promise.resolve({
+          success: true,
+          booking_reference: "ABC12345",
+          message: "Booking confirmed.",
+          email_sent: true,
+          confirmation_message: "Please keep this reference for future changes.",
+        }),
       });
     }
     return Promise.resolve({
@@ -119,6 +125,37 @@ describe("TourDetailPage", () => {
       expect(screen.getByText("Booking Confirmed!")).toBeInTheDocument()
     );
     expect(screen.getByText("ABC12345")).toBeInTheDocument();
+    expect(screen.getByText("A confirmation email was sent to your email address.")).toBeInTheDocument();
+    expect(screen.getByText("Please keep this reference for future changes.")).toBeInTheDocument();
+  });
+
+  test("shows saved booking message when confirmation email fails", async () => {
+    renderDetailPage(availableTour, vi.fn((url) => {
+      if (url.includes("/bookings")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            success: true,
+            booking_reference: "ABC12345",
+            email_sent: false,
+            confirmation_message: "Please keep this reference for future changes.",
+          }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([availableTour]) });
+    }));
+
+    await waitFor(() => expect(screen.getByLabelText(/Email address/)).toBeInTheDocument());
+
+    await userEvent.type(screen.getByLabelText(/Email address/), "visitor@example.com");
+    await userEvent.type(screen.getByLabelText(/Full name/), "Jane Smith");
+    await userEvent.type(screen.getByLabelText(/Phone number/), "0549164691");
+
+    await userEvent.click(screen.getByText("Confirm Booking"));
+
+    await waitFor(() =>
+      expect(screen.getByText("Your booking is saved, but the confirmation email could not be sent right now.")).toBeInTheDocument()
+    );
   });
 
   test("shows error message when booking fails", async () => {

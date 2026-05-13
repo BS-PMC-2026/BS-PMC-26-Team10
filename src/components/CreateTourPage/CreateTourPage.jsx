@@ -11,6 +11,8 @@ const KIND_OPTIONS = [
 const DURATION_OPTIONS = ["45 min", "90 min", "2 hrs", "3 hrs", "5 hrs", "Full day"];
 
 const today = new Date().toISOString().slice(0, 10);
+const DEFAULT_CONFIRMATION_MESSAGE =
+  "Your tour reservation was successful. Please keep this email and your booking reference for future changes or cancellation.";
 
 function formatPreviewDate(dateStr) {
   if (!dateStr) return "—";
@@ -38,6 +40,7 @@ function CreateTourPage({ onTourSaved, onCancel }) {
     includes: "Guided walk · 5 pepper tastings · Hot sauce flight",
     accessibility: "mostly-yes",
     visibility: "draft",
+    confirmation_message: DEFAULT_CONFIRMATION_MESSAGE,
   });
 
   const [loading, setLoading] = useState(false);
@@ -71,6 +74,7 @@ function CreateTourPage({ onTourSaved, onCancel }) {
         includes: form.includes.trim(),
         accessibility: form.accessibility,
         visibility: visibility ?? form.visibility,
+        confirmation_message: form.confirmation_message.trim() || DEFAULT_CONFIRMATION_MESSAGE,
       };
 
       const res = await fetch("http://127.0.0.1:8000/tours", {
@@ -277,6 +281,20 @@ function CreateTourPage({ onTourSaved, onCancel }) {
                 value={form.includes}
                 onChange={(e) => set("includes", e.target.value)}
                 placeholder="Guided walk · tastings · take-home"
+              />
+            </div>
+
+            <div className="ctp-group">
+              <label className="ctp-label">
+                Confirmation email message
+                <span className="ctp-hint">{form.confirmation_message.length}/220</span>
+              </label>
+              <textarea
+                className="ctp-textarea ctp-textarea--compact"
+                value={form.confirmation_message}
+                maxLength={220}
+                onChange={(e) => set("confirmation_message", e.target.value)}
+                placeholder={DEFAULT_CONFIRMATION_MESSAGE}
               />
             </div>
 
