@@ -186,6 +186,10 @@
   box-shadow: 0 0 0 3px rgba(197, 91, 60, 0.1);
 }
 
+.ctp-textarea--compact {
+  min-height: 78px;
+}
+
 .ctp-row-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;

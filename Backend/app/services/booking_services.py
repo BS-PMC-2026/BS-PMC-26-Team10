@@ -6,13 +6,30 @@ from datetime import date
 
 # from app.db import get_connection
 from app.db2 import supabase
+from app.services.email_service import send_tour_booking_confirmation
+
+
+DEFAULT_TOUR_CONFIRMATION_MESSAGE = (
+    "Your tour reservation was successful. Please keep this email and your booking "
+    "reference for future changes or cancellation."
+)
+
+
+def _get_tour_for_booking(tour_id):
+    try:
+        return supabase.table("tours").select(
+            "id, capacity, date, time, title, meeting_point, confirmation_message"
+        ).eq("id", tour_id).limit(1).execute()
+    except Exception as e:
+        print("Could not fetch tour confirmation message, retrying without it:", repr(e))
+        return supabase.table("tours").select(
+            "id, capacity, date, time, title, meeting_point"
+        ).eq("id", tour_id).limit(1).execute()
 
 
 def create_booking(booking):
     try:
-        tour_resp = supabase.table("tours").select(
-            "id, capacity, date"
-        ).eq("id", booking.tour_id).limit(1).execute()
+        tour_resp = _get_tour_for_booking(booking.tour_id)
 
         if not tour_resp.data:
             return {"error": "tour_not_found", "message": "Tour not found."}
@@ -49,10 +66,26 @@ def create_booking(booking):
             "booking_reference": booking_reference,
         }).execute()
 
+        confirmation_message = tour.get("confirmation_message") or DEFAULT_TOUR_CONFIRMATION_MESSAGE
+        email_sent = send_tour_booking_confirmation(
+            booking_reference=booking_reference,
+            visitor_name=booking.full_name.strip(),
+            visitor_email=booking.email.lower().strip(),
+            tour_title=tour.get("title", "ChiliLand tour"),
+            tour_date=str(tour["date"]),
+            tour_time=str(tour.get("time", "")),
+            participants_count=booking.participants_count,
+            meeting_point=tour.get("meeting_point", ""),
+            confirmation_message=confirmation_message,
+        )
+
         return {
             "success": True,
             "booking_reference": booking_reference,
             "message": "Booking confirmed.",
+            "email_sent": email_sent,
+            "confirmation_channel": "email",
+            "confirmation_message": confirmation_message,
         }
 
     except Exception as e:

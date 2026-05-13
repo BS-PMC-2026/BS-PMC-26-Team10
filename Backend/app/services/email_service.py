@@ -1,11 +1,18 @@
 import os
-import resend
 from dotenv import load_dotenv
+
+try:
+    import resend
+except ImportError:
+    resend = None
 
 load_dotenv()
 
-resend.api_key = os.getenv("RESEND_API_KEY")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "onboarding@resend.dev")
+
+if resend:
+    resend.api_key = RESEND_API_KEY
 
 
 def send_order_confirmation(order_id, customer_name, customer_email, items, total_amount):
@@ -89,6 +96,10 @@ def send_order_confirmation(order_id, customer_name, customer_email, items, tota
     """
 
     try:
+        if resend is None or not RESEND_API_KEY:
+            print("Resend is not configured; order confirmation email was not sent.")
+            return False
+
         response = resend.Emails.send({
             "from": SENDER_EMAIL,
             "to": customer_email,
@@ -99,4 +110,104 @@ def send_order_confirmation(order_id, customer_name, customer_email, items, tota
         return True
     except Exception as e:
         print("Failed to send email:", e)
+        return False
+
+
+def send_tour_booking_confirmation(
+    booking_reference,
+    visitor_name,
+    visitor_email,
+    tour_title,
+    tour_date,
+    tour_time,
+    participants_count,
+    meeting_point="",
+    confirmation_message="",
+):
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    </head>
+    <body style="margin:0;padding:0;background:#fdf7f0;font-family:'Segoe UI',Arial,sans-serif;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#fdf7f0;padding:40px 20px;">
+        <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+            <tr>
+                <td style="background:#4a2a1f;border-radius:16px 16px 0 0;padding:36px 40px;text-align:center;">
+                    <p style="margin:0 0 6px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#e4a97a;font-weight:600;">ChiliLand Farm</p>
+                    <h1 style="margin:0;font-size:32px;color:#ffffff;font-weight:700;">Tour Booking Confirmed</h1>
+                    <p style="margin:12px 0 0;font-size:15px;color:rgba(255,255,255,0.7);">Thank you for booking with us, {visitor_name}.</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="background:#a14d2a;padding:14px 40px;text-align:center;">
+                    <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:1px;">BOOKING REFERENCE</p>
+                    <p style="margin:4px 0 0;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:2px;">{booking_reference}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="background:#ffffff;padding:36px 40px;">
+                    <p style="margin:0 0 24px;font-size:15px;color:#7b5c4d;line-height:1.6;">
+                        {confirmation_message or "Your reservation was successful. Please keep this email and your booking reference for future changes or cancellation."}
+                    </p>
+
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #efd8cc;border-radius:10px;overflow:hidden;">
+                        <tr>
+                            <td style="padding:12px;color:#a07060;background:#fdf7f0;font-weight:600;">Tour</td>
+                            <td style="padding:12px;color:#3a2a20;">{tour_title}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px;color:#a07060;background:#fdf7f0;font-weight:600;">Date</td>
+                            <td style="padding:12px;color:#3a2a20;">{tour_date}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px;color:#a07060;background:#fdf7f0;font-weight:600;">Time</td>
+                            <td style="padding:12px;color:#3a2a20;">{tour_time}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px;color:#a07060;background:#fdf7f0;font-weight:600;">Participants</td>
+                            <td style="padding:12px;color:#3a2a20;">{participants_count}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px;color:#a07060;background:#fdf7f0;font-weight:600;">Meeting point</td>
+                            <td style="padding:12px;color:#3a2a20;">{meeting_point or "To be confirmed"}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="background:#fdf7f0;border:1px solid #efd8cc;border-top:none;border-radius:0 0 16px 16px;padding:24px 40px;text-align:center;">
+                    <p style="margin:0;font-size:13px;color:#a07060;">ChiliLand Farm - we look forward to seeing you.</p>
+                </td>
+            </tr>
+
+        </table>
+        </td></tr>
+        </table>
+    </body>
+    </html>
+    """
+
+    try:
+        if resend is None or not RESEND_API_KEY:
+            print("Resend is not configured; tour booking email was not sent.")
+            return False
+
+        response = resend.Emails.send({
+            "from": SENDER_EMAIL,
+            "to": visitor_email,
+            "subject": f"ChiliLand Tour Booking Confirmed - {booking_reference}",
+            "html": html,
+        })
+        print("Tour booking email sent:", response)
+        return True
+    except Exception as e:
+        print("Failed to send tour booking email:", e)
         return False

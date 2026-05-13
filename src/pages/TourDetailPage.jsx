@@ -41,7 +41,7 @@ function TourDetailPage() {
 
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState(null); // { success, message, reference }
+  const [result, setResult] = useState(null); // { success, message, reference, emailSent, confirmationMessage }
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/tours")
@@ -89,7 +89,13 @@ function TourDetailPage() {
       if (!res.ok) {
         setResult({ success: false, message: data.detail || "Booking failed. Please try again." });
       } else {
-        setResult({ success: true, message: "Booking confirmed!", reference: data.booking_reference });
+        setResult({
+          success: true,
+          message: "Booking confirmed!",
+          reference: data.booking_reference,
+          emailSent: data.email_sent,
+          confirmationMessage: data.confirmation_message,
+        });
         setForm(INITIAL_FORM);
         // Refresh tour to show updated remaining spots
         setTour((prev) => ({
@@ -199,6 +205,16 @@ function TourDetailPage() {
                 <p className="tdp-result-text">
                   Save this reference for future use.
                 </p>
+                <p className="tdp-result-text">
+                  {result.emailSent
+                    ? "A confirmation email was sent to your email address."
+                    : "Your booking is saved, but the confirmation email could not be sent right now."}
+                </p>
+                {result.confirmationMessage && (
+                  <p className="tdp-result-text">
+                    {result.confirmationMessage}
+                  </p>
+                )}
                 <div className="tdp-result-actions">
                   <Link to="/tours" className="tdp-result-btn">View More Tours</Link>
                   <Link to="/" className="tdp-result-btn tdp-result-btn--secondary">Back to Home</Link>
