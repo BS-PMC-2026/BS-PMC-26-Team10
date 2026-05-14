@@ -259,6 +259,7 @@ export default function VisitorProducts() {
       <VisitorCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} />
 
       <section className="vp-hero">
+        <Link to="/" className="vp-back-btn">&#8592; Back to home</Link>
         <div className="vp-hero-watermark">🌶</div>
         <div className="vp-hero-text">
           <p className="vp-hero-kicker">Straight from the field</p>
