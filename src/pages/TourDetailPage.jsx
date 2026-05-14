@@ -32,6 +32,7 @@ function isPast(dateStr) {
 }
 
 const INITIAL_FORM = { email: "", full_name: "", phone: "", participants_count: 1 };
+const INITIAL_CANCEL_FORM = { booking_reference: "", email: "" };
 
 function TourDetailPage() {
   const { id } = useParams();
@@ -42,6 +43,10 @@ function TourDetailPage() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null); // { success, message, reference, emailSent, confirmationMessage }
+  const [cancelForm, setCancelForm] = useState(INITIAL_CANCEL_FORM);
+  const [showCancelForm, setShowCancelForm] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelResult, setCancelResult] = useState(null);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/tours")
@@ -64,6 +69,11 @@ function TourDetailPage() {
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleCancelChange(e) {
+    const { name, value } = e.target;
+    setCancelForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
@@ -108,6 +118,50 @@ function TourDetailPage() {
       setResult({ success: false, message: "Network error. Please check your connection." });
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleCancelBooking(e) {
+    e.preventDefault();
+    setCancelResult(null);
+
+    const reference = cancelForm.booking_reference.trim().toUpperCase();
+    const email = cancelForm.email.trim();
+
+    if (!reference || !email) {
+      setCancelResult({ success: false, message: "Please enter your booking reference and email." });
+      return;
+    }
+
+    const confirmed = window.confirm("Are you sure you want to cancel this booking?");
+    if (!confirmed) return;
+
+    setCancelling(true);
+
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/bookings/${reference}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setCancelResult({ success: false, message: data.detail || "Cancellation failed. Please try again." });
+      } else {
+        setCancelResult({ success: true, message: "Booking cancelled successfully. Your spots are now available again." });
+        setCancelForm(INITIAL_CANCEL_FORM);
+        setTour((prev) => ({
+          ...prev,
+          remaining_spots: Math.min(prev.capacity, prev.remaining_spots + Number(data.released_spots || 0)),
+          is_full: false,
+        }));
+      }
+    } catch {
+      setCancelResult({ success: false, message: "Network error. Please check your connection." });
+    } finally {
+      setCancelling(false);
     }
   }
 
@@ -321,6 +375,63 @@ function TourDetailPage() {
                       No account required. Booking is instant.
                     </p>
                   </form>
+                )}
+
+                {!past && (
+                  <div className="tdp-cancel-panel">
+                    {!showCancelForm ? (
+                      <button
+                        type="button"
+                        className="tdp-cancel-toggle"
+                        onClick={() => setShowCancelForm(true)}
+                      >
+                        Cancel a booking
+                      </button>
+                    ) : (
+                      <>
+                        <h3 className="tdp-cancel-title">Cancel a booking</h3>
+                        <form className="tdp-form" onSubmit={handleCancelBooking} noValidate>
+                          <div className="tdp-field">
+                            <label htmlFor="booking_reference" className="tdp-label">Booking reference</label>
+                            <input
+                              id="booking_reference"
+                              name="booking_reference"
+                              type="text"
+                              className="tdp-input"
+                              value={cancelForm.booking_reference}
+                              onChange={handleCancelChange}
+                              placeholder="ABC12345"
+                              autoComplete="off"
+                            />
+                          </div>
+
+                          <div className="tdp-field">
+                            <label htmlFor="cancel_email" className="tdp-label">Booking email address</label>
+                            <input
+                              id="cancel_email"
+                              name="email"
+                              type="email"
+                              className="tdp-input"
+                              value={cancelForm.email}
+                              onChange={handleCancelChange}
+                              placeholder="you@example.com"
+                              autoComplete="email"
+                            />
+                          </div>
+
+                          {cancelResult && (
+                            <div className={`tdp-result ${cancelResult.success ? "tdp-result--success tdp-result--compact" : "tdp-result--error"}`}>
+                              <p>{cancelResult.message}</p>
+                            </div>
+                          )}
+
+                          <button type="submit" className="tdp-cancel-submit" disabled={cancelling}>
+                            {cancelling ? "Cancelling..." : "Cancel Booking"}
+                          </button>
+                        </form>
+                      </>
+                    )}
+                  </div>
                 )}
               </>
             )}

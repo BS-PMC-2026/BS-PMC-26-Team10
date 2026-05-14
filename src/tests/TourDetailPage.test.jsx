@@ -59,6 +59,7 @@ function renderDetailPage(tour = availableTour, fetchOverride = null) {
 describe("TourDetailPage", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   test("shows loading state before data arrives", () => {
@@ -196,5 +197,75 @@ describe("TourDetailPage", () => {
     await waitFor(() =>
       expect(screen.getByText("Tour not found.")).toBeInTheDocument()
     );
+  });
+
+  test("cancels booking after visitor confirms action", async () => {
+    const fetchMock = vi.fn((url) => {
+      if (url.includes("/cancel")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            success: true,
+            booking_reference: "ABC12345",
+            released_spots: 2,
+          }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([availableTour]) });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    render(
+      <MemoryRouter initialEntries={["/tours/1"]}>
+        <Routes>
+          <Route path="/tours/:id" element={<TourDetailPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText("Cancel a booking")).toBeInTheDocument());
+    expect(screen.queryByLabelText(/Booking reference/)).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByText("Cancel a booking"));
+
+    await userEvent.type(screen.getByLabelText(/Booking reference/), "ABC12345");
+    await userEvent.type(screen.getByLabelText(/Booking email address/), "visitor@example.com");
+    await userEvent.click(screen.getByText("Cancel Booking"));
+
+    await waitFor(() =>
+      expect(screen.getByText("Booking cancelled successfully. Your spots are now available again.")).toBeInTheDocument()
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://127.0.0.1:8000/bookings/ABC12345/cancel",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ email: "visitor@example.com" }),
+      })
+    );
+  });
+
+  test("does not send cancellation request when visitor rejects confirmation", async () => {
+    const fetchMock = vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve([availableTour]) }));
+    vi.stubGlobal("fetch", fetchMock);
+    vi.spyOn(window, "confirm").mockReturnValue(false);
+
+    render(
+      <MemoryRouter initialEntries={["/tours/1"]}>
+        <Routes>
+          <Route path="/tours/:id" element={<TourDetailPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText("Cancel a booking")).toBeInTheDocument());
+    await userEvent.click(screen.getByText("Cancel a booking"));
+
+    await userEvent.type(screen.getByLabelText(/Booking reference/), "ABC12345");
+    await userEvent.type(screen.getByLabelText(/Booking email address/), "visitor@example.com");
+    await userEvent.click(screen.getByText("Cancel Booking"));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

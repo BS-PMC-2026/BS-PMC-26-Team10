@@ -2,8 +2,8 @@ import re
 
 from fastapi import APIRouter, HTTPException
 
-from app.models import BookingCreate
-from app.services.booking_services import create_booking, get_bookings_for_tour
+from app.models import BookingCancel, BookingCreate
+from app.services.booking_services import cancel_booking, create_booking, get_bookings_for_tour
 
 router = APIRouter()
 
@@ -16,6 +16,9 @@ _ERROR_STATUS = {
     "tour_full": 400,
     "not_enough_spots": 400,
     "duplicate_booking": 409,
+    "booking_not_found": 404,
+    "already_cancelled": 409,
+    "tour_started": 400,
     "server_error": 500,
 }
 
@@ -35,6 +38,22 @@ def book_tour(booking: BookingCreate):
         raise HTTPException(status_code=422, detail="Number of participants must be greater than 0.")
 
     result = create_booking(booking)
+
+    if "error" in result:
+        raise HTTPException(
+            status_code=_ERROR_STATUS.get(result["error"], 400),
+            detail=result["message"],
+        )
+
+    return result
+
+
+@router.post("/bookings/{booking_reference}/cancel")
+def cancel_tour_booking(booking_reference: str, cancellation: BookingCancel):
+    if not _EMAIL_RE.match(cancellation.email):
+        raise HTTPException(status_code=422, detail="Invalid email format.")
+
+    result = cancel_booking(booking_reference, cancellation.email)
 
     if "error" in result:
         raise HTTPException(

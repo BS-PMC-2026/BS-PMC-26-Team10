@@ -1,5 +1,5 @@
 import uuid
-from datetime import date
+from datetime import date, datetime, time
 
 # import psycopg2
 # import psycopg2.errors
@@ -13,6 +13,15 @@ DEFAULT_TOUR_CONFIRMATION_MESSAGE = (
     "Your tour reservation was successful. Please keep this email and your booking "
     "reference for future changes or cancellation."
 )
+
+
+def _tour_has_started(tour_date, tour_time=None):
+    parsed_date = date.fromisoformat(str(tour_date))
+    if not tour_time:
+        return parsed_date < date.today()
+
+    parsed_time = time.fromisoformat(str(tour_time))
+    return datetime.combine(parsed_date, parsed_time) <= datetime.now()
 
 
 def _get_tour_for_booking(tour_id):
@@ -36,7 +45,7 @@ def create_booking(booking):
 
         tour = tour_resp.data[0]
 
-        if date.fromisoformat(str(tour["date"])) < date.today():
+        if _tour_has_started(tour["date"]):
             return {"error": "past_tour", "message": "Cannot book a tour that has already passed."}
 
         bookings_resp = supabase.table("bookings").select(
@@ -180,3 +189,48 @@ def get_bookings_for_tour(tour_id):
     # except Exception as e:
     #     print("Error fetching bookings for tour:", repr(e))
     #     return []
+
+
+def cancel_booking(booking_reference, email):
+    try:
+        clean_reference = booking_reference.strip().upper()
+        clean_email = email.lower().strip()
+
+        booking_resp = supabase.table("bookings").select(
+            "id, tour_id, email, status, participants_count, booking_reference"
+        ).eq("booking_reference", clean_reference).eq("email", clean_email).limit(1).execute()
+
+        if not booking_resp.data:
+            return {"error": "booking_not_found", "message": "Booking not found."}
+
+        booking = booking_resp.data[0]
+
+        if booking["status"] == "cancelled":
+            return {"error": "already_cancelled", "message": "This booking has already been cancelled."}
+
+        tour_resp = supabase.table("tours").select(
+            "id, date, time, title"
+        ).eq("id", booking["tour_id"]).limit(1).execute()
+
+        if not tour_resp.data:
+            return {"error": "tour_not_found", "message": "Tour not found."}
+
+        tour = tour_resp.data[0]
+        if _tour_has_started(tour["date"], tour.get("time")):
+            return {"error": "tour_started", "message": "Cannot cancel a booking after the tour has started."}
+
+        supabase.table("bookings").update({
+            "status": "cancelled",
+        }).eq("id", booking["id"]).execute()
+
+        return {
+            "success": True,
+            "message": "Booking cancelled successfully.",
+            "booking_reference": clean_reference,
+            "released_spots": booking["participants_count"],
+            "tour_id": booking["tour_id"],
+        }
+
+    except Exception as e:
+        print("Error while cancelling booking:", repr(e))
+        return {"error": "server_error", "message": "An unexpected error occurred. Please try again."}
