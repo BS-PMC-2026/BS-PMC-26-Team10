@@ -56,7 +56,7 @@ def create_booking(booking):
 
         booking_reference = uuid.uuid4().hex[:8].upper()
 
-        supabase.table("bookings").insert({
+        insert_payload = {
             "tour_id": tour["id"],
             "email": booking.email.lower().strip(),
             "full_name": booking.full_name.strip(),
@@ -64,7 +64,15 @@ def create_booking(booking):
             "participants_count": booking.participants_count,
             "status": "confirmed",
             "booking_reference": booking_reference,
-        }).execute()
+            "payment_status": getattr(booking, "payment_status", "free"),
+            "paypal_order_id": getattr(booking, "paypal_order_id", None),
+        }
+        try:
+            supabase.table("bookings").insert(insert_payload).execute()
+        except Exception:
+            insert_payload.pop("payment_status", None)
+            insert_payload.pop("paypal_order_id", None)
+            supabase.table("bookings").insert(insert_payload).execute()
 
         confirmation_message = tour.get("confirmation_message") or DEFAULT_TOUR_CONFIRMATION_MESSAGE
         email_sent = send_tour_booking_confirmation(

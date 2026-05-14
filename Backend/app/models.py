@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class Chilli(BaseModel):
@@ -44,3 +45,5 @@ class BookingCreate(BaseModel):
     full_name: str
     phone: str
     participants_count: int
+    payment_status: str = "free"
+    paypal_order_id: Optional[str] = None
