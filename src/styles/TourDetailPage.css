@@ -207,6 +207,62 @@
   cursor: not-allowed;
 }
 
+.tdp-cancel-panel {
+  border-top: 0.07vw solid #efd8cc;
+  margin-top: 1.5vw;
+  padding-top: 1.5vw;
+}
+
+.tdp-cancel-toggle {
+  width: 100%;
+  padding: 0.75vw;
+  background: transparent;
+  color: #7b5c4d;
+  border: 0.07vw solid #d4b8a8;
+  border-radius: 0.8vw;
+  font-size: 0.88vw;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.tdp-cancel-toggle:hover {
+  background: #f8f0ea;
+  color: #a14d2a;
+  border-color: #a14d2a;
+}
+
+.tdp-cancel-title {
+  margin: 0 0 1vw;
+  font-size: 1vw;
+  color: #3a2a20;
+  font-weight: 700;
+}
+
+.tdp-cancel-submit {
+  margin-top: 0.4vw;
+  padding: 0.85vw;
+  background: transparent;
+  color: #a14d2a;
+  border: 0.07vw solid #a14d2a;
+  border-radius: 0.8vw;
+  font-size: 0.95vw;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tdp-cancel-submit:hover:not(:disabled) {
+  background: #fdecea;
+  color: #8a3d1e;
+}
+
+.tdp-cancel-submit:disabled {
+  color: #c9a898;
+  border-color: #c9a898;
+  cursor: not-allowed;
+}
+
 .tdp-form-note {
   margin: 0;
   text-align: center;
@@ -234,6 +290,11 @@
   background: #f0faf0;
   border: 0.07vw solid #b6e0b6;
   padding: 2vw 1.5vw;
+}
+
+.tdp-result--compact {
+  padding: 1vw 1.2vw;
+  margin-bottom: 0.2vw;
 }
 
 .tdp-result-icon {
@@ -332,6 +393,10 @@
   .tdp-label { font-size: 3.3vw; }
   .tdp-input { font-size: 3.8vw; padding: 3vw 3.5vw; border-radius: 2.5vw; }
   .tdp-submit { font-size: 4vw; padding: 3.5vw; border-radius: 3vw; }
+  .tdp-cancel-panel { margin-top: 5vw; padding-top: 5vw; }
+  .tdp-cancel-toggle { font-size: 3.6vw; padding: 3vw; border-radius: 3vw; }
+  .tdp-cancel-title { font-size: 4vw; margin-bottom: 3vw; }
+  .tdp-cancel-submit { font-size: 4vw; padding: 3.5vw; border-radius: 3vw; }
   .tdp-form-note { font-size: 3vw; }
   .tdp-result { font-size: 3.5vw; padding: 4vw; }
   .tdp-result-icon { width: 12vw; height: 12vw; font-size: 6vw; margin-bottom: 3vw; }

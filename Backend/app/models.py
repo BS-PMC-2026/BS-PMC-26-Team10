@@ -44,3 +44,6 @@ class BookingCreate(BaseModel):
     full_name: str
     phone: str
     participants_count: int
+
+class BookingCancel(BaseModel):
+    email: str
