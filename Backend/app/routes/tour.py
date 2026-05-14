@@ -31,6 +31,7 @@ def serialize_tours(tours):
             "created_at": str(t[13]),
             "remaining_spots": remaining,
             "is_full": remaining == 0,
+            "confirmation_message": t[15] if len(t) > 15 else "",
         })
     return result
 

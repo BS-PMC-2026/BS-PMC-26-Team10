@@ -2,22 +2,33 @@
 from app.db2 import supabase
 
 
+def _tour_payload(tour, include_confirmation=True):
+    payload = {
+        "title": tour.title,
+        "kind": tour.kind,
+        "description": tour.description,
+        "date": str(tour.date),
+        "time": str(tour.time),
+        "duration": tour.duration,
+        "capacity": tour.capacity,
+        "price": tour.price,
+        "meeting_point": tour.meeting_point,
+        "includes": tour.includes,
+        "accessibility": tour.accessibility,
+        "visibility": tour.visibility,
+    }
+    if include_confirmation:
+        payload["confirmation_message"] = tour.confirmation_message
+    return payload
+
+
 def create_tour(tour):
     try:
-        supabase.table("tours").insert({
-            "title": tour.title,
-            "kind": tour.kind,
-            "description": tour.description,
-            "date": str(tour.date),
-            "time": str(tour.time),
-            "duration": tour.duration,
-            "capacity": tour.capacity,
-            "price": tour.price,
-            "meeting_point": tour.meeting_point,
-            "includes": tour.includes,
-            "accessibility": tour.accessibility,
-            "visibility": tour.visibility,
-        }).execute()
+        try:
+            supabase.table("tours").insert(_tour_payload(tour)).execute()
+        except Exception as e:
+            print("Could not save tour confirmation message, retrying without it:\n", e)
+            supabase.table("tours").insert(_tour_payload(tour, include_confirmation=False)).execute()
         return "Tour has been created!"
     except Exception as e:
         print("Error while trying to create new tour in db\n", e)
@@ -50,7 +61,7 @@ def get_all_tours():
     try:
         tours_resp = supabase.table("tours").select(
             "id, title, kind, description, date, time, duration, capacity, price, "
-            "meeting_point, includes, accessibility, visibility, created_at"
+            "meeting_point, includes, accessibility, visibility, created_at, confirmation_message"
         ).order("date").order("time").execute()
 
         bookings_resp = supabase.table("bookings").select(
@@ -66,7 +77,7 @@ def get_all_tours():
             (t["id"], t["title"], t["kind"], t["description"], t["date"], t["time"],
              t["duration"], t["capacity"], t["price"], t["meeting_point"],
              t["includes"], t["accessibility"], t["visibility"], t["created_at"],
-             booked_map.get(t["id"], 0))
+             booked_map.get(t["id"], 0), t.get("confirmation_message", ""))
             for t in tours_resp.data
         ]
     except Exception as e:
@@ -122,20 +133,13 @@ def delete_tour(tour_id):
 
 def update_tour(tour_id, tour):
     try:
-        response = supabase.table("tours").update({
-            "title": tour.title,
-            "kind": tour.kind,
-            "description": tour.description,
-            "date": str(tour.date),
-            "time": str(tour.time),
-            "duration": tour.duration,
-            "capacity": tour.capacity,
-            "price": tour.price,
-            "meeting_point": tour.meeting_point,
-            "includes": tour.includes,
-            "accessibility": tour.accessibility,
-            "visibility": tour.visibility,
-        }).eq("id", tour_id).execute()
+        try:
+            response = supabase.table("tours").update(_tour_payload(tour)).eq("id", tour_id).execute()
+        except Exception as e:
+            print("Could not update tour confirmation message, retrying without it:\n", e)
+            response = supabase.table("tours").update(
+                _tour_payload(tour, include_confirmation=False)
+            ).eq("id", tour_id).execute()
         return None if not response.data else "Tour updated successfully!"
     except Exception as e:
         print("Error while trying to update tour in db\n", e)

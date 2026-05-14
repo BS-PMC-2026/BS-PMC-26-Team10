@@ -16,14 +16,21 @@ function InventoryFormModal({
     restock_date: "",
     price: "",
     image_url: "",
+    ingredients: "",
+    ingredients_image_url: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
+  const [ingredientsImageFile, setIngredientsImageFile] = useState(null);
+  const [ingredientsImageName, setIngredientsImageName] = useState("");
+  const [ingredientsMode, setIngredientsMode] = useState("text"); // "text" | "image"
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (selectedProduct) {
+      const hasIngredientsImage = !!selectedProduct.ingredients_image_url;
+      setIngredientsMode(hasIngredientsImage ? "image" : "text");
       setFormData({
         name: selectedProduct.name || "",
         description: selectedProduct.description || "",
@@ -31,8 +38,11 @@ function InventoryFormModal({
         restock_date: selectedProduct.restock_date || "",
         price: selectedProduct.price ?? "",
         image_url: selectedProduct.image_url || "",
+        ingredients: selectedProduct.ingredients || "",
+        ingredients_image_url: selectedProduct.ingredients_image_url || "",
       });
     } else {
+      setIngredientsMode("text");
       setFormData({
         name: "",
         description: "",
@@ -40,10 +50,14 @@ function InventoryFormModal({
         restock_date: "",
         price: "",
         image_url: "",
+        ingredients: "",
+        ingredients_image_url: "",
       });
     }
     setImageFile(null);
     setImageName("");
+    setIngredientsImageFile(null);
+    setIngredientsImageName("");
     setError("");
   }, [selectedProduct, isOpen]);
 
@@ -55,9 +69,12 @@ function InventoryFormModal({
   };
 
   const resetForm = () => {
-    setFormData({ name: "", description: "", quantity: "", restock_date: "", price: "", image_url: "" });
+    setFormData({ name: "", description: "", quantity: "", restock_date: "", price: "", image_url: "", ingredients: "", ingredients_image_url: "" });
     setImageFile(null);
     setImageName("");
+    setIngredientsImageFile(null);
+    setIngredientsImageName("");
+    setIngredientsMode("text");
     setError("");
   };
 
@@ -94,6 +111,21 @@ function InventoryFormModal({
         imageUrl = uploadData.image_url;
       }
 
+      let ingredientsImageUrl = formData.ingredients_image_url;
+
+      if (ingredientsMode === "image" && ingredientsImageFile) {
+        const uploadForm = new FormData();
+        uploadForm.append("file", ingredientsImageFile);
+        if (ingredientsImageName.trim()) uploadForm.append("filename", ingredientsImageName.trim());
+        const uploadRes = await fetch(`${API_BASE_URL}/inventory/upload-ingredients-image`, {
+          method: "POST",
+          body: uploadForm,
+        });
+        if (!uploadRes.ok) throw new Error("Ingredients image upload failed.");
+        const uploadData = await uploadRes.json();
+        ingredientsImageUrl = uploadData.image_url;
+      }
+
       const payload = {
         name: formData.name.trim(),
         description: formData.description.trim(),
@@ -101,6 +133,8 @@ function InventoryFormModal({
         restock_date: formData.restock_date || null,
         price: Number(formData.price),
         image_url: imageUrl,
+        ingredients: ingredientsMode === "text" ? formData.ingredients.trim() : "",
+        ingredients_image_url: ingredientsMode === "image" ? ingredientsImageUrl : "",
       };
 
       const url = isEditing
@@ -147,6 +181,58 @@ function InventoryFormModal({
           <div className="inventory-form-group">
             <label>Description</label>
             <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Write a short product description..." rows="4" />
+          </div>
+
+          {/* Ingredients section */}
+          <div className="inventory-form-group">
+            <label>Ingredients</label>
+            <div className="inventory-ingredients-toggle">
+              <button
+                type="button"
+                className={`inv-toggle-btn${ingredientsMode === "text" ? " active" : ""}`}
+                onClick={() => setIngredientsMode("text")}
+              >
+                Text
+              </button>
+              <button
+                type="button"
+                className={`inv-toggle-btn${ingredientsMode === "image" ? " active" : ""}`}
+                onClick={() => setIngredientsMode("image")}
+              >
+                Image
+              </button>
+            </div>
+
+            {ingredientsMode === "text" ? (
+              <textarea
+                name="ingredients"
+                value={formData.ingredients}
+                onChange={handleChange}
+                placeholder="e.g. Chili peppers, vinegar, salt, garlic..."
+                rows="4"
+              />
+            ) : (
+              <div className="inventory-form-group" style={{ marginTop: "0.4vw" }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const f = e.target.files[0] || null;
+                    setIngredientsImageFile(f);
+                    if (f) setIngredientsImageName(f.name.replace(/\.[^/.]+$/, ""));
+                  }}
+                />
+                <input
+                  type="text"
+                  value={ingredientsImageName}
+                  onChange={(e) => setIngredientsImageName(e.target.value)}
+                  placeholder="File name (optional)"
+                />
+                {selectedProduct && formData.ingredients_image_url && !ingredientsImageFile && (
+                  <small style={{ color: "#888" }}>Current ingredients image already set</small>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="inventory-form-row">

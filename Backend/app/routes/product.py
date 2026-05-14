@@ -86,6 +86,8 @@ def serialize_products(products, request: Request):
             "restock_date": product[5],
             "price": float(product[6]) if product[6] is not None else None,
             "image_url": build_public_product_image_url(request, product[7] or ""),
+            "ingredients": product[8] if len(product) > 8 else "",
+            "ingredients_image_url": product[9] if len(product) > 9 else "",
         }
         for product in products
     ]
@@ -93,6 +95,15 @@ def serialize_products(products, request: Request):
 
 @router.post("/inventory/upload-image")
 async def upload_product_image(file: UploadFile = File(...), filename: str = Form(None)):
+    try:
+        url = await upload_image(file, "product-images", filename)
+        return {"image_url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image upload failed: {e}")
+
+
+@router.post("/inventory/upload-ingredients-image")
+async def upload_ingredients_image(file: UploadFile = File(...), filename: str = Form(None)):
     try:
         url = await upload_image(file, "product-images", filename)
         return {"image_url": url}
