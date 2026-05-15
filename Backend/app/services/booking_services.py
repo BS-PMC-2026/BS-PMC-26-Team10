@@ -6,7 +6,7 @@ from datetime import date, datetime, time
 
 # from app.db import get_connection
 from app.db2 import supabase
-from app.services.email_service import send_tour_booking_confirmation
+from app.services.email_service import send_tour_booking_confirmation, send_tour_cancellation_confirmation
 
 
 DEFAULT_TOUR_CONFIRMATION_MESSAGE = (
@@ -223,12 +223,23 @@ def cancel_booking(booking_reference, email):
             "status": "cancelled",
         }).eq("id", booking["id"]).execute()
 
+        email_sent = send_tour_cancellation_confirmation(
+            booking_reference=clean_reference,
+            visitor_email=booking["email"],
+            tour_title=tour.get("title", "ChiliLand tour"),
+            tour_date=str(tour["date"]),
+            tour_time=str(tour.get("time", "")),
+            participants_count=booking["participants_count"],
+        )
+
         return {
             "success": True,
             "message": "Booking cancelled successfully.",
             "booking_reference": clean_reference,
             "released_spots": booking["participants_count"],
             "tour_id": booking["tour_id"],
+            "email_sent": email_sent,
+            "confirmation_channel": "email",
         }
 
     except Exception as e:
