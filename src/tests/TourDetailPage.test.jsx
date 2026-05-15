@@ -208,6 +208,7 @@ describe("TourDetailPage", () => {
             success: true,
             booking_reference: "ABC12345",
             released_spots: 2,
+            email_sent: true,
           }),
         });
       }
@@ -235,7 +236,7 @@ describe("TourDetailPage", () => {
     await userEvent.click(screen.getByText("Cancel Booking"));
 
     await waitFor(() =>
-      expect(screen.getByText("Booking cancelled successfully. Your spots are now available again.")).toBeInTheDocument()
+      expect(screen.getByText("Booking cancelled successfully. A cancellation confirmation email was sent to your email address.")).toBeInTheDocument()
     );
     expect(fetchMock).toHaveBeenCalledWith(
       "http://127.0.0.1:8000/bookings/ABC12345/cancel",
@@ -243,6 +244,45 @@ describe("TourDetailPage", () => {
         method: "POST",
         body: JSON.stringify({ email: "visitor@example.com" }),
       })
+    );
+  });
+
+  test("shows saved cancellation message when cancellation email fails", async () => {
+    const fetchMock = vi.fn((url) => {
+      if (url.includes("/cancel")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            success: true,
+            booking_reference: "ABC12345",
+            released_spots: 2,
+            email_sent: false,
+          }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([availableTour]) });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    render(
+      <MemoryRouter initialEntries={["/tours/1"]}>
+        <Routes>
+          <Route path="/tours/:id" element={<TourDetailPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText("Cancel a booking")).toBeInTheDocument());
+    await userEvent.click(screen.getByText("Cancel a booking"));
+
+    await userEvent.type(screen.getByLabelText(/Booking reference/), "ABC12345");
+    await userEvent.type(screen.getByLabelText(/Booking email address/), "visitor@example.com");
+    await userEvent.click(screen.getByText("Cancel Booking"));
+
+    await waitFor(() =>
+      expect(screen.getByText("Booking cancelled successfully. Your spots are now available again, but the confirmation email could not be sent right now.")).toBeInTheDocument()
     );
   });
 

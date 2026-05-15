@@ -150,7 +150,12 @@ function TourDetailPage() {
       if (!res.ok) {
         setCancelResult({ success: false, message: data.detail || "Cancellation failed. Please try again." });
       } else {
-        setCancelResult({ success: true, message: "Booking cancelled successfully. Your spots are now available again." });
+        setCancelResult({
+          success: true,
+          message: data.email_sent
+            ? "Booking cancelled successfully. A cancellation confirmation email was sent to your email address."
+            : "Booking cancelled successfully. Your spots are now available again, but the confirmation email could not be sent right now.",
+        });
         setCancelForm(INITIAL_CANCEL_FORM);
         setTour((prev) => ({
           ...prev,
