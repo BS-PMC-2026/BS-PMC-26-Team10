@@ -8,7 +8,7 @@ import TourDetailPage from "../pages/TourDetailPage";
 // Mock PayPalButtons so tests don't need PayPalScriptProvider.
 // The mock simulates the full create-order → approve flow via a single button.
 vi.mock("@paypal/react-paypal-js", () => ({
-  PayPalButtons: ({ createOrder, onApprove, onError, disabled }) => (
+  PayPalButtons: ({ createOrder, onApprove, disabled }) => (
     <button
       data-testid="paypal-btn"
       disabled={disabled}
