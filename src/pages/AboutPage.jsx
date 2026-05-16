@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "../styles/AboutPage.css";
+import heroImg from "../assets/imgae3.jpeg";
 
 function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -50,43 +51,49 @@ export default function AboutPage() {
   return (
     <div className="about-page">
       <section className="about-hero">
-        <div className="about-hero-inner">
-          <Link to="/" className="about-back">
-            &#8592; Back to Home
-          </Link>
-
-          <p className="about-kicker">Hadiners · House of Spicy</p>
-
-          <h1 className="about-hero-title">
-            More than a farm.
-            <br />A story grown from the ground up.
-          </h1>
-
-          <p className="about-hero-sub">
-            A living farm, a visitor destination, and a personal journey — all
-            in one place. Come explore over 150 varieties of hot peppers and
-            discover where passion meets the soil.
-          </p>
-
-          <div className="about-hero-actions">
-            <Link to="/tours" className="about-btn about-btn--primary">
-              Book a Tour
+        <div className="about-hero-layout">
+          <div className="about-hero-inner">
+            <Link to="/" className="about-back">
+              &#8592; Back to Home
             </Link>
 
-            <button
-              className="about-btn about-btn--ghost"
-              onClick={() => scrollTo("our-story")}
-            >
-              Read Our Story
-            </button>
+            <p className="about-kicker">Hadiners · House of Spicy</p>
 
-            <Link
-              to="/farm-location"
-              state={{ from: "/about" }}
-              className="about-btn about-btn--primary"
-            >
-              Farm Location
-            </Link>
+            <h1 className="about-hero-title">
+              More than a farm.
+              <br />A story grown from the ground up.
+            </h1>
+
+            <p className="about-hero-sub">
+              A living farm, a visitor destination, and a personal journey — all
+              in one place. Come explore over 150 varieties of hot peppers and
+              discover where passion meets the soil.
+            </p>
+
+            <div className="about-hero-actions">
+              <Link to="/tours" className="about-btn about-btn--primary">
+                Book a Tour
+              </Link>
+
+              <button
+                className="about-btn about-btn--ghost"
+                onClick={() => scrollTo("our-story")}
+              >
+                Read Our Story
+              </button>
+
+              <Link
+                to="/farm-location"
+                state={{ from: "/about" }}
+                className="about-btn about-btn--primary"
+              >
+                Farm Location
+              </Link>
+            </div>
+          </div>
+
+          <div className="about-hero-image-wrap">
+            <img src={heroImg} alt="The Hadiners farm" className="about-hero-img" />
           </div>
         </div>
       </section>

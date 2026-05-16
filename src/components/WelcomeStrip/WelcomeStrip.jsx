@@ -1,26 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./WelcomeStrip.css";
 
+import img1 from "../../assets/imgae1.jpeg";
+import img2 from "../../assets/imgae2.jpeg";
+import img3 from "../../assets/imgae3.jpeg";
+import img4 from "../../assets/image4.jpeg";
+import img5 from "../../assets/image5.jpeg";
+import img6 from "../../assets/image6.jpeg";
+import img7 from "../../assets/image7.jpeg";
+
+const images = [img1, img2, img3, img4, img5, img6, img7];
+
 function WelcomeStrip() {
-  const items = [
-    {
-      title: "Fresh From the Farm",
-      text: "Locally grown chillies, picked with care and full of flavor.",
-    },
-    {
-      title: "Guided Tours",
-      text: "Walk through the farm and discover the story behind every pepper.",
-    },
-    {
-      title: "Handmade Products",
-      text: "Unique sauces, spices, and farm-made goods prepared with passion.",
-    },
-    {
-      title: "Family Experience",
-      text: "A warm and memorable visit for friends, couples, and families.",
-    },
-  ];
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <section className="welcome-strip">
@@ -36,17 +36,25 @@ function WelcomeStrip() {
           </p>
         </div>
 
-        <div className="welcome-strip-grid">
-          {items.map((item, index) => (
-            <article className="welcome-strip-card" key={index}>
-              <div className="welcome-strip-icon">
-                <span></span>
-              </div>
-
-              <h3 className="welcome-strip-card-title">{item.title}</h3>
-              <p className="welcome-strip-card-text">{item.text}</p>
-            </article>
+        <div className="welcome-strip-swiper">
+          {images.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={`Farm image ${i + 1}`}
+              className={`swiper-slide${i === current ? " swiper-slide--active" : ""}`}
+            />
           ))}
+          <div className="swiper-dots">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                className={`swiper-dot${i === current ? " swiper-dot--active" : ""}`}
+                onClick={() => setCurrent(i)}
+                aria-label={`Go to image ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="welcome-strip-cta">
