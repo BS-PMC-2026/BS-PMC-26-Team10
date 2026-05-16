@@ -456,7 +456,7 @@ describe("TourDetailPage", () => {
           }),
         });
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve([availableTour]) });
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([paidTour]) });
     });
 
     vi.stubGlobal("fetch", fetchMock);
