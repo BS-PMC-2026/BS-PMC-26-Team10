@@ -39,58 +39,56 @@
   color: #6d5447;
 }
 
-.welcome-strip-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.4vw;
-}
-
-.welcome-strip-card {
-  background: #fffaf4;
+/* Swiper */
+.welcome-strip-swiper {
+  position: relative;
+  width: 100%;
+  height: 38vw;
   border-radius: 1.4vw;
-  padding: 1.6vw;
-  box-shadow: 0 0.4vw 1.4vw rgba(90, 52, 32, 0.08);
-  border: 0.06vw solid rgba(161, 77, 42, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+  background: #e8d9c8;
 }
 
-.welcome-strip-card:hover {
-  transform: translateY(-0.25vw);
-  box-shadow: 0 0.8vw 1.8vw rgba(90, 52, 32, 0.12);
+.swiper-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
 }
 
-.welcome-strip-icon {
-  width: 3vw;
-  height: 3vw;
-  border-radius: 999vw;
-  background: #f3dfcc;
+.swiper-slide--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.swiper-dots {
+  position: absolute;
+  bottom: 1.2vw;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.2vw;
+  gap: 0.6vw;
+  z-index: 10;
 }
 
-.welcome-strip-icon span {
-  width: 1vw;
-  height: 1vw;
-  border-radius: 999vw;
-  background: #bb3e22;
-  display: block;
+.swiper-dot {
+  width: 0.7vw;
+  height: 0.7vw;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, transform 0.25s ease;
 }
 
-.welcome-strip-card-title {
-  margin: 0 0 0.8vw 0;
-  font-size: 1.15vw;
-  line-height: 1.3;
-  color: #4a2a1f;
-  font-weight: 700;
-}
-
-.welcome-strip-card-text {
-  margin: 0;
-  font-size: 0.98vw;
-  line-height: 1.65;
-  color: #6d5447;
+.swiper-dot--active {
+  background: #fff;
+  transform: scale(1.35);
 }
 
 /* CTA */
@@ -160,42 +158,19 @@
     line-height: 1.7;
   }
 
-  .welcome-strip-grid {
-    grid-template-columns: 1fr;
-    gap: 4vw;
-  }
-
-  .welcome-strip-card {
+  .welcome-strip-swiper {
+    height: 60vw;
     border-radius: 5vw;
-    padding: 5vw;
-    box-shadow: 0 1.2vw 3vw rgba(90, 52, 32, 0.08);
-    border: 0.2vw solid rgba(161, 77, 42, 0.08);
   }
 
-  .welcome-strip-card:hover {
-    transform: none;
+  .swiper-dots {
+    bottom: 3vw;
+    gap: 2vw;
   }
 
-  .welcome-strip-icon {
-    width: 12vw;
-    height: 12vw;
-    margin-bottom: 4vw;
-  }
-
-  .welcome-strip-icon span {
-    width: 4vw;
-    height: 4vw;
-  }
-
-  .welcome-strip-card-title {
-    margin: 0 0 2vw 0;
-    font-size: 4.6vw;
-    line-height: 1.3;
-  }
-
-  .welcome-strip-card-text {
-    font-size: 3.8vw;
-    line-height: 1.7;
+  .swiper-dot {
+    width: 2.5vw;
+    height: 2.5vw;
   }
 
   .welcome-strip-cta {
