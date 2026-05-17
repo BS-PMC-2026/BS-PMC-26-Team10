@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../hooks/useCart";
+import VisitorCart from "../VisitorCart/VisitorCart";
 import "./VisitorCatalogue.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
@@ -38,7 +40,11 @@ function VisitorCatalogue() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCompareItems, setSelectedCompareItems] = useState([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartFeedback, setCartFeedback] = useState({});
+  const [addingToCart, setAddingToCart] = useState({});
 
+  const cart = useCart();
   const navigate = useNavigate();
   const debounceTimeoutRef = useRef(null);
 
@@ -211,6 +217,26 @@ function VisitorCatalogue() {
     setSelectedCompareItems([]);
   }
 
+  async function handleAddToCart(chilli) {
+    setAddingToCart((prev) => ({ ...prev, [chilli.id]: true }));
+    setCartFeedback((prev) => ({ ...prev, [chilli.id]: "" }));
+
+    const result = await cart.addToCart(chilli);
+
+    if (result.success) {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Added!" }));
+    } else if (result.error === "out_of_stock") {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Sold out!" }));
+    } else {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Try again" }));
+    }
+
+    setAddingToCart((prev) => ({ ...prev, [chilli.id]: false }));
+    setTimeout(() => {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "" }));
+    }, 2000);
+  }
+
   const comparisonRows = [
     {
       label: "Origin",
@@ -271,6 +297,19 @@ function VisitorCatalogue() {
             </div>
 
             <div className="visitor-catalogue-actions">
+              <button
+                type="button"
+                className="visitor-catalogue-cart-btn"
+                onClick={() => setIsCartOpen(true)}
+              >
+                Cart
+                {cart.totalItems > 0 && (
+                  <span className="visitor-catalogue-cart-count">
+                    {cart.totalItems}
+                  </span>
+                )}
+              </button>
+
               <button
                 type="button"
                 className="visitor-catalogue-compare-btn"
@@ -412,17 +451,48 @@ function VisitorCatalogue() {
                         )}
                       </div>
 
-                      <button
-                        type="button"
-                        className="visitor-chilli-btn"
-                        onClick={() =>
-                          navigate(`/pepper/${chilli.id}`, {
-                            state: { pepper: chilli },
-                          })
-                        }
-                      >
-                        Learn More
-                      </button>
+                      {chilli.price != null && (
+                        <p className="visitor-chilli-price">
+                          ₪{parseFloat(chilli.price).toFixed(2)}
+                          <span className="visitor-chilli-price-unit">/pack</span>
+                        </p>
+                      )}
+
+                      <div className="visitor-chilli-card-actions">
+                        <button
+                          type="button"
+                          className={`visitor-chilli-btn visitor-cart-btn${
+                            cartFeedback[chilli.id] === "Added!"
+                              ? " visitor-cart-btn--added"
+                              : ""
+                          }`}
+                          disabled={
+                            !chilli.is_available ||
+                            addingToCart[chilli.id]
+                          }
+                          onClick={() => handleAddToCart(chilli)}
+                        >
+                          {addingToCart[chilli.id]
+                            ? "..."
+                            : cartFeedback[chilli.id]
+                            ? cartFeedback[chilli.id]
+                            : chilli.is_available
+                            ? "+ Add to Cart"
+                            : "Unavailable"}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="visitor-chilli-btn"
+                          onClick={() =>
+                            navigate(`/pepper/${chilli.id}`, {
+                              state: { pepper: chilli },
+                            })
+                          }
+                        >
+                          Learn More
+                        </button>
+                      </div>
                     </div>
                   </article>
                 );
@@ -537,6 +607,12 @@ function VisitorCatalogue() {
           </div>
         )}
       </div>
+
+      <VisitorCart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+      />
     </section>
   );
 }
