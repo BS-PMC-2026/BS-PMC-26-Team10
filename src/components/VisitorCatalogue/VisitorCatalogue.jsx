@@ -43,6 +43,7 @@ function VisitorCatalogue() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartFeedback, setCartFeedback] = useState({});
   const [addingToCart, setAddingToCart] = useState({});
+  const [inventory, setInventory] = useState([]);
 
   const cart = useCart();
   const navigate = useNavigate();
@@ -87,6 +88,14 @@ function VisitorCatalogue() {
       );
     });
   }, [chillies, searchInput]);
+
+  const inventoryPriceMap = useMemo(() => {
+    const map = new Map();
+    inventory.forEach((item) => {
+      if (item.name) map.set(item.name.toLowerCase().trim(), item.price);
+    });
+    return map;
+  }, [inventory]);
 
   const hasActiveFilters =
     searchInput.trim() !== "" ||
@@ -151,6 +160,21 @@ function VisitorCatalogue() {
     }
 
     fetchOrigins();
+  }, []);
+
+  useEffect(() => {
+    async function fetchInventory() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/inventory`);
+        if (res.ok) {
+          const data = await res.json();
+          setInventory(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchInventory();
   }, []);
 
   useEffect(() => {
@@ -451,9 +475,9 @@ function VisitorCatalogue() {
                         )}
                       </div>
 
-                      {chilli.price != null && (
+                      {inventoryPriceMap.get(chilli.name?.toLowerCase().trim()) != null && (
                         <p className="visitor-chilli-price">
-                          ₪{parseFloat(chilli.price).toFixed(2)}
+                          ₪{parseFloat(inventoryPriceMap.get(chilli.name?.toLowerCase().trim())).toFixed(2)}
                           <span className="visitor-chilli-price-unit">/pack</span>
                         </p>
                       )}
