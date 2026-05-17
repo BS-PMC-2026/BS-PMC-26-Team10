@@ -251,6 +251,7 @@ export default function VisitorProducts() {
         {/* cart trigger */}
         <button
           className="vp-cart-trigger"
+          data-testid="cart-trigger"
           onClick={() => setIsCartOpen(true)}
         >
           <ShoppingCart size={20} />
