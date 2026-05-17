@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 
 from app.models import Tour
 from app.services.tour_services import (
     create_tour, get_all_tours, delete_tour, update_tour,
 )
+from app.db2 import upload_image
 
 router = APIRouter()
 
@@ -32,8 +33,18 @@ def serialize_tours(tours):
             "remaining_spots": remaining,
             "is_full": remaining == 0,
             "confirmation_message": t[15] if len(t) > 15 else "",
+            "picture": t[16] if len(t) > 16 else None,
         })
     return result
+
+
+@router.post("/tours/upload-image")
+async def upload_tour_image(file: UploadFile = File(...), filename: str = Form(None)):
+    try:
+        url = await upload_image(file, "tours-booking-images", filename)
+        return {"image_url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image upload failed: {e}")
 
 
 @router.get("/tours")

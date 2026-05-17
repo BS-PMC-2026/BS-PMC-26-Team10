@@ -224,6 +224,13 @@ function ToursPage() {
                         key={tour.id}
                         className={`tours-grid-card${past ? " tours-grid-card--past" : ""}`}
                       >
+                        {tour.picture && (
+                          <img
+                            src={tour.picture}
+                            alt={tour.title}
+                            className="tours-grid-card-image"
+                          />
+                        )}
                         <div className="tours-grid-card-top">
                           <div className="tours-grid-card-badges">
                             <span className="tours-grid-badge tours-grid-badge--kind">

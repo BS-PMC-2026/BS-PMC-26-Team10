@@ -37,6 +37,9 @@ function TourCard({ tour, onEdit, onDelete }) {
 
   return (
     <div className="tour-card">
+      {tour.picture && (
+        <img src={tour.picture} alt={tour.title} className="tour-card-thumbnail" />
+      )}
       <div className="tour-card-header">
         <h3 className="tour-card-title">{tour.title}</h3>
         <div className="tour-card-actions">

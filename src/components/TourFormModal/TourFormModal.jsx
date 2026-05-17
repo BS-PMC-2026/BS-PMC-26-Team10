@@ -16,11 +16,13 @@ const EMPTY = {
   title: "", kind: "field-tasting", description: "", date: "", time: "",
   duration: "90 min", capacity: "", price: "", meeting_point: "", includes: "",
   accessibility: "mostly-yes", confirmation_message: DEFAULT_CONFIRMATION_MESSAGE,
+  picture: "",
 };
 
 function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
   const [formData, setFormData] = useState(EMPTY);
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -38,6 +40,7 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
         includes: selectedTour.includes || "",
         accessibility: selectedTour.accessibility || "mostly-yes",
         confirmation_message: selectedTour.confirmation_message || DEFAULT_CONFIRMATION_MESSAGE,
+        picture: selectedTour.picture || "",
       });
     } else {
       setFormData(EMPTY);
@@ -50,6 +53,27 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      const res = await fetch("http://127.0.0.1:8000/tours/upload-image", {
+        method: "POST",
+        body: data,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const json = await res.json();
+      setFormData((prev) => ({ ...prev, picture: json.image_url }));
+    } catch {
+      setError("Image upload failed. Please try again.");
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -78,6 +102,7 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
         accessibility: formData.accessibility,
         visibility: selectedTour?.visibility ?? "draft",
         confirmation_message: formData.confirmation_message.trim() || DEFAULT_CONFIRMATION_MESSAGE,
+        picture: formData.picture || "",
       };
 
       const url = `http://127.0.0.1:8000/tours/${selectedTour.id}`;
@@ -210,6 +235,25 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
               onChange={handleChange}
               placeholder="Guided walk · tastings · take-home"
             />
+          </div>
+
+          <div className="tour-form-group">
+            <label htmlFor="modal-tour-image">Tour image</label>
+            <input
+              id="modal-tour-image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={imageUploading}
+            />
+            {imageUploading && <span style={{ fontSize: "13px", color: "#888" }}>Uploading…</span>}
+            {formData.picture && (
+              <img
+                src={formData.picture}
+                alt="Tour"
+                style={{ marginTop: "8px", width: "100%", maxHeight: "140px", objectFit: "cover", borderRadius: "8px" }}
+              />
+            )}
           </div>
 
           <div className="tour-form-group">

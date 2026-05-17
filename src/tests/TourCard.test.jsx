@@ -115,4 +115,22 @@ describe("TourCard", () => {
       expect(screen.getByText("No bookings yet.")).toBeInTheDocument()
     );
   });
+
+  test("renders thumbnail image when picture is set", () => {
+    const tour = { ...mockTour, picture: "https://example.com/tour.jpg" };
+    render(<TourCard tour={tour} onEdit={() => {}} onDelete={() => {}} />);
+    const img = screen.getByRole("img", { name: mockTour.title });
+    expect(img).toHaveAttribute("src", "https://example.com/tour.jpg");
+  });
+
+  test("does not render image when picture is absent", () => {
+    render(<TourCard tour={mockTour} onEdit={() => {}} onDelete={() => {}} />);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  test("does not render image when picture is null", () => {
+    const tour = { ...mockTour, picture: null };
+    render(<TourCard tour={tour} onEdit={() => {}} onDelete={() => {}} />);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
 });
