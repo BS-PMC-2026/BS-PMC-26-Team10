@@ -207,6 +207,62 @@
   cursor: not-allowed;
 }
 
+.tdp-cancel-panel {
+  border-top: 0.07vw solid #efd8cc;
+  margin-top: 1.5vw;
+  padding-top: 1.5vw;
+}
+
+.tdp-cancel-toggle {
+  width: 100%;
+  padding: 0.75vw;
+  background: transparent;
+  color: #7b5c4d;
+  border: 0.07vw solid #d4b8a8;
+  border-radius: 0.8vw;
+  font-size: 0.88vw;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.tdp-cancel-toggle:hover {
+  background: #f8f0ea;
+  color: #a14d2a;
+  border-color: #a14d2a;
+}
+
+.tdp-cancel-title {
+  margin: 0 0 1vw;
+  font-size: 1vw;
+  color: #3a2a20;
+  font-weight: 700;
+}
+
+.tdp-cancel-submit {
+  margin-top: 0.4vw;
+  padding: 0.85vw;
+  background: transparent;
+  color: #a14d2a;
+  border: 0.07vw solid #a14d2a;
+  border-radius: 0.8vw;
+  font-size: 0.95vw;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tdp-cancel-submit:hover:not(:disabled) {
+  background: #fdecea;
+  color: #8a3d1e;
+}
+
+.tdp-cancel-submit:disabled {
+  color: #c9a898;
+  border-color: #c9a898;
+  cursor: not-allowed;
+}
+
 .tdp-form-note {
   margin: 0;
   text-align: center;
@@ -234,6 +290,11 @@
   background: #f0faf0;
   border: 0.07vw solid #b6e0b6;
   padding: 2vw 1.5vw;
+}
+
+.tdp-result--compact {
+  padding: 1vw 1.2vw;
+  margin-bottom: 0.2vw;
 }
 
 .tdp-result-icon {
@@ -306,6 +367,88 @@
   background: #f3dfcc;
 }
 
+/* ── field validation ── */
+.tdp-input--error {
+  border-color: #a23b3b;
+  background: #fff8f8;
+}
+
+.tdp-field-error {
+  font-size: 0.75vw;
+  color: #a23b3b;
+  margin-top: 0.1vw;
+}
+
+/* ── payment section ── */
+.tdp-payment-divider {
+  height: 0.07vw;
+  background: #efd8cc;
+  margin: 0.4vw 0;
+}
+
+.tdp-price-summary {
+  background: #fdf7f0;
+  border: 0.07vw solid #efd8cc;
+  border-radius: 0.9vw;
+  padding: 0.9vw 1.1vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45vw;
+}
+
+.tdp-price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88vw;
+  color: #7b5c4d;
+}
+
+.tdp-price-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1vw;
+  font-weight: 700;
+  color: #3a2a20;
+  padding-top: 0.5vw;
+  border-top: 0.07vw solid #efd8cc;
+  margin-top: 0.2vw;
+}
+
+.tdp-paypal-wrap {
+  margin-top: 0.3vw;
+}
+
+.tdp-paypal-label {
+  font-size: 0.78vw;
+  color: #a07060;
+  text-align: center;
+  margin: 0 0 0.6vw;
+  font-weight: 500;
+}
+
+.tdp-paypal-error {
+  font-size: 0.82vw;
+  color: #a23b3b;
+  background: #fdecea;
+  border: 0.06vw solid #f5c6c6;
+  border-radius: 0.6vw;
+  padding: 0.55vw 0.8vw;
+  margin: 0;
+}
+
+/* paid badge in success screen */
+.tdp-result-paid-badge {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 0.06vw solid #b6e0b6;
+  border-radius: 999vw;
+  font-size: 0.82vw;
+  font-weight: 600;
+  padding: 0.25vw 0.9vw;
+  margin: 0 0 0.8vw;
+}
+
 /* loading / error */
 .tdp-status {
   padding: 6vw;
@@ -332,7 +475,18 @@
   .tdp-label { font-size: 3.3vw; }
   .tdp-input { font-size: 3.8vw; padding: 3vw 3.5vw; border-radius: 2.5vw; }
   .tdp-submit { font-size: 4vw; padding: 3.5vw; border-radius: 3vw; }
+  .tdp-cancel-panel { margin-top: 5vw; padding-top: 5vw; }
+  .tdp-cancel-toggle { font-size: 3.6vw; padding: 3vw; border-radius: 3vw; }
+  .tdp-cancel-title { font-size: 4vw; margin-bottom: 3vw; }
+  .tdp-cancel-submit { font-size: 4vw; padding: 3.5vw; border-radius: 3vw; }
   .tdp-form-note { font-size: 3vw; }
+  .tdp-field-error { font-size: 3vw; }
+  .tdp-price-summary { border-radius: 3vw; padding: 3.5vw 4vw; gap: 2vw; }
+  .tdp-price-row { font-size: 3.4vw; }
+  .tdp-price-total { font-size: 3.8vw; padding-top: 2vw; }
+  .tdp-paypal-label { font-size: 3vw; margin-bottom: 2vw; }
+  .tdp-paypal-error { font-size: 3.2vw; padding: 2.5vw 3vw; border-radius: 2.5vw; }
+  .tdp-result-paid-badge { font-size: 3vw; padding: 1vw 3vw; }
   .tdp-result { font-size: 3.5vw; padding: 4vw; }
   .tdp-result-icon { width: 12vw; height: 12vw; font-size: 6vw; margin-bottom: 3vw; }
   .tdp-result-title { font-size: 5vw; }

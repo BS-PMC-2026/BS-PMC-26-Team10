@@ -5,13 +5,14 @@ from app.db2 import supabase, delete_image
 def get_product_by_id(product_id):
     try:
         response = supabase.table("inventory").select(
-            "id, name, description, quantity, last_updated, restock_date, price, image_url"
+            "id, name, description, quantity, last_updated, restock_date, price, image_url, ingredients, ingredients_image_url"
         ).eq("id", product_id).limit(1).execute()
         if not response.data:
             return None
         r = response.data[0]
         return (r["id"], r["name"], r["description"], r["quantity"],
-                r["last_updated"], r["restock_date"], r["price"], r["image_url"])
+                r["last_updated"], r["restock_date"], r["price"], r["image_url"],
+                r.get("ingredients", ""), r.get("ingredients_image_url", ""))
     except Exception as e:
         print("Error fetching product by id\n", e)
         return None
@@ -42,6 +43,8 @@ def create_product(product):
             "restock_date": str(product.restock_date) if product.restock_date else None,
             "price": product.price,
             "image_url": product.image_url,
+            "ingredients": product.ingredients or None,
+            "ingredients_image_url": product.ingredients_image_url or None,
         }).execute()
         return "Product has been created!"
     except Exception as e:
@@ -107,6 +110,8 @@ def update_product(product_id, product):
             "restock_date": str(product.restock_date) if product.restock_date else None,
             "price": product.price,
             "image_url": product.image_url,
+            "ingredients": product.ingredients or None,
+            "ingredients_image_url": product.ingredients_image_url or None,
         }).eq("id", product_id).execute()
         if not response.data:
             return None
@@ -141,11 +146,12 @@ def update_product(product_id, product):
 def get_all_products():
     try:
         response = supabase.table("inventory").select(
-            "id, name, description, quantity, last_updated, restock_date, price, image_url"
+            "id, name, description, quantity, last_updated, restock_date, price, image_url, ingredients, ingredients_image_url"
         ).order("name").execute()
         return [
             (r["id"], r["name"], r["description"], r["quantity"],
-             r["last_updated"], r["restock_date"], r["price"], r["image_url"])
+             r["last_updated"], r["restock_date"], r["price"], r["image_url"],
+             r.get("ingredients", ""), r.get("ingredients_image_url", ""))
             for r in response.data
         ]
     except Exception as e:

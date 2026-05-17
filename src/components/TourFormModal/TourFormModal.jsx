@@ -9,11 +9,13 @@ const KIND_OPTIONS = [
 ];
 
 const DURATION_OPTIONS = ["45 min", "90 min", "2 hrs", "3 hrs", "5 hrs", "Full day"];
+const DEFAULT_CONFIRMATION_MESSAGE =
+  "Your tour reservation was successful. Please keep this email and your booking reference for future changes or cancellation.";
 
 const EMPTY = {
   title: "", kind: "field-tasting", description: "", date: "", time: "",
   duration: "90 min", capacity: "", price: "", meeting_point: "", includes: "",
-  accessibility: "mostly-yes",
+  accessibility: "mostly-yes", confirmation_message: DEFAULT_CONFIRMATION_MESSAGE,
 };
 
 function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
@@ -35,6 +37,7 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
         meeting_point: selectedTour.meeting_point || "",
         includes: selectedTour.includes || "",
         accessibility: selectedTour.accessibility || "mostly-yes",
+        confirmation_message: selectedTour.confirmation_message || DEFAULT_CONFIRMATION_MESSAGE,
       });
     } else {
       setFormData(EMPTY);
@@ -74,6 +77,7 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
         includes: formData.includes.trim(),
         accessibility: formData.accessibility,
         visibility: selectedTour?.visibility ?? "draft",
+        confirmation_message: formData.confirmation_message.trim() || DEFAULT_CONFIRMATION_MESSAGE,
       };
 
       const url = `http://127.0.0.1:8000/tours/${selectedTour.id}`;
@@ -205,6 +209,18 @@ function TourFormModal({ isOpen, onClose, onTourSaved, selectedTour }) {
               value={formData.includes}
               onChange={handleChange}
               placeholder="Guided walk · tastings · take-home"
+            />
+          </div>
+
+          <div className="tour-form-group">
+            <label>Confirmation email message</label>
+            <textarea
+              name="confirmation_message"
+              value={formData.confirmation_message}
+              onChange={handleChange}
+              placeholder={DEFAULT_CONFIRMATION_MESSAGE}
+              rows="3"
+              maxLength={220}
             />
           </div>
 

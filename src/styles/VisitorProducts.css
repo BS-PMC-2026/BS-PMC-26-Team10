@@ -464,6 +464,54 @@
   cursor: not-allowed;
 }
 
+/* ingredients */
+.vp-ingredients-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vp-ingredients-toggle {
+  background: none;
+  border: 1px solid var(--vp-card-border);
+  color: var(--vp-red);
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vp-ingredients-toggle:hover {
+  background: var(--vp-red);
+  color: #fff;
+}
+
+.vp-ingredients-body {
+  border: 1px solid var(--vp-card-border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  background: #fff9f5;
+}
+
+.vp-ingredients-text {
+  font-size: 0.85rem;
+  color: var(--vp-muted);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.vp-ingredients-img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  object-fit: contain;
+  max-height: 280px;
+}
+
 /* ===== STATES ===== */
 .vp-state {
   display: flex;

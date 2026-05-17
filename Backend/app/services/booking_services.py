@@ -1,25 +1,51 @@
 import uuid
-from datetime import date
+from datetime import date, datetime, time
 
 # import psycopg2
 # import psycopg2.errors
 
 # from app.db import get_connection
 from app.db2 import supabase
+from app.services.email_service import send_tour_booking_confirmation, send_tour_cancellation_confirmation
+
+
+DEFAULT_TOUR_CONFIRMATION_MESSAGE = (
+    "Your tour reservation was successful. Please keep this email and your booking "
+    "reference for future changes or cancellation."
+)
+
+
+def _tour_has_started(tour_date, tour_time=None):
+    parsed_date = date.fromisoformat(str(tour_date))
+    if not tour_time:
+        return parsed_date < date.today()
+
+    parsed_time = time.fromisoformat(str(tour_time))
+    return datetime.combine(parsed_date, parsed_time) <= datetime.now()
+
+
+def _get_tour_for_booking(tour_id):
+    try:
+        return supabase.table("tours").select(
+            "id, capacity, date, time, title, meeting_point, confirmation_message"
+        ).eq("id", tour_id).limit(1).execute()
+    except Exception as e:
+        print("Could not fetch tour confirmation message, retrying without it:", repr(e))
+        return supabase.table("tours").select(
+            "id, capacity, date, time, title, meeting_point"
+        ).eq("id", tour_id).limit(1).execute()
 
 
 def create_booking(booking):
     try:
-        tour_resp = supabase.table("tours").select(
-            "id, capacity, date"
-        ).eq("id", booking.tour_id).limit(1).execute()
+        tour_resp = _get_tour_for_booking(booking.tour_id)
 
         if not tour_resp.data:
             return {"error": "tour_not_found", "message": "Tour not found."}
 
         tour = tour_resp.data[0]
 
-        if date.fromisoformat(str(tour["date"])) < date.today():
+        if _tour_has_started(tour["date"]):
             return {"error": "past_tour", "message": "Cannot book a tour that has already passed."}
 
         bookings_resp = supabase.table("bookings").select(
@@ -39,7 +65,7 @@ def create_booking(booking):
 
         booking_reference = uuid.uuid4().hex[:8].upper()
 
-        supabase.table("bookings").insert({
+        insert_payload = {
             "tour_id": tour["id"],
             "email": booking.email.lower().strip(),
             "full_name": booking.full_name.strip(),
@@ -47,12 +73,36 @@ def create_booking(booking):
             "participants_count": booking.participants_count,
             "status": "confirmed",
             "booking_reference": booking_reference,
-        }).execute()
+            "payment_status": getattr(booking, "payment_status", "free"),
+            "paypal_order_id": getattr(booking, "paypal_order_id", None),
+        }
+        try:
+            supabase.table("bookings").insert(insert_payload).execute()
+        except Exception:
+            insert_payload.pop("payment_status", None)
+            insert_payload.pop("paypal_order_id", None)
+            supabase.table("bookings").insert(insert_payload).execute()
+
+        confirmation_message = tour.get("confirmation_message") or DEFAULT_TOUR_CONFIRMATION_MESSAGE
+        email_sent = send_tour_booking_confirmation(
+            booking_reference=booking_reference,
+            visitor_name=booking.full_name.strip(),
+            visitor_email=booking.email.lower().strip(),
+            tour_title=tour.get("title", "ChiliLand tour"),
+            tour_date=str(tour["date"]),
+            tour_time=str(tour.get("time", "")),
+            participants_count=booking.participants_count,
+            meeting_point=tour.get("meeting_point", ""),
+            confirmation_message=confirmation_message,
+        )
 
         return {
             "success": True,
             "booking_reference": booking_reference,
             "message": "Booking confirmed.",
+            "email_sent": email_sent,
+            "confirmation_channel": "email",
+            "confirmation_message": confirmation_message,
         }
 
     except Exception as e:
@@ -147,3 +197,59 @@ def get_bookings_for_tour(tour_id):
     # except Exception as e:
     #     print("Error fetching bookings for tour:", repr(e))
     #     return []
+
+
+def cancel_booking(booking_reference, email):
+    try:
+        clean_reference = booking_reference.strip().upper()
+        clean_email = email.lower().strip()
+
+        booking_resp = supabase.table("bookings").select(
+            "id, tour_id, email, status, participants_count, booking_reference"
+        ).eq("booking_reference", clean_reference).eq("email", clean_email).limit(1).execute()
+
+        if not booking_resp.data:
+            return {"error": "booking_not_found", "message": "Booking not found."}
+
+        booking = booking_resp.data[0]
+
+        if booking["status"] == "cancelled":
+            return {"error": "already_cancelled", "message": "This booking has already been cancelled."}
+
+        tour_resp = supabase.table("tours").select(
+            "id, date, time, title"
+        ).eq("id", booking["tour_id"]).limit(1).execute()
+
+        if not tour_resp.data:
+            return {"error": "tour_not_found", "message": "Tour not found."}
+
+        tour = tour_resp.data[0]
+        if _tour_has_started(tour["date"], tour.get("time")):
+            return {"error": "tour_started", "message": "Cannot cancel a booking after the tour has started."}
+
+        supabase.table("bookings").update({
+            "status": "cancelled",
+        }).eq("id", booking["id"]).execute()
+
+        email_sent = send_tour_cancellation_confirmation(
+            booking_reference=clean_reference,
+            visitor_email=booking["email"],
+            tour_title=tour.get("title", "ChiliLand tour"),
+            tour_date=str(tour["date"]),
+            tour_time=str(tour.get("time", "")),
+            participants_count=booking["participants_count"],
+        )
+
+        return {
+            "success": True,
+            "message": "Booking cancelled successfully.",
+            "booking_reference": clean_reference,
+            "released_spots": booking["participants_count"],
+            "tour_id": booking["tour_id"],
+            "email_sent": email_sent,
+            "confirmation_channel": "email",
+        }
+
+    except Exception as e:
+        print("Error while cancelling booking:", repr(e))
+        return {"error": "server_error", "message": "An unexpected error occurred. Please try again."}

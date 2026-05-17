@@ -112,6 +112,34 @@ class BookingCreateModelTests(unittest.TestCase):
         self.assertEqual(b.phone, "0521234567")
         self.assertEqual(b.participants_count, 4)
 
+    # ── payment fields (USN-13) ────────────────────────────────────────────
+
+    def test_payment_status_defaults_to_free(self):
+        b = self._valid()
+        self.assertEqual(b.payment_status, "free")
+
+    def test_paypal_order_id_defaults_to_none(self):
+        b = self._valid()
+        self.assertIsNone(b.paypal_order_id)
+
+    def test_payment_status_can_be_set_to_paid(self):
+        b = self._valid(payment_status="paid")
+        self.assertEqual(b.payment_status, "paid")
+
+    def test_paypal_order_id_accepts_string(self):
+        b = self._valid(payment_status="paid", paypal_order_id="1AB23456CD789")
+        self.assertEqual(b.paypal_order_id, "1AB23456CD789")
+
+    def test_paid_booking_has_both_payment_fields(self):
+        b = self._valid(payment_status="paid", paypal_order_id="ORDER_XYZ")
+        self.assertEqual(b.payment_status, "paid")
+        self.assertEqual(b.paypal_order_id, "ORDER_XYZ")
+
+    def test_free_booking_ignores_paypal_order_id(self):
+        b = self._valid(payment_status="free", paypal_order_id=None)
+        self.assertEqual(b.payment_status, "free")
+        self.assertIsNone(b.paypal_order_id)
+
 
 if __name__ == "__main__":
     unittest.main()

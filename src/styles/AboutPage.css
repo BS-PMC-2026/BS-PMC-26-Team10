@@ -2,12 +2,12 @@
 .about-page {
   font-family: inherit;
   color: #3a2a20;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
 }
 
 /* shared section wrapper */
 .about-section-inner {
-  width: 88vw;
-  max-width: 1200px;
+  width: 80%;
   margin: 0 auto;
 }
 
@@ -99,9 +99,35 @@
   pointer-events: none;
 }
 
+.about-hero-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4vw;
+  align-items: center;
+}
+
 .about-hero-inner {
   position: relative;
-  max-width: 700px;
+  max-width: 600px;
+}
+
+.about-hero-image-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.about-hero-img {
+  width:50vw;
+ 
+  object-fit: cover;
+  border-radius: 1.4vw;
+  border: 0.2vw solid rgba(161, 77, 42, 0.55);
+  box-shadow:
+    0 0 0 0.5vw rgba(74, 42, 31, 0.6),
+    0 0 0 0.65vw rgba(161, 77, 42, 0.25),
+    0 1.5vw 4vw rgba(0, 0, 0, 0.55);
+  display: block;
 }
 
 .about-back {
@@ -150,7 +176,8 @@
 
 /* ── Our Story ──────────────────────────────── */
 .about-story {
-  background: #fdf7f0;
+  background-color: #fdf7f0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
   padding: 5vw 6vw;
 }
 
@@ -227,7 +254,8 @@
 
 /* ── What We Offer ──────────────────────────── */
 .about-offers {
-  background: #fff;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
   padding: 5vw 6vw;
 }
 
@@ -319,7 +347,8 @@
 
 /* ── Why Visit ──────────────────────────────── */
 .about-why {
-  background: #f8f1e7;
+  background-color: #f8f1e7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
   padding: 5vw 6vw;
 }
 
@@ -394,6 +423,9 @@
 
   /* hero */
   .about-hero { padding: 14vw 6vw 12vw; }
+  .about-hero-layout { grid-template-columns: 1fr; }
+  .about-hero-image-wrap { display: flex; justify-content: center; }
+  .about-hero-img { width: 80vw; height: 55vw; border-radius: 5vw; }
   .about-back { font-size: 3.2vw; margin-bottom: 4vw; }
   .about-kicker { font-size: 3vw; }
   .about-hero-title { font-size: 9vw; margin-bottom: 4vw; }

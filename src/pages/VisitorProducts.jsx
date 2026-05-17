@@ -140,6 +140,9 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
   const heat = getHeatLevel(item.price);
   const [adding, setAdding] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [showIngredients, setShowIngredients] = useState(false);
+
+  const hasIngredients = !!(item.ingredients || item.ingredients_image_url);
 
   const handleAdd = async (e) => {
     e.stopPropagation();
@@ -180,6 +183,31 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
         <HeatMeter level={heat} />
         <h2 className="vp-card-name">{item.name}</h2>
         <p className="vp-card-desc">{item.description || "A ChiliLand original."}</p>
+
+        {hasIngredients && (
+          <div className="vp-ingredients-wrap">
+            <button
+              className="vp-ingredients-toggle"
+              onClick={() => setShowIngredients((prev) => !prev)}
+            >
+              {showIngredients ? "Hide ingredients ▲" : "View ingredients ▼"}
+            </button>
+            {showIngredients && (
+              <div className="vp-ingredients-body">
+                {item.ingredients_image_url ? (
+                  <img
+                    src={item.ingredients_image_url}
+                    alt={`${item.name} ingredients`}
+                    className="vp-ingredients-img"
+                  />
+                ) : (
+                  <p className="vp-ingredients-text">{item.ingredients}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="vp-card-divider" />
         <div className="vp-card-footer">
           <span className="vp-card-price">₪{parseFloat(item.price).toFixed(2)}</span>
