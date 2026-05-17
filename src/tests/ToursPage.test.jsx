@@ -146,6 +146,27 @@ describe("ToursPage", () => {
       expect(screen.getByText(/No tours are currently available/)).toBeInTheDocument()
     );
   });
+
+  test("renders tour image when picture is set", async () => {
+    const tours = [{ ...mockTours[0], picture: "https://example.com/tour.jpg" }];
+    renderPage(tours);
+    await waitFor(() => {
+      const img = screen.getByRole("img", { name: "Field Walk" });
+      expect(img).toHaveAttribute("src", "https://example.com/tour.jpg");
+    });
+  });
+
+  test("does not render image when picture is absent", async () => {
+    renderPage([mockTours[0]]);
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  test("does not render image when picture is null", async () => {
+    renderPage([{ ...mockTours[0], picture: null }]);
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
 });
 
 // ── Calendar sidebar tests ─────────────────────────────────────────────────

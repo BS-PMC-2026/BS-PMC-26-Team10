@@ -90,6 +90,15 @@
   transform: translateY(-0.15vw);
 }
 
+.tours-grid-card-image {
+  width: calc(100% + 3.2vw);
+  margin: -1.6vw -1.6vw 0;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 1.4vw 1.4vw 0 0;
+  display: block;
+}
+
 .tours-grid-card--past {
   opacity: 0.65;
 }
