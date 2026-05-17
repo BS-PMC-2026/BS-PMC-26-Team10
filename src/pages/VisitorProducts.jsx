@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Flame, Search, ShoppingCart, ShoppingBag } from "lucide-react";
 import "../styles/VisitorProducts.css";
 import { useCart } from "../hooks/useCart";
 import VisitorCart from "../components/VisitorCart/VisitorCart";
@@ -21,13 +22,12 @@ function HeatMeter({ level }) {
     <div className="vp-heat" aria-label={`Heat level: ${HEAT_LABELS[level]}`}>
       <div className="vp-heat-flames">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span
+          <Flame
             key={i}
+            size={14}
             className="vp-heat-flame"
             style={{ opacity: i <= level ? 1 : 0.18, color: HEAT_COLORS[level] }}
-          >
-            🌶
-          </span>
+          />
         ))}
       </div>
       <span className="vp-heat-label" style={{ color: HEAT_COLORS[level] }}>
@@ -75,7 +75,7 @@ function ProductCard({ item, index, onAddToCart }) {
           />
         ) : (
           <div className="vp-card-img-placeholder">
-            <span>🌶</span>
+            <Flame size={32} />
           </div>
         )}
         <div className="vp-card-img-fade" />
@@ -186,7 +186,7 @@ export default function VisitorProducts() {
 
       {/* hero */}
       <section className="vp-hero">
-        <div className="vp-hero-watermark">🌶</div>
+        <div className="vp-hero-watermark"><Flame size={120} /></div>
         <div className="vp-hero-text">
           <p className="vp-hero-kicker">Straight from the field</p>
           <h1 className="vp-hero-title">Our <span>Products</span></h1>
@@ -203,7 +203,7 @@ export default function VisitorProducts() {
               <span className="vp-hero-stat-label">Farm Fresh</span>
             </div>
             <div className="vp-hero-stat">
-              <span className="vp-hero-stat-number">🔥</span>
+              <Flame size={22} className="vp-hero-stat-number" />
               <span className="vp-hero-stat-label">All heat levels</span>
             </div>
           </div>
@@ -216,7 +216,7 @@ export default function VisitorProducts() {
       {/* sticky toolbar */}
       <div className="vp-toolbar">
         <div className="vp-search-wrap">
-          <span className="vp-search-icon">🔍</span>
+          <Search size={16} className="vp-search-icon" />
           <input
             className="vp-search"
             type="text"
@@ -251,9 +251,10 @@ export default function VisitorProducts() {
         {/* cart trigger */}
         <button
           className="vp-cart-trigger"
+          data-testid="cart-trigger"
           onClick={() => setIsCartOpen(true)}
         >
-          🛒
+          <ShoppingCart size={20} />
           {cart.totalItems > 0 && (
             <span className="vp-cart-badge">{cart.totalItems}</span>
           )}
@@ -276,13 +277,13 @@ export default function VisitorProducts() {
       )}
       {!loading && error && (
         <div className="vp-state vp-state-error">
-          <span>🌶</span>
+          <Flame size={32} />
           <p>{error}</p>
         </div>
       )}
       {!loading && !error && filtered.length === 0 && (
         <div className="vp-state">
-          <span className="vp-empty-icon">🫙</span>
+          <ShoppingBag size={48} className="vp-empty-icon" />
           <p>No products found — try a different search.</p>
         </div>
       )}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Calendar, Clock, Users } from "lucide-react";
 import "./TourCard.css";
 
 function formatDate(dateStr) {
@@ -51,15 +52,15 @@ function TourCard({ tour, onEdit, onDelete }) {
 
       <div className="tour-card-meta">
         <div className="tour-card-meta-item">
-          <span className="tour-card-meta-icon">📅</span>
+          <span className="tour-card-meta-icon"><Calendar size={14} /></span>
           <span>{formatDate(tour.date)}</span>
         </div>
         <div className="tour-card-meta-item">
-          <span className="tour-card-meta-icon">🕐</span>
+          <span className="tour-card-meta-icon"><Clock size={14} /></span>
           <span>{formatTime(tour.time)}</span>
         </div>
         <div className="tour-card-meta-item">
-          <span className="tour-card-meta-icon">👥</span>
+          <span className="tour-card-meta-icon"><Users size={14} /></span>
           <span>{booked} / {tour.capacity} booked</span>
         </div>
       </div>

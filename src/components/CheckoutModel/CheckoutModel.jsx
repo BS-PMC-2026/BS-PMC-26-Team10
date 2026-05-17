@@ -1,6 +1,7 @@
 // src/components/CheckoutModel/CheckoutModel.jsx
 import { useState } from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { Flame, AlertTriangle, X } from "lucide-react";
 import "./CheckoutModel.css";
 
 export default function CheckoutModel({ isOpen, onClose, cart, onSuccess }) {
@@ -109,7 +110,7 @@ const onApprove = async (data, actions) => {
     return (
       <div className="cm-overlay">
         <div className="cm-modal cm-modal--success">
-          <div className="cm-success-icon">🌶</div>
+          <div className="cm-success-icon"><Flame size={40} /></div>
           <h2 className="cm-success-title">Order Confirmed!</h2>
           <p className="cm-success-sub">
             Thank you! Your order <strong>#{orderSuccess}</strong> is on its way.
@@ -133,7 +134,7 @@ const onApprove = async (data, actions) => {
             <h2 className="cm-title">Checkout</h2>
             <p className="cm-subtitle">Almost there — fill in your details</p>
           </div>
-          <button className="cm-close" onClick={onClose}>✕</button>
+          <button className="cm-close" onClick={onClose}><X size={18} /></button>
         </div>
 
         {/* order summary */}
@@ -205,7 +206,7 @@ const onApprove = async (data, actions) => {
         </div>
 
         {/* error */}
-        {formError && <p className="cm-error">⚠️ {formError}</p>}
+        {formError && <p className="cm-error"><AlertTriangle size={14} style={{display:"inline",marginRight:4}} />{formError}</p>}
 
         {/* paypal button */}
         <div className="cm-paypal-wrap">

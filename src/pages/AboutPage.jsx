@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Flame, Users, Package, GraduationCap, Sprout, FlaskConical, MapPin, ShoppingCart } from "lucide-react";
 import "../styles/AboutPage.css";
 import heroImg from "../assets/imgae3.jpeg";
 
@@ -8,32 +9,32 @@ function scrollTo(id) {
 
 const OFFERS = [
   {
-    icon: "🌶",
+    icon: <Flame size={28} />,
     title: "150+ Pepper Varieties",
     text: "Explore one of the largest collections of hot peppers in the region — from mild and fruity to scorching rare varieties sourced from every corner of the world.",
   },
   {
-    icon: "🚶",
+    icon: <Users size={28} />,
     title: "Guided Farm Tours",
     text: "Walk the growing tunnels with a knowledgeable guide. See the plants up close, learn how each variety is cultivated, and hear the story behind the farm.",
   },
   {
-    icon: "🫙",
+    icon: <Package size={28} />,
     title: "Handcrafted Products",
     text: "Our small-scale production facility turns fresh peppers into hot sauces, chutneys, and spice blends — all made on-site with care and quality.",
   },
   {
-    icon: "🎓",
+    icon: <GraduationCap size={28} />,
     title: "Tasting & Education",
     text: "Compare heat levels on the Scoville scale, taste fresh and processed peppers, and leave with real knowledge about origins, colours, and flavour profiles.",
   },
   {
-    icon: "🌱",
+    icon: <Sprout size={28} />,
     title: "Seeds & Seedlings",
     text: "Take a piece of the farm home. We offer a curated selection of seeds and young seedlings so you can start your own spicy growing journey.",
   },
   {
-    icon: "👨‍👩‍👧",
+    icon: <Users size={28} />,
     title: "Family-Friendly Experience",
     text: "An inclusive, outdoor experience designed for all ages — couples, families, and curious solo visitors who want something different from a typical day out.",
   },
@@ -221,22 +222,22 @@ export default function AboutPage() {
 
           <div className="about-experience-visual">
             <div className="about-experience-badge">
-              <span className="about-experience-badge-icon">🌶</span>
+              <span className="about-experience-badge-icon"><Flame size={20} /></span>
               <span>Field walk included in every tour</span>
             </div>
 
             <div className="about-experience-badge">
-              <span className="about-experience-badge-icon">🧪</span>
+              <span className="about-experience-badge-icon"><FlaskConical size={20} /></span>
               <span>Live Scoville tastings</span>
             </div>
 
             <div className="about-experience-badge">
-              <span className="about-experience-badge-icon">📍</span>
+              <span className="about-experience-badge-icon"><MapPin size={20} /></span>
               <span>Small groups — personal attention</span>
             </div>
 
             <div className="about-experience-badge">
-              <span className="about-experience-badge-icon">🛒</span>
+              <span className="about-experience-badge-icon"><ShoppingCart size={20} /></span>
               <span>Farm shop open after every tour</span>
             </div>
           </div>
