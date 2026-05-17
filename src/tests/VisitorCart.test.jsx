@@ -1,6 +1,6 @@
 // src/hooks/useCart.test.js
 import { renderHook, act } from "@testing-library/react";
-import { vi, beforeEach, test, expect } from "vitest";
+import { vi, beforeEach, describe, test, expect } from "vitest";
 import { useCart } from "../hooks/useCart";
 
 const mockProduct = {
@@ -372,6 +372,154 @@ test("discountedTotal is never negative", async () => {
   });
 
   expect(result.current.discountedTotal).toBe(0);
+});
+
+// ── UNIT: chilli-type stock validation ───────────────────────────────────────
+
+const mockChilliItem = {
+  id: 10,
+  name: "Red Habanero",
+  price: 25,
+  image_url: "http://127.0.0.1:8000/chilli.jpg",
+  _type: "chilli",
+};
+
+describe("chilli-type stock validation", () => {
+  test("addToCart with _type:'chilli' calls /chillies/{id} not /inventory/{id}", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 15, is_available: true }),
+    });
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useCart());
+
+    await act(async () => {
+      await result.current.addToCart(mockChilliItem);
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/chillies/10"));
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining("/inventory/10"));
+  });
+
+  test("addToCart with _type:'chilli' uses stock_quantity and succeeds", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 15, is_available: true }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    let response;
+    await act(async () => {
+      response = await result.current.addToCart(mockChilliItem);
+    });
+
+    expect(response.success).toBe(true);
+    expect(result.current.cartItems).toHaveLength(1);
+    expect(result.current.cartItems[0].maxQuantity).toBe(15);
+  });
+
+  test("addToCart with _type:'chilli' returns out_of_stock when is_available is false", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 0, is_available: false }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    let response;
+    await act(async () => {
+      response = await result.current.addToCart(mockChilliItem);
+    });
+
+    expect(response.success).toBe(false);
+    expect(response.error).toBe("out_of_stock");
+    expect(result.current.cartItems).toHaveLength(0);
+  });
+
+  test("addToCart stores _type:'chilli' in the cart item", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 15, is_available: true }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    await act(async () => {
+      await result.current.addToCart(mockChilliItem);
+    });
+
+    expect(result.current.cartItems[0]._type).toBe("chilli");
+  });
+
+  test("addToCart with _type:'chilli' respects stock cap via stock_quantity", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 1, is_available: true }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    await act(async () => {
+      await result.current.addToCart(mockChilliItem);
+      await result.current.addToCart(mockChilliItem);
+    });
+
+    expect(result.current.cartItems[0].quantity).toBe(1);
+    expect(result.current.stockErrors[mockChilliItem.id]).toBeTruthy();
+  });
+
+  test("validateCart with chilli item calls /chillies/{id}", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 15, is_available: true }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    await act(async () => {
+      await result.current.addToCart(mockChilliItem);
+    });
+
+    const validateFetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 15, is_available: true }),
+    });
+    global.fetch = validateFetchMock;
+
+    await act(async () => {
+      await result.current.validateCart();
+    });
+
+    expect(validateFetchMock).toHaveBeenCalledWith(expect.stringContaining("/chillies/10"));
+  });
+
+  test("validateCart flags chilli item as out-of-stock when stock_quantity drops to 0", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 5, is_available: true }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    await act(async () => {
+      await result.current.addToCart(mockChilliItem);
+    });
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 10, stock_quantity: 0, is_available: false }),
+    });
+
+    let validation;
+    await act(async () => {
+      validation = await result.current.validateCart();
+    });
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.errors[mockChilliItem.id]).toBeTruthy();
+  });
 });
 
 test("clearCart also resets promo state", async () => {

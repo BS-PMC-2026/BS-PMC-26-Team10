@@ -221,7 +221,7 @@ function VisitorCatalogue() {
     setAddingToCart((prev) => ({ ...prev, [chilli.id]: true }));
     setCartFeedback((prev) => ({ ...prev, [chilli.id]: "" }));
 
-    const result = await cart.addToCart(chilli);
+    const result = await cart.addToCart({ ...chilli, _type: "chilli" });
 
     if (result.success) {
       setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Added!" }));

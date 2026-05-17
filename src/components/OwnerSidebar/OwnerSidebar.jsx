@@ -1,39 +1,44 @@
 import { useNavigate } from "react-router-dom";
 import "./OwnerSidebar.css";
 
-const actions = [
-  { icon: "🌶️", label: "Add Tour" },
-  { icon: "📦", label: "Add Product" },
-  { icon: "👨‍🌾", label: "Add Worker" },
-  { icon: "🕒", label: "Add Shift" },
-  { icon: "🎟️", label: "Add Workshop" },
-  { icon: "🏷️", label: "Add Promo Code", route: "/owner/promo-codes" },
-  { icon: "💬", label: "Reply to Reviews" },
+const navItems = [
+  { id: "dashboard",  icon: "📊", label: "Dashboard" },
+  { id: "orders",     icon: "📋", label: "Orders" },
+  { id: "inventory",  icon: "📦", label: "Stock & Inventory" },
+  { id: "chillies",   icon: "🌿", label: "Pepper Catalogue" },
+  { id: "promo-codes",icon: "🏷️", label: "Promo Codes" },
+  { id: "tours",      icon: "🌶️", label: "Tours Overview" },
+  { id: "bookings",   icon: "📅", label: "Booking Requests" },
+  { id: "team",       icon: "👨‍🌾", label: "Team Schedule" },
+  { id: "reviews",    icon: "💬", label: "Reviews" },
 ];
 
-function OwnerSidebar() {
+function OwnerSidebar({ activeSection }) {
   const navigate = useNavigate();
 
   return (
     <aside className="owner-sidebar">
       <div className="owner-sidebar-top">
         <div className="owner-sidebar-badge">ChiliLand</div>
-        <h2>Quick actions</h2>
-        <p>Start tasks fast without digging through menus.</p>
+        <h2>Owner Panel</h2>
+        <p>Manage every part of the farm from one place.</p>
       </div>
 
-      <div className="owner-sidebar-actions">
-        {actions.map((action) => (
-          <button
-            key={action.label}
-            className="owner-action-btn"
-            onClick={() => action.route && navigate(action.route)}
-          >
-            <span className="owner-action-text">{action.label}</span>
-            <span className="owner-action-arrow">→</span>
-          </button>
-        ))}
-      </div>
+      <nav className="owner-sidebar-nav">
+        {navItems.map((item) => {
+          const isActive = activeSection === item.id || (!activeSection && item.id === "dashboard");
+          return (
+            <button
+              key={item.id}
+              className={`owner-nav-btn${isActive ? " owner-nav-btn--active" : ""}`}
+              onClick={() => navigate(`/owner/${item.id}`)}
+            >
+              <span className="owner-nav-label">{item.label}</span>
+              {isActive && <span className="owner-nav-indicator" />}
+            </button>
+          );
+        })}
+      </nav>
 
       <button className="owner-sidebar-view-site" onClick={() => navigate("/")}>
         <span>🌐</span>

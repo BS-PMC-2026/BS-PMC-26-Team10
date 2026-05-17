@@ -341,6 +341,19 @@ describe("add to cart", () => {
     });
   });
 
+  test("passes _type:'chilli' to addToCart so stock checks hit the right endpoint", async () => {
+    renderComponent();
+    await waitFor(() => screen.getByText("Red Habanero"));
+
+    fireEvent.click(screen.getAllByText(/\+ add to cart/i)[0]);
+
+    await waitFor(() => {
+      expect(mockAddToCart).toHaveBeenCalledWith(
+        expect.objectContaining({ _type: "chilli" })
+      );
+    });
+  });
+
   test("shows 'Try again' feedback on network error", async () => {
     mockAddToCart.mockResolvedValue({ success: false, error: "network_error" });
     renderComponent();

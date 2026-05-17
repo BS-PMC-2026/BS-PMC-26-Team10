@@ -1,7 +1,7 @@
 .owner-sidebar {
     width: 20vw;
     min-height: 100vh;
-    padding: 2vw 1.4vw;
+    padding: 2vw 1.2vw;
     background: linear-gradient(180deg, #4a2a1f 0%, #3a2a20 100%);
     color: white;
     position: relative;
@@ -9,14 +9,15 @@
     box-shadow: 0.6vw 0 2vw rgba(74, 42, 31, 0.18);
     display: flex;
     flex-direction: column;
-    gap: 2vw;
+    gap: 1.6vw;
+    flex-shrink: 0;
 }
 
 .owner-sidebar::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at top right, rgba(255,255,255,0.16), transparent 35%);
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 40%);
     pointer-events: none;
 }
 
@@ -29,83 +30,89 @@
     display: inline-block;
     background-color: rgba(255, 255, 255, 0.14);
     border: 0.08vw solid rgba(255, 255, 255, 0.25);
-    padding: 0.45vw 0.9vw;
+    padding: 0.4vw 0.9vw;
     border-radius: 999vw;
-    font-size: 0.95vw;
-    margin-bottom: 1vw;
+    font-size: 0.88vw;
+    margin-bottom: 0.9vw;
 }
 
 .owner-sidebar-top h2 {
-    font-size: 2vw;
-    margin-bottom: 0.7vw;
+    font-size: 1.6vw;
+    margin: 0 0 0.5vw 0;
+    line-height: 1.2;
 }
 
 .owner-sidebar-top p {
-    font-size: 1vw;
+    font-size: 0.88vw;
     color: #f3dfcc;
     line-height: 1.5;
+    margin: 0;
 }
 
-.owner-sidebar-actions {
+/* Nav */
+.owner-sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.9vw;
+    gap: 0.35vw;
     position: relative;
     z-index: 2;
+    flex: 1;
 }
 
-.owner-action-btn {
+.owner-nav-btn {
     display: flex;
     align-items: center;
-    gap: 0.9vw;
+    gap: 0.85vw;
     width: 100%;
     border: none;
-    border-radius: 1.2vw;
-    padding: 1vw 1vw;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    border-radius: 0.9vw;
+    padding: 0.85vw 1vw;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.72);
     cursor: pointer;
     text-align: left;
-    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-    backdrop-filter: blur(0.3vw);
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    position: relative;
+    font-size: 0.92vw;
+    font-weight: 500;
 }
 
-.owner-action-btn:hover {
-    transform: translateX(0.3vw);
-    background: rgba(255, 255, 255, 0.18);
-    box-shadow: 0 0.6vw 1.2vw rgba(0, 0, 0, 0.14);
+.owner-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: translateX(0.2vw);
 }
 
-.owner-action-icon {
-    width: 2.5vw;
-    height: 2.5vw;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.16);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.15vw;
+.owner-nav-btn--active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-weight: 700;
+}
+
+.owner-nav-btn--active:hover {
+    transform: none;
+}
+
+.owner-nav-icon {
+    font-size: 1.05vw;
+    width: 1.4vw;
+    text-align: center;
     flex-shrink: 0;
 }
 
-.owner-action-text {
+.owner-nav-label {
     flex: 1;
-    font-size: 1vw;
-    font-weight: 600;
 }
 
-.owner-action-arrow {
-    opacity: 0;
-    transform: translateX(-0.4vw);
-    transition: 0.2s ease;
-    font-size: 1.1vw;
+.owner-nav-indicator {
+    width: 0.35vw;
+    height: 0.35vw;
+    border-radius: 50%;
+    background: #e8a838;
+    flex-shrink: 0;
 }
 
-.owner-action-btn:hover .owner-action-arrow {
-    opacity: 1;
-    transform: translateX(0);
-}
-
+/* View site button */
 .owner-sidebar-view-site {
     margin-top: auto;
     display: flex;
@@ -113,13 +120,13 @@
     justify-content: center;
     gap: 0.6vw;
     width: 100%;
-    border: 0.08vw solid rgba(255, 255, 255, 0.3);
-    border-radius: 1.2vw;
-    padding: 0.9vw 1vw;
+    border: 0.08vw solid rgba(255, 255, 255, 0.25);
+    border-radius: 1vw;
+    padding: 0.85vw 1vw;
     background: transparent;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.65);
     cursor: pointer;
-    font-size: 1vw;
+    font-size: 0.92vw;
     font-weight: 600;
     transition: background 0.2s ease, color 0.2s ease;
     position: relative;
@@ -127,7 +134,7 @@
 }
 
 .owner-sidebar-view-site:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
 
@@ -142,49 +149,29 @@
     .owner-sidebar-badge {
         font-size: 3.2vw;
         padding: 1.4vw 3vw;
-        border-radius: 999vw;
         margin-bottom: 2.5vw;
         border-width: 0.25vw;
     }
 
     .owner-sidebar-top h2 {
         font-size: 6vw;
-        margin-bottom: 2vw;
+        margin-bottom: 1.5vw;
     }
 
-    .owner-sidebar-top p {
-        font-size: 3.7vw;
-    }
+    .owner-sidebar-top p { font-size: 3.7vw; }
 
-    .owner-sidebar-actions {
-        gap: 2.5vw;
-    }
+    .owner-sidebar-nav { gap: 2vw; }
 
-    .owner-action-btn {
-        border-radius: 4vw;
-        padding: 3.5vw;
+    .owner-nav-btn {
+        border-radius: 3.5vw;
+        padding: 3.5vw 4vw;
         gap: 3vw;
-    }
-
-    .owner-action-icon {
-        width: 10vw;
-        height: 10vw;
-        font-size: 4.5vw;
-    }
-
-    .owner-action-text {
         font-size: 3.8vw;
     }
 
-    .owner-action-arrow {
-        opacity: 1;
-        transform: none;
-        font-size: 4vw;
-    }
+    .owner-nav-icon { font-size: 4.5vw; width: 5vw; }
 
-    .owner-action-btn:hover {
-        transform: none;
-    }
+    .owner-nav-indicator { width: 1.5vw; height: 1.5vw; }
 
     .owner-sidebar-view-site {
         font-size: 3.8vw;
