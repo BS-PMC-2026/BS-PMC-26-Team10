@@ -37,7 +37,106 @@ function HeatMeter({ level }) {
   );
 }
 
-function ProductCard({ item, index, onAddToCart }) {
+function ProductModal({ product, onClose, onAddToCart }) {
+  const heat = getHeatLevel(product.price);
+  const [adding, setAdding] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  const handleAdd = async () => {
+    setAdding(true);
+    const result = await onAddToCart(product);
+    setFeedback(result.success ? "Added to cart!" : result.error === "out_of_stock" ? "Sold out!" : "Try again");
+    setAdding(false);
+    setTimeout(() => setFeedback(""), 2500);
+  };
+
+  return (
+    <div className="vp-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="vp-modal-panel" onClick={(e) => e.stopPropagation()}>
+        <button className="vp-modal-close" onClick={onClose} aria-label="Close">✕</button>
+
+        <div className="vp-modal-body">
+          <div className="vp-modal-img-side">
+            {product.image_url ? (
+              <img src={product.image_url} alt={product.name} className="vp-modal-img" />
+            ) : (
+              <div className="vp-modal-img-placeholder">🌶</div>
+            )}
+            <div className="vp-modal-img-overlay" />
+            <div className="vp-modal-img-badge">
+              {product.quantity > 0 ? (
+                <span className="vp-badge in-stock">In Stock</span>
+              ) : (
+                <span className="vp-badge out-stock">Out of Stock</span>
+              )}
+            </div>
+          </div>
+
+          <div className="vp-modal-info">
+            <HeatMeter level={heat} />
+
+            <h2 className="vp-modal-name">{product.name}</h2>
+
+            <p className="vp-modal-desc">
+              {product.description || "A ChiliLand original — crafted with love from our farm to your table."}
+            </p>
+
+            <div className="vp-modal-meta">
+              <div className="vp-modal-meta-row">
+                <span className="vp-modal-meta-icon">📦</span>
+                <span className="vp-modal-meta-label">Available</span>
+                <span className="vp-modal-meta-value">
+                  {product.quantity > 0 ? `${product.quantity} units` : "Out of stock"}
+                </span>
+              </div>
+              {product.restock_date && product.quantity === 0 && (
+                <div className="vp-modal-meta-row">
+                  <span className="vp-modal-meta-icon">🗓</span>
+                  <span className="vp-modal-meta-label">Restock</span>
+                  <span className="vp-modal-meta-value">{product.restock_date}</span>
+                </div>
+              )}
+              {product.last_updated && (
+                <div className="vp-modal-meta-row">
+                  <span className="vp-modal-meta-icon">🕐</span>
+                  <span className="vp-modal-meta-label">Last updated</span>
+                  <span className="vp-modal-meta-value">{product.last_updated}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="vp-modal-footer">
+              <div className="vp-modal-price-block">
+                <span className="vp-modal-price-label">Price</span>
+                <span className="vp-modal-price">₪{parseFloat(product.price).toFixed(2)}</span>
+              </div>
+              <button
+                className={`vp-modal-btn${feedback === "Added to cart!" ? " vp-modal-btn--added" : ""}`}
+                disabled={product.quantity === 0 || adding}
+                onClick={handleAdd}
+              >
+                {adding ? "Adding…" : feedback || (product.quantity > 0 ? "🛒 Add to Cart" : "Sold Out")}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductCard({ item, index, onAddToCart, onViewDetails }) {
   const heat = getHeatLevel(item.price);
   const [adding, setAdding] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -45,7 +144,8 @@ function ProductCard({ item, index, onAddToCart }) {
 
   const hasIngredients = !!(item.ingredients || item.ingredients_image_url);
 
-  const handleAdd = async () => {
+  const handleAdd = async (e) => {
+    e.stopPropagation();
     setAdding(true);
     setFeedback("");
     const result = await onAddToCart(item);
@@ -61,18 +161,10 @@ function ProductCard({ item, index, onAddToCart }) {
   };
 
   return (
-    <article
-      className="vp-card"
-      style={{ animationDelay: `${index * 0.07}s` }}
-    >
-      <div className="vp-card-img-wrap">
+    <article className="vp-card" style={{ animationDelay: `${index * 0.07}s` }}>
+      <button className="vp-card-img-wrap" onClick={() => onViewDetails(item)} aria-label={`View details for ${item.name}`}>
         {item.image_url ? (
-          <img
-            src={item.image_url}
-            alt={item.name}
-            className="vp-card-img"
-            loading="lazy"
-          />
+          <img src={item.image_url} alt={item.name} className="vp-card-img" loading="lazy" />
         ) : (
           <div className="vp-card-img-placeholder">
             <Flame size={32} />
@@ -86,7 +178,8 @@ function ProductCard({ item, index, onAddToCart }) {
             <span className="vp-badge out-stock">Out of Stock</span>
           )}
         </div>
-      </div>
+        <div className="vp-card-img-hover-hint">View details</div>
+      </button>
 
       <div className="vp-card-body">
         <HeatMeter level={heat} />
@@ -119,16 +212,19 @@ function ProductCard({ item, index, onAddToCart }) {
 
         <div className="vp-card-divider" />
         <div className="vp-card-footer">
-          <span className="vp-card-price">
-            ₪{parseFloat(item.price).toFixed(2)}
-          </span>
-          <button
-            className={`vp-card-btn${feedback === "Added!" ? " vp-card-btn--added" : ""}`}
-            disabled={item.quantity === 0 || adding}
-            onClick={handleAdd}
-          >
-            {adding ? "..." : feedback ? feedback : item.quantity > 0 ? "Add to Cart" : "Sold Out"}
-          </button>
+          <span className="vp-card-price">₪{parseFloat(item.price).toFixed(2)}</span>
+          <div className="vp-card-actions">
+            <button className="vp-card-details-btn" onClick={() => onViewDetails(item)}>
+              Details
+            </button>
+            <button
+              className={`vp-card-btn${feedback === "Added!" ? " vp-card-btn--added" : ""}`}
+              disabled={item.quantity === 0 || adding}
+              onClick={handleAdd}
+            >
+              {adding ? "…" : feedback ? feedback : item.quantity > 0 ? "Add" : "Sold Out"}
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -145,6 +241,7 @@ export default function VisitorProducts() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState("name");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const cart = useCart();
 
@@ -165,26 +262,32 @@ export default function VisitorProducts() {
   }, []);
 
   const filtered = useMemo(() => {
-    let result = products.filter((p) =>
-      p.name.toLowerCase().includes(search.toLowerCase())
-    );
+    let result = products.filter((p) => {
+      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory =
+        activeCategory === "All" ||
+        p.name.toLowerCase().includes(activeCategory.toLowerCase()) ||
+        (p.description || "").toLowerCase().includes(activeCategory.toLowerCase());
+      return matchesSearch && matchesCategory;
+    });
     if (sortBy === "price-asc") result = [...result].sort((a, b) => a.price - b.price);
     if (sortBy === "price-desc") result = [...result].sort((a, b) => b.price - a.price);
     if (sortBy === "name") result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     return result;
-  }, [products, search, sortBy]);
+  }, [products, search, sortBy, activeCategory]);
 
   return (
     <div className="vp-root">
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={cart.addToCart}
+        />
+      )}
 
-      {/* cart drawer */}
-      <VisitorCart
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-      />
+      <VisitorCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} />
 
-      {/* hero */}
       <section className="vp-hero">
         <div className="vp-hero-watermark"><Flame size={120} /></div>
         <div className="vp-hero-text">
@@ -213,7 +316,6 @@ export default function VisitorProducts() {
         </div>
       </section>
 
-      {/* sticky toolbar */}
       <div className="vp-toolbar">
         <div className="vp-search-wrap">
           <Search size={16} className="vp-search-icon" />
@@ -244,8 +346,8 @@ export default function VisitorProducts() {
           onChange={(e) => setSortBy(e.target.value)}
         >
           <option value="name">Sort: A–Z</option>
-          <option value="price-asc">Sort: Price ↑</option>
-          <option value="price-desc">Sort: Price ↓</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
         </select>
 
         {/* cart trigger */}
@@ -261,14 +363,13 @@ export default function VisitorProducts() {
         </button>
       </div>
 
-      {/* results count */}
       {!loading && !error && (
         <p className="vp-results-count">
           {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
+          {activeCategory !== "All" && ` in "${activeCategory}"`}
         </p>
       )}
 
-      {/* states */}
       {loading && (
         <div className="vp-state">
           <div className="vp-spinner" />
@@ -288,7 +389,6 @@ export default function VisitorProducts() {
         </div>
       )}
 
-      {/* grid */}
       {!loading && !error && filtered.length > 0 && (
         <section className="vp-grid">
           {filtered.map((item, i) => (
@@ -297,6 +397,7 @@ export default function VisitorProducts() {
               item={item}
               index={i}
               onAddToCart={cart.addToCart}
+              onViewDetails={setSelectedProduct}
             />
           ))}
         </section>
