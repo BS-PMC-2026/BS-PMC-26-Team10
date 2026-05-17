@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { MapPin, Tractor, ShoppingBag, Camera, Car, Compass, Bus, Phone, Mail, Flame, Users, GraduationCap } from "lucide-react";
 import "../styles/FarmLocation.css";
 
 function FarmLocation() {
@@ -44,7 +45,7 @@ function FarmLocation() {
               a warm farm atmosphere. Find us easily and start your journey.
             </p>
 
-            <div className="farm-address-box">📍 {farmAddress}</div>
+            <div className="farm-address-box"><MapPin size={16} style={{display:'inline',marginRight:6}} />{farmAddress}</div>
 
             <div className="farm-location-actions">
               <a
@@ -70,10 +71,10 @@ function FarmLocation() {
           <div className="farm-visit-card">
             <h3>What Awaits You</h3>
             <ul>
-              <li>🌶️ Chili tasting experience</li>
-              <li>🚜 Guided farm tours</li>
-              <li>🛍️ Unique chili products</li>
-              <li>📸 Authentic farm atmosphere</li>
+              <li><Flame size={14} style={{display:'inline',marginRight:6}} />Chili tasting experience</li>
+              <li><Tractor size={14} style={{display:'inline',marginRight:6}} />Guided farm tours</li>
+              <li><ShoppingBag size={14} style={{display:'inline',marginRight:6}} />Unique chili products</li>
+              <li><Camera size={14} style={{display:'inline',marginRight:6}} />Authentic farm atmosphere</li>
             </ul>
           </div>
         </section>
@@ -85,7 +86,7 @@ function FarmLocation() {
               <p>Use the map below to locate the farm before your visit.</p>
             </div>
 
-            <div className="farm-map-tag">📍 Pri Gan, Israel</div>
+            <div className="farm-map-tag"><MapPin size={14} style={{display:'inline',marginRight:4}} />Pri Gan, Israel</div>
           </div>
 
           <div className="farm-map-wrapper">
@@ -121,9 +122,9 @@ function FarmLocation() {
             <h2>How to Get Here</h2>
 
             <ul>
-              <li>🚗 Free parking available near the farm</li>
-              <li>🧭 Recommended: use Waze or Google Maps</li>
-              <li>🚌 Bus: Line 12 → “Prigan Center” about 5 min walk</li>
+              <li><Car size={14} style={{display:'inline',marginRight:6}} />Free parking available near the farm</li>
+              <li><Compass size={14} style={{display:'inline',marginRight:6}} />Recommended: use Waze or Google Maps</li>
+              <li><Bus size={14} style={{display:'inline',marginRight:6}} />Bus: Line 12, &quot;Prigan Center&quot; stop — about 5 min walk</li>
             </ul>
           </div>
 
@@ -132,8 +133,8 @@ function FarmLocation() {
 
             <p>If you have trouble finding us, feel free to contact:</p>
 
-            <div className="contact-item">📞 052-324-4448</div>
-            <div className="contact-item">✉️ SPICYDINARS@GMAIL.COM</div>
+            <div className="contact-item"><Phone size={14} style={{display:'inline',marginRight:6}} />052-324-4448</div>
+            <div className="contact-item"><Mail size={14} style={{display:'inline',marginRight:6}} />SPICYDINARS@GMAIL.COM</div>
           </div>
         </section>
       </div>
