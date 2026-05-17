@@ -29,7 +29,6 @@ function OwnerSidebar() {
             className="owner-action-btn"
             onClick={() => action.route && navigate(action.route)}
           >
-            <span className="owner-action-icon">{action.icon}</span>
             <span className="owner-action-text">{action.label}</span>
             <span className="owner-action-arrow">→</span>
           </button>
