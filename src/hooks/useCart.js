@@ -46,11 +46,19 @@ export function useCart() {
   // checks live stock before adding so user can't add more than available
   const addToCart = useCallback(async (product) => {
     try {
-      const res = await fetch(`${BASE_URL}/inventory/${product.id}`);
-      if (!res.ok) throw new Error("Could not verify stock");
-      const liveProduct = await res.json();
+      const isChilli = product._type === "chilli";
+      const endpoint = isChilli
+        ? `${BASE_URL}/chillies/${product.id}`
+        : `${BASE_URL}/inventory/${product.id}`;
 
-      if (liveProduct.quantity === 0) {
+      const res = await fetch(endpoint);
+      if (!res.ok) throw new Error("Could not verify stock");
+      const liveItem = await res.json();
+
+      const availableQty = isChilli ? liveItem.stock_quantity : liveItem.quantity;
+      const isAvailable = isChilli ? liveItem.is_available : availableQty > 0;
+
+      if (!isAvailable || availableQty === 0) {
         setStockErrors((prev) => ({
           ...prev,
           [product.id]: "Sorry, this item just sold out.",
@@ -62,10 +70,10 @@ export function useCart() {
         const existing = prev.find((i) => i.id === product.id);
         const currentQtyInCart = existing ? existing.quantity : 0;
 
-        if (currentQtyInCart >= liveProduct.quantity) {
+        if (currentQtyInCart >= availableQty) {
           setStockErrors((prevErrors) => ({
             ...prevErrors,
-            [product.id]: `Only ${liveProduct.quantity} available.`,
+            [product.id]: `Only ${availableQty} available.`,
           }));
           return prev;
         }
@@ -79,7 +87,7 @@ export function useCart() {
         if (existing) {
           return prev.map((i) =>
             i.id === product.id
-              ? { ...i, quantity: i.quantity + 1, maxQuantity: liveProduct.quantity }
+              ? { ...i, quantity: i.quantity + 1, maxQuantity: availableQty }
               : i
           );
         }
@@ -92,7 +100,8 @@ export function useCart() {
             price: product.price,
             image_url: product.image_url,
             quantity: 1,
-            maxQuantity: liveProduct.quantity,
+            maxQuantity: availableQty,
+            _type: product._type,
           },
         ];
       });
@@ -122,19 +131,26 @@ export function useCart() {
     }
 
     try {
-      const res = await fetch(`${BASE_URL}/inventory/${productId}`);
-      if (!res.ok) throw new Error();
-      const liveProduct = await res.json();
+      const cartItem = getStoredCart().find((i) => i.id === productId);
+      const isChilli = cartItem?._type === "chilli";
+      const endpoint = isChilli
+        ? `${BASE_URL}/chillies/${productId}`
+        : `${BASE_URL}/inventory/${productId}`;
 
-      if (newQuantity > liveProduct.quantity) {
+      const res = await fetch(endpoint);
+      if (!res.ok) throw new Error();
+      const liveItem = await res.json();
+      const availableQty = isChilli ? liveItem.stock_quantity : liveItem.quantity;
+
+      if (newQuantity > availableQty) {
         setStockErrors((prev) => ({
           ...prev,
-          [productId]: `Only ${liveProduct.quantity} available.`,
+          [productId]: `Only ${availableQty} available.`,
         }));
         setCartItems((prev) =>
           prev.map((i) =>
             i.id === productId
-              ? { ...i, quantity: liveProduct.quantity, maxQuantity: liveProduct.quantity }
+              ? { ...i, quantity: availableQty, maxQuantity: availableQty }
               : i
           )
         );
@@ -150,7 +166,7 @@ export function useCart() {
       setCartItems((prev) =>
         prev.map((i) =>
           i.id === productId
-            ? { ...i, quantity: newQuantity, maxQuantity: liveProduct.quantity }
+            ? { ...i, quantity: newQuantity, maxQuantity: availableQty }
             : i
         )
       );
@@ -221,29 +237,35 @@ export function useCart() {
     await Promise.all(
       cartItems.map(async (item) => {
         try {
-          const res = await fetch(`${BASE_URL}/inventory/${item.id}`);
-          if (!res.ok) throw new Error();
-          const liveProduct = await res.json();
+          const isChilli = item._type === "chilli";
+          const endpoint = isChilli
+            ? `${BASE_URL}/chillies/${item.id}`
+            : `${BASE_URL}/inventory/${item.id}`;
 
-          if (liveProduct.quantity === 0) {
+          const res = await fetch(endpoint);
+          if (!res.ok) throw new Error();
+          const liveItem = await res.json();
+          const availableQty = isChilli ? liveItem.stock_quantity : liveItem.quantity;
+          const isAvailable = isChilli ? liveItem.is_available : availableQty > 0;
+
+          if (!isAvailable || availableQty === 0) {
             errors[item.id] = `"${item.name}" is now out of stock.`;
             isValid = false;
-            // keep item in cart but flagged — user decides to remove
             updatedItems.push({ ...item, maxQuantity: 0, outOfStock: true });
-          } else if (item.quantity > liveProduct.quantity) {
+          } else if (item.quantity > availableQty) {
             errors[item.id] =
-              `Only ${liveProduct.quantity} left of "${item.name}". Quantity adjusted.`;
+              `Only ${availableQty} left of "${item.name}". Quantity adjusted.`;
             isValid = false;
             updatedItems.push({
               ...item,
-              quantity: liveProduct.quantity,
-              maxQuantity: liveProduct.quantity,
+              quantity: availableQty,
+              maxQuantity: availableQty,
               outOfStock: false,
             });
           } else {
             updatedItems.push({
               ...item,
-              maxQuantity: liveProduct.quantity,
+              maxQuantity: availableQty,
               outOfStock: false,
             });
           }

@@ -1,0 +1,286 @@
+.od-root {
+  padding: 2.5vw 3vw;
+  min-height: 100%;
+}
+
+.od-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2vw;
+  min-height: 50vh;
+  color: #6d5447;
+  font-size: 1.05vw;
+}
+
+.od-spinner {
+  width: 3vw;
+  height: 3vw;
+  border: 0.25vw solid rgba(161, 77, 42, 0.2);
+  border-top-color: #bb3e22;
+  border-radius: 50%;
+  animation: od-spin 0.8s linear infinite;
+}
+
+@keyframes od-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* header */
+.od-header {
+  margin-bottom: 2.4vw;
+  animation: od-fade-up 0.5s ease;
+}
+
+.od-overline {
+  font-size: 0.88vw;
+  text-transform: uppercase;
+  letter-spacing: 0.12vw;
+  color: #a14d2a;
+  font-weight: 700;
+  margin: 0 0 0.4vw 0;
+}
+
+.od-header h1 {
+  font-size: 2.4vw;
+  color: #4a2a1f;
+  margin: 0 0 0.4vw 0;
+  line-height: 1.1;
+}
+
+.od-subtitle {
+  font-size: 1vw;
+  color: #6d5447;
+  margin: 0;
+}
+
+/* KPI stats row */
+.od-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2vw;
+  margin-bottom: 1.6vw;
+}
+
+.od-stat-card {
+  background: #fff;
+  border-radius: 1.2vw;
+  padding: 1.4vw 1.6vw;
+  border: 0.06vw solid rgba(161, 77, 42, 0.1);
+  border-top: 0.35vw solid #bb3e22;
+  box-shadow: 0 0.4vw 1.2vw rgba(74, 42, 31, 0.06);
+  animation: od-fade-up 0.5s ease;
+}
+
+.od-stat-label {
+  font-size: 0.88vw;
+  color: #9a7060;
+  margin: 0 0 0.5vw 0;
+  font-weight: 500;
+}
+
+.od-stat-value {
+  font-size: 2vw;
+  color: #4a2a1f;
+  margin: 0 0 0.2vw 0;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.od-stat-sub {
+  font-size: 0.8vw;
+  color: #b08070;
+  margin: 0;
+}
+
+/* Charts rows */
+.od-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1.2vw;
+  margin-bottom: 1.6vw;
+}
+
+.od-card {
+  background: #fff;
+  border-radius: 1.4vw;
+  padding: 1.6vw;
+  border: 0.06vw solid rgba(161, 77, 42, 0.1);
+  box-shadow: 0 0.4vw 1.4vw rgba(74, 42, 31, 0.06);
+  animation: od-fade-up 0.55s ease;
+}
+
+.od-card-title {
+  font-size: 1.1vw;
+  color: #4a2a1f;
+  margin: 0 0 0.25vw 0;
+  font-weight: 700;
+}
+
+.od-card-sub {
+  font-size: 0.85vw;
+  color: #9a7060;
+  margin: 0 0 1.2vw 0;
+}
+
+.od-empty {
+  font-size: 0.95vw;
+  color: #b08070;
+  padding: 2vw 0;
+  text-align: center;
+}
+
+/* Donut card */
+.od-donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.4vw;
+}
+
+.od-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vw;
+  flex-shrink: 0;
+}
+
+.od-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55vw;
+  font-size: 0.88vw;
+  color: #5a3a2a;
+}
+
+.od-legend-dot {
+  width: 0.75vw;
+  height: 0.75vw;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.od-legend-name {
+  flex: 1;
+}
+
+.od-legend-val {
+  font-weight: 700;
+  color: #4a2a1f;
+}
+
+/* Recent orders table */
+.od-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88vw;
+}
+
+.od-table th {
+  text-align: left;
+  padding: 0.55vw 0.8vw;
+  color: #9a7060;
+  font-weight: 600;
+  font-size: 0.8vw;
+  border-bottom: 0.08vw solid rgba(161, 77, 42, 0.1);
+}
+
+.od-table td {
+  padding: 0.7vw 0.8vw;
+  color: #5a3a2a;
+  border-bottom: 0.06vw solid rgba(161, 77, 42, 0.06);
+  vertical-align: middle;
+}
+
+.od-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.od-order-id {
+  font-weight: 700;
+  color: #4a2a1f;
+}
+
+.od-amount {
+  font-weight: 600;
+  color: #4a2a1f;
+}
+
+.od-badge {
+  display: inline-block;
+  padding: 0.2vw 0.7vw;
+  border-radius: 999vw;
+  font-size: 0.78vw;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+@keyframes od-fade-up {
+  from { opacity: 0; transform: translateY(0.8vw); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── responsive ───────────────────────────────── */
+@media (max-width: 1024px) {
+  .od-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .od-charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .od-root {
+    padding: 5vw 4vw;
+  }
+
+  .od-overline { font-size: 3vw; }
+
+  .od-header h1 { font-size: 7vw; }
+
+  .od-subtitle { font-size: 3.8vw; }
+
+  .od-stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    margin-bottom: 4vw;
+  }
+
+  .od-stat-card {
+    border-radius: 4vw;
+    padding: 4vw;
+    border-top-width: 1vw;
+  }
+
+  .od-stat-label { font-size: 3.2vw; }
+  .od-stat-value { font-size: 6vw; }
+  .od-stat-sub   { font-size: 2.8vw; }
+
+  .od-charts-row { gap: 4vw; margin-bottom: 4vw; }
+
+  .od-card {
+    border-radius: 4vw;
+    padding: 4vw;
+  }
+
+  .od-card-title { font-size: 4.2vw; }
+  .od-card-sub   { font-size: 3.2vw; }
+
+  .od-donut-wrap { flex-direction: column; }
+
+  .od-legend-item { font-size: 3.2vw; }
+  .od-legend-dot  { width: 2.5vw; height: 2.5vw; }
+
+  .od-table th { font-size: 3vw; padding: 2vw; }
+  .od-table td { font-size: 3.2vw; padding: 2.5vw; }
+
+  .od-badge { font-size: 2.8vw; padding: 0.8vw 2.5vw; }
+
+  .od-loading { font-size: 4vw; }
+  .od-spinner { width: 10vw; height: 10vw; border-width: 0.8vw; }
+}

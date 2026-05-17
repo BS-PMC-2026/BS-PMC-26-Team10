@@ -11,6 +11,7 @@ class Chilli(BaseModel):
     shuMax : int
     season : str
     full_description : str = ''
+    price : Optional[float] = None
 class Product(BaseModel):
     name : str
     description : str

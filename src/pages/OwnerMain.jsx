@@ -1,25 +1,55 @@
+import { useParams } from "react-router-dom";
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
-import OwnerCardsGrid from "../components/OwnerCardsGrid/OwnerCardsGrid";
+import OwnerDashboard from "../components/OwnerDashboard/OwnerDashboard";
+import OwnerOrders from "./OwnerOrders";
+import OwnerInventory from "./OwnerInventory";
+import OwnerChillies from "./OwnerChillies";
+import OwnerPromoCodes from "./OwnerPromoCodes";
 import "../styles/OwnerMain.css";
 
+function ComingSoon({ section }) {
+  const labels = {
+    tours:    { icon: "🌶️", title: "Tours Overview",     desc: "See active tours, upcoming groups and schedule status." },
+    bookings: { icon: "📅", title: "Booking Requests",   desc: "Check new reservations and visitor activity." },
+    team:     { icon: "👨‍🌾", title: "Team Schedule",      desc: "See who works today and upcoming shift coverage." },
+    reviews:  { icon: "💬", title: "Reviews",             desc: "Read the newest visitor feedback from the site." },
+  };
+  const info = labels[section] ?? { icon: "🚧", title: section, desc: "This section is coming soon." };
+
+  return (
+    <div className="owner-coming-soon">
+      <span className="owner-coming-soon-icon">{info.icon}</span>
+      <h2>{info.title}</h2>
+      <p>{info.desc}</p>
+      <span className="owner-coming-soon-tag">Coming soon</span>
+    </div>
+  );
+}
+
 function OwnerMain() {
+  const { section } = useParams();
+  const activeSection = section ?? "dashboard";
+
+  function renderContent() {
+    switch (activeSection) {
+      case "dashboard":  return <OwnerDashboard />;
+      case "orders":     return <OwnerOrders />;
+      case "inventory":  return <OwnerInventory />;
+      case "chillies":   return <OwnerChillies />;
+      case "promo-codes": return <OwnerPromoCodes />;
+      default:           return <ComingSoon section={activeSection} />;
+    }
+  }
+
   return (
     <div className="owner-layout">
-      <div className="owner-bg-shape owner-bg-shape-1"></div>
-      <div className="owner-bg-shape owner-bg-shape-2"></div>
+      <div className="owner-bg-shape owner-bg-shape-1" />
+      <div className="owner-bg-shape owner-bg-shape-2" />
 
-      <OwnerSidebar />
+      <OwnerSidebar activeSection={activeSection} />
 
       <main className="owner-content">
-        <div className="owner-header">
-          <p className="owner-overline">Owner Control Center</p>
-          <h1>Farm overview</h1>
-          <p className="owner-subtitle">
-            Manage the daily work of ChiliLand in one place.
-          </p>
-        </div>
-
-        <OwnerCardsGrid />
+        {renderContent()}
       </main>
     </div>
   );

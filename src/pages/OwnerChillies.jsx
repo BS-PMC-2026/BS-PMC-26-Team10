@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 import ChilliFormModal from "../components/ChilliFormModal/ChilliFormModal";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
@@ -44,10 +43,7 @@ function OwnerChillies() {
   }, []);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <OwnerSidebar />
-
-      <main style={{ flex: 1, padding: "2rem" }}>
+    <div style={{ flex: 1, padding: "2rem" }}>
         <p style={{ color: "#888", margin: 0 }}>Owner Control Center</p>
         <h1 style={{ margin: "0.25rem 0 0.5rem" }}>Peppers</h1>
         <p style={{ color: "#666", marginBottom: "1.5rem" }}>
@@ -120,7 +116,6 @@ function OwnerChillies() {
           onClose={() => setIsModalOpen(false)}
           onChilliAdded={fetchChillies}
         />
-      </main>
     </div>
   );
 }

@@ -63,6 +63,46 @@
     left: 20vw;
 }
 
+.owner-coming-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    gap: 1vw;
+    animation: fadeUp 0.5s ease;
+}
+
+.owner-coming-soon-icon {
+    font-size: 4vw;
+}
+
+.owner-coming-soon h2 {
+    font-size: 2vw;
+    color: #4a2a1f;
+    margin: 0;
+}
+
+.owner-coming-soon p {
+    font-size: 1.05vw;
+    color: #6d5447;
+    max-width: 32vw;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.owner-coming-soon-tag {
+    display: inline-block;
+    background: #f2dfd0;
+    color: #9f2d00;
+    border-radius: 999vw;
+    padding: 0.4vw 1.2vw;
+    font-size: 0.9vw;
+    font-weight: 600;
+    margin-top: 0.5vw;
+}
+
 @keyframes fadeUp {
     from {
         opacity: 0;

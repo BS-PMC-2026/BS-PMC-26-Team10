@@ -88,6 +88,62 @@ describe("ChilliFormModal", () => {
     });
   });
 
+  describe("price field", () => {
+    test("renders the price label and input placeholder", () => {
+      renderModal();
+      expect(screen.getByText(/price per pack/i)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("e.g. 25")).toBeInTheDocument();
+    });
+
+    test("price value is sent in submit payload when filled in", async () => {
+      const fetchMock = vi.fn()
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ image_url: "https://example.com/img.jpg" }) })
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
+      vi.stubGlobal("fetch", fetchMock);
+
+      renderModal({ onClose: vi.fn(), onChilliAdded: vi.fn() });
+
+      await userEvent.type(screen.getByPlaceholderText("Habanero"), "Test Pepper");
+      await userEvent.type(screen.getByPlaceholderText("100000"), "10000");
+      await userEvent.type(screen.getByPlaceholderText("350000"), "50000");
+      await userEvent.type(screen.getByPlaceholderText("e.g. 25"), "18.5");
+
+      const file = new File(["img"], "pepper.jpg", { type: "image/jpeg" });
+      await userEvent.upload(document.querySelector('input[type="file"]'), file);
+
+      await userEvent.click(screen.getByRole("button", { name: "Add Pepper" }));
+
+      await waitFor(() => {
+        const body = JSON.parse(fetchMock.mock.calls[1][1].body);
+        expect(body.price).toBe(18.5);
+      });
+    });
+
+    test("price is null in payload when left empty", async () => {
+      const fetchMock = vi.fn()
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ image_url: "https://example.com/img.jpg" }) })
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
+      vi.stubGlobal("fetch", fetchMock);
+
+      renderModal({ onClose: vi.fn(), onChilliAdded: vi.fn() });
+
+      await userEvent.type(screen.getByPlaceholderText("Habanero"), "Test Pepper");
+      await userEvent.type(screen.getByPlaceholderText("100000"), "10000");
+      await userEvent.type(screen.getByPlaceholderText("350000"), "50000");
+      // leave price blank
+
+      const file = new File(["img"], "pepper.jpg", { type: "image/jpeg" });
+      await userEvent.upload(document.querySelector('input[type="file"]'), file);
+
+      await userEvent.click(screen.getByRole("button", { name: "Add Pepper" }));
+
+      await waitFor(() => {
+        const body = JSON.parse(fetchMock.mock.calls[1][1].body);
+        expect(body.price).toBeNull();
+      });
+    });
+  });
+
   test("shows error message when submit fails", async () => {
     vi.stubGlobal("fetch", vi.fn()
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ image_url: "https://example.com/img.jpg" }) })
