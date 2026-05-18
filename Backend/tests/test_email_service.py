@@ -25,7 +25,7 @@ class TourBookingConfirmationSmtpTests(unittest.TestCase):
 
         with patch.object(email_service, "SMTP_USERNAME", "project@example.com"), \
                 patch.object(email_service, "SMTP_APP_PASSWORD", "app-password"), \
-                patch.object(email_service, "SENDER_EMAIL", "project@example.com"), \
+                patch.object(email_service, "SMTP_SENDER_EMAIL", "project@example.com"), \
                 patch.object(email_service.smtplib, "SMTP", return_value=smtp_context) as smtp_mock:
             result = self._send_booking_email()
 
