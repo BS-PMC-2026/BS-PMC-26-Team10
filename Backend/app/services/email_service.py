@@ -1,4 +1,6 @@
 import os
+import smtplib
+from email.message import EmailMessage
 from dotenv import load_dotenv
 
 try:
@@ -10,9 +12,37 @@ load_dotenv()
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "onboarding@resend.dev")
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+SMTP_APP_PASSWORD = os.getenv("SMTP_APP_PASSWORD")
 
 if resend:
     resend.api_key = RESEND_API_KEY
+
+
+def _send_smtp_email(to_email, subject, html):
+    if not SMTP_USERNAME or not SMTP_APP_PASSWORD:
+        print("Gmail SMTP is not configured; email was not sent.")
+        return False
+
+    message = EmailMessage()
+    message["From"] = SENDER_EMAIL
+    message["To"] = to_email
+    message["Subject"] = subject
+    message.set_content("This email requires an HTML-capable email client.")
+    message.add_alternative(html, subtype="html")
+
+    try:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as smtp:
+            smtp.starttls()
+            smtp.login(SMTP_USERNAME, SMTP_APP_PASSWORD)
+            smtp.send_message(message)
+        print("Email sent via Gmail SMTP.")
+        return True
+    except Exception as e:
+        print("Failed to send email via Gmail SMTP:", e)
+        return False
 
 
 def send_order_confirmation(order_id, customer_name, customer_email, items, total_amount):
@@ -195,22 +225,11 @@ def send_tour_booking_confirmation(
     </html>
     """
 
-    try:
-        if resend is None or not RESEND_API_KEY:
-            print("Resend is not configured; tour booking email was not sent.")
-            return False
-
-        response = resend.Emails.send({
-            "from": SENDER_EMAIL,
-            "to": visitor_email,
-            "subject": f"ChiliLand Tour Booking Confirmed - {booking_reference}",
-            "html": html,
-        })
-        print("Tour booking email sent:", response)
-        return True
-    except Exception as e:
-        print("Failed to send tour booking email:", e)
-        return False
+    return _send_smtp_email(
+        to_email=visitor_email,
+        subject=f"ChiliLand Tour Booking Confirmed - {booking_reference}",
+        html=html,
+    )
 
 
 def send_tour_cancellation_confirmation(
