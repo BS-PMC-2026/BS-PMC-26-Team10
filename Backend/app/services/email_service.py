@@ -16,6 +16,7 @@ SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_APP_PASSWORD = os.getenv("SMTP_APP_PASSWORD")
+SMTP_SENDER_EMAIL = os.getenv("SMTP_SENDER_EMAIL", SMTP_USERNAME or SENDER_EMAIL)
 
 if resend:
     resend.api_key = RESEND_API_KEY
@@ -27,7 +28,7 @@ def _send_smtp_email(to_email, subject, html):
         return False
 
     message = EmailMessage()
-    message["From"] = SENDER_EMAIL
+    message["From"] = SMTP_SENDER_EMAIL
     message["To"] = to_email
     message["Subject"] = subject
     message.set_content("This email requires an HTML-capable email client.")
