@@ -226,22 +226,11 @@ def send_tour_booking_confirmation(
     </html>
     """
 
-    try:
-        if resend is None or not RESEND_API_KEY:
-            print("Resend is not configured; tour booking email was not sent.")
-            return False
-
-        response = resend.Emails.send({
-            "from": SENDER_EMAIL,
-            "to": visitor_email,
-            "subject": f"ChiliLand Tour Booking Confirmed - {booking_reference}",
-            "html": html,
-        })
-        print("Tour booking email sent:", response)
-        return True
-    except Exception as e:
-        print("Failed to send tour booking email:", e)
-        return False
+    return _send_smtp_email(
+        to_email=visitor_email,
+        subject=f"ChiliLand Tour Booking Confirmed - {booking_reference}",
+        html=html,
+    )
 
 
 def send_tour_cancellation_confirmation(
