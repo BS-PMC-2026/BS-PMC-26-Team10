@@ -119,10 +119,12 @@ describe("ToursPage", () => {
     await waitFor(() => expect(screen.getByText("Book Now")).toBeInTheDocument());
   });
 
-  test("disables button and shows Fully Booked for full tours", async () => {
+  test("shows details link for full future tours", async () => {
     renderPage();
-    await waitFor(() => expect(screen.getByText("Fully Booked")).toBeInTheDocument());
-    expect(screen.getByText("Fully Booked")).toBeDisabled();
+    await waitFor(() => expect(screen.getByText("Full Tour")).toBeInTheDocument());
+
+    const detailsLink = screen.getByRole("link", { name: "View Details" });
+    expect(detailsLink).toHaveAttribute("href", "/tours/2");
   });
 
   test("shows Past badge and Tour Passed button for past tours", async () => {

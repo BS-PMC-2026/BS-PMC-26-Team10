@@ -217,7 +217,6 @@ function ToursPage() {
                   {visibleTours.map((tour) => {
                     const past = isPast(tour.date);
                     const full = tour.is_full;
-                    const disabled = past || full;
 
                     return (
                       <article
@@ -271,13 +270,13 @@ function ToursPage() {
                         </div>
 
                         <div className="tours-grid-card-footer">
-                          {disabled ? (
+                          {past ? (
                             <button className="tours-grid-btn tours-grid-btn--disabled" disabled>
-                              {full ? "Fully Booked" : "Tour Passed"}
+                              Tour Passed
                             </button>
                           ) : (
                             <Link to={`/tours/${tour.id}`} className="tours-grid-btn">
-                              Book Now
+                              {full ? "View Details" : "Book Now"}
                             </Link>
                           )}
                         </div>
