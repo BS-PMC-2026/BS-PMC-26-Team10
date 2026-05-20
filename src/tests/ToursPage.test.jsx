@@ -72,10 +72,30 @@ const mockTours = [
   },
 ];
 
-function renderPage(tours = mockTours) {
-  vi.stubGlobal("fetch", vi.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve(tours) })
-  ));
+const mockFaq = [
+  {
+    id: 1,
+    question: "How do I book a tour?",
+    answer: "Choose an available tour and confirm your booking online.",
+    category: "Booking",
+    display_order: 1,
+  },
+  {
+    id: 2,
+    question: "Can I cancel my booking?",
+    answer: "Yes, you can cancel before the tour starts using your booking reference.",
+    category: "Cancellation",
+    display_order: 2,
+  },
+];
+
+function renderPage(tours = mockTours, faq = mockFaq, fetchOverride = null) {
+  vi.stubGlobal("fetch", fetchOverride ?? vi.fn((url) => {
+    if (url.includes("/faq")) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(faq) });
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(tours) });
+  }));
   return render(<MemoryRouter><ToursPage /></MemoryRouter>);
 }
 
@@ -169,6 +189,36 @@ describe("ToursPage", () => {
     await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
+
+  test("shows FAQ link and section", async () => {
+    renderPage();
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+
+    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "#tour-faq");
+    expect(screen.getByText("Quick answers before you book")).toBeInTheDocument();
+    expect(screen.getByText("How do I book a tour?")).toBeInTheDocument();
+  });
+
+  test("expands FAQ answers when a question is clicked", async () => {
+    renderPage();
+    await waitFor(() => expect(screen.getByText("How do I book a tour?")).toBeInTheDocument());
+
+    expect(screen.queryByText("Choose an available tour and confirm your booking online.")).not.toBeInTheDocument();
+    await userEvent.click(screen.getByText("How do I book a tour?"));
+    expect(screen.getByText("Choose an available tour and confirm your booking online.")).toBeInTheDocument();
+  });
+
+  test("shows FAQ unavailable message when FAQ fetch fails", async () => {
+    renderPage(mockTours, mockFaq, vi.fn((url) => {
+      if (url.includes("/faq")) {
+        return Promise.reject(new Error("FAQ failed"));
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockTours) });
+    }));
+
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    expect(screen.getByText("FAQ is temporarily unavailable.")).toBeInTheDocument();
+  });
 });
 
 // ── Calendar sidebar tests ─────────────────────────────────────────────────
@@ -209,9 +259,12 @@ const calTours = [
 ];
 
 function renderCalPage(tours = calTours) {
-  vi.stubGlobal("fetch", vi.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve(tours) })
-  ));
+  vi.stubGlobal("fetch", vi.fn((url) => {
+    if (url.includes("/faq")) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockFaq) });
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(tours) });
+  }));
   return render(<MemoryRouter><ToursPage /></MemoryRouter>);
 }
 
