@@ -49,6 +49,24 @@
   line-height: 1.6;
 }
 
+.tours-page-faq-link {
+  display: inline-block;
+  margin-top: 1.2vw;
+  color: #fff;
+  border: 0.07vw solid rgba(255, 255, 255, 0.45);
+  border-radius: 0.7vw;
+  padding: 0.55vw 1.2vw;
+  font-size: 0.86vw;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tours-page-faq-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
 /* main */
 .tours-page-main {
   padding: 3.5vw 6vw 5vw;
@@ -494,6 +512,116 @@
   flex-shrink: 0;
 }
 
+/* FAQ */
+.tours-faq {
+  margin-top: 4vw;
+  border-top: 0.08vw solid #efd8cc;
+  padding-top: 3vw;
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 3vw;
+}
+
+.tours-faq-heading {
+  max-width: 360px;
+}
+
+.tours-faq-kicker {
+  margin: 0 0 0.6vw;
+  color: #a14d2a;
+  font-size: 0.82vw;
+  font-weight: 800;
+  letter-spacing: 0.12vw;
+  text-transform: uppercase;
+}
+
+.tours-faq-heading h2 {
+  margin: 0 0 0.8vw;
+  color: #3a2a20;
+  font-size: 1.7vw;
+  line-height: 1.2;
+}
+
+.tours-faq-heading p {
+  margin: 0;
+  color: #7b5c4d;
+  font-size: 0.95vw;
+  line-height: 1.6;
+}
+
+.tours-faq-status {
+  margin: 0;
+  color: #7b5c4d;
+  font-size: 0.95vw;
+}
+
+.tours-faq-status--error {
+  color: #a23b3b;
+}
+
+.tours-faq-list {
+  border: 0.07vw solid #efd8cc;
+  border-radius: 1.2vw;
+  overflow: hidden;
+  background: #fff;
+}
+
+.tours-faq-item + .tours-faq-item {
+  border-top: 0.06vw solid #f2e4db;
+}
+
+.tours-faq-question {
+  width: 100%;
+  border: none;
+  background: #fff;
+  color: #3a2a20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1vw;
+  padding: 1.1vw 1.3vw;
+  text-align: left;
+  font-size: 0.95vw;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tours-faq-question:hover {
+  background: #fdf7f0;
+}
+
+.tours-faq-category {
+  display: block;
+  margin-bottom: 0.25vw;
+  color: #a14d2a;
+  font-size: 0.7vw;
+  font-weight: 800;
+  letter-spacing: 0.05vw;
+  text-transform: uppercase;
+}
+
+.tours-faq-icon {
+  width: 1.6vw;
+  height: 1.6vw;
+  border-radius: 50%;
+  background: #f3dfcc;
+  color: #7a4020;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1vw;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.tours-faq-answer {
+  margin: 0;
+  padding: 0 1.3vw 1.2vw;
+  color: #6b5042;
+  font-size: 0.9vw;
+  line-height: 1.65;
+}
+
 /* ── mobile ──────────────────────────────────────── */
 @media (max-width: 900px) {
   .tours-page-header { padding: 8vw 6vw 9vw; }
@@ -501,6 +629,7 @@
   .tours-page-kicker { font-size: 2.8vw; letter-spacing: 0.4vw; }
   .tours-page-title { font-size: 7.5vw; }
   .tours-page-subtitle { font-size: 3.6vw; }
+  .tours-page-faq-link { font-size: 3.3vw; margin-top: 4vw; padding: 2.4vw 5vw; border-radius: 2.6vw; }
   .tours-page-main { padding: 7vw 5vw 10vw; }
   .tours-page-status { font-size: 4vw; }
   .tours-filter-label { font-size: 3.4vw; margin-bottom: 4vw; }
@@ -536,6 +665,23 @@
   .tours-cal-summary-more { font-size: 2.8vw; }
   .tours-cal-legend { font-size: 2.8vw; gap: 1.5vw; }
   .tours-cal-legend-dot { width: 1.4vw; height: 1.4vw; }
+
+  .tours-faq {
+    grid-template-columns: 1fr;
+    gap: 5vw;
+    margin-top: 9vw;
+    padding-top: 7vw;
+  }
+  .tours-faq-kicker { font-size: 2.8vw; letter-spacing: 0.35vw; }
+  .tours-faq-heading h2 { font-size: 6vw; }
+  .tours-faq-heading p,
+  .tours-faq-status,
+  .tours-faq-answer { font-size: 3.5vw; }
+  .tours-faq-list { border-radius: 4vw; }
+  .tours-faq-question { font-size: 3.8vw; padding: 4vw; gap: 3vw; }
+  .tours-faq-category { font-size: 2.6vw; margin-bottom: 1vw; }
+  .tours-faq-icon { width: 7vw; height: 7vw; font-size: 4vw; }
+  .tours-faq-answer { padding: 0 4vw 4vw; }
 
   .tours-grid { grid-template-columns: 1fr; gap: 5vw; }
   .tours-grid-card { border-radius: 4.5vw; padding: 5vw; gap: 4vw; }

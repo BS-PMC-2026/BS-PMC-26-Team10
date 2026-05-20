@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 # from app.db import get_connection
 # from db.scripts.load_peppers import main as load_data
 # from db.scripts.create_bookings_table import main as create_bookings_table
-from app.routes import chilli, product, order, tour, booking, promo
+from app.routes import chilli, product, order, tour, booking, promo, faq
 
 app = FastAPI()
 
@@ -53,6 +53,7 @@ app.include_router(order.router, tags=["order"])
 app.include_router(tour.router, tags=["tour"])
 app.include_router(booking.router, tags=["booking"])
 app.include_router(promo.router, tags=["promo"])
+app.include_router(faq.router, tags=["faq"])
 
 app.mount(
     "/chilli_images",
