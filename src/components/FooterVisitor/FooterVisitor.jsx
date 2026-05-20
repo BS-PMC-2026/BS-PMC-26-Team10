@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { CLMonogram } from "../ChiliMark/ChiliMark";
 import "./FooterVisitor.css";
 
 function FooterVisitor() {
@@ -9,7 +10,10 @@ function FooterVisitor() {
         
         {/* LEFT / BRAND */}
         <div className="footer-col footer-brand">
-          <h2 className="footer-logo">ChiliLand</h2>
+          <h2 className="footer-logo">
+            <CLMonogram size="0.9em" color="#ff7a3d" stemColor="#ffb38a" />
+            <span>ChiliLand</span>
+          </h2>
           <p className="footer-tagline">
             A place to explore, taste, and experience the world of chilli.
           </p>

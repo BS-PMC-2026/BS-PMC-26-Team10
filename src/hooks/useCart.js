@@ -47,7 +47,11 @@ export function useCart() {
   const addToCart = useCallback(async (product) => {
     try {
       const isChilli = product._type === "chilli";
-      const endpoint = isChilli
+      // Chilli stock lives in the inventory table, not the chilli table.
+      // inventoryId is passed from the catalogue's name-matched inventory item.
+      const endpoint = (isChilli && product.inventoryId)
+        ? `${BASE_URL}/inventory/${product.inventoryId}`
+        : isChilli
         ? `${BASE_URL}/chillies/${product.id}`
         : `${BASE_URL}/inventory/${product.id}`;
 
@@ -55,8 +59,19 @@ export function useCart() {
       if (!res.ok) throw new Error("Could not verify stock");
       const liveItem = await res.json();
 
-      const availableQty = isChilli ? liveItem.stock_quantity : liveItem.quantity;
-      const isAvailable = isChilli ? liveItem.is_available : availableQty > 0;
+      const rawQty = (isChilli && product.inventoryId)
+        ? liveItem.quantity
+        : isChilli
+        ? liveItem.stock_quantity
+        : liveItem.quantity;
+      const availableQty = typeof rawQty === "number" && rawQty >= 0
+        ? rawQty
+        : product.stock_quantity;
+      const isAvailable = (isChilli && product.inventoryId)
+        ? availableQty > 0
+        : isChilli
+        ? liveItem.is_available
+        : availableQty > 0;
 
       if (!isAvailable || availableQty === 0) {
         setStockErrors((prev) => ({
@@ -66,32 +81,32 @@ export function useCart() {
         return { success: false, error: "out_of_stock" };
       }
 
+      const existing = cartItems.find((i) => i.id === product.id);
+      const currentQtyInCart = existing ? existing.quantity : 0;
+
+      if (currentQtyInCart >= availableQty) {
+        setStockErrors((prev) => ({
+          ...prev,
+          [product.id]: `Only ${availableQty} available.`,
+        }));
+        return { success: false, error: "max_quantity" };
+      }
+
+      setStockErrors((prev) => {
+        const cleared = { ...prev };
+        delete cleared[product.id];
+        return cleared;
+      });
+
       setCartItems((prev) => {
-        const existing = prev.find((i) => i.id === product.id);
-        const currentQtyInCart = existing ? existing.quantity : 0;
-
-        if (currentQtyInCart >= availableQty) {
-          setStockErrors((prevErrors) => ({
-            ...prevErrors,
-            [product.id]: `Only ${availableQty} available.`,
-          }));
-          return prev;
-        }
-
-        setStockErrors((prevErrors) => {
-          const cleared = { ...prevErrors };
-          delete cleared[product.id];
-          return cleared;
-        });
-
-        if (existing) {
+        const existingInCart = prev.find((i) => i.id === product.id);
+        if (existingInCart) {
           return prev.map((i) =>
             i.id === product.id
               ? { ...i, quantity: i.quantity + 1, maxQuantity: availableQty }
               : i
           );
         }
-
         return [
           ...prev,
           {
@@ -102,6 +117,7 @@ export function useCart() {
             quantity: 1,
             maxQuantity: availableQty,
             _type: product._type,
+            inventoryId: product.inventoryId,
           },
         ];
       });
@@ -111,7 +127,7 @@ export function useCart() {
       console.error(err);
       return { success: false, error: "network_error" };
     }
-  }, []);
+  }, [cartItems]);
 
   // ── REMOVE FROM CART ─────────────────────────────────────
   const removeFromCart = useCallback((productId) => {
@@ -127,22 +143,32 @@ export function useCart() {
   const updateQuantity = useCallback(async (productId, newQuantity) => {
     if (newQuantity < 1) {
       removeFromCart(productId);
-      return;
+      return { success: true };
     }
 
     try {
-      const cartItem = getStoredCart().find((i) => i.id === productId);
+      const cartItem = cartItems.find((i) => i.id === productId);
       const isChilli = cartItem?._type === "chilli";
-      const endpoint = isChilli
+      const endpoint = (isChilli && cartItem?.inventoryId)
+        ? `${BASE_URL}/inventory/${cartItem.inventoryId}`
+        : isChilli
         ? `${BASE_URL}/chillies/${productId}`
         : `${BASE_URL}/inventory/${productId}`;
 
       const res = await fetch(endpoint);
       if (!res.ok) throw new Error();
       const liveItem = await res.json();
-      const availableQty = isChilli ? liveItem.stock_quantity : liveItem.quantity;
 
-      if (newQuantity > availableQty) {
+      const rawQty = (isChilli && cartItem?.inventoryId)
+        ? liveItem.quantity
+        : isChilli
+        ? liveItem.stock_quantity
+        : liveItem.quantity;
+      const availableQty = typeof rawQty === "number" && rawQty >= 0
+        ? rawQty
+        : cartItem?.maxQuantity;
+
+      if (typeof availableQty === "number" && newQuantity > availableQty) {
         setStockErrors((prev) => ({
           ...prev,
           [productId]: `Only ${availableQty} available.`,
@@ -154,7 +180,7 @@ export function useCart() {
               : i
           )
         );
-        return;
+        return { success: false, error: "max_quantity" };
       }
 
       setStockErrors((prev) => {
@@ -166,17 +192,19 @@ export function useCart() {
       setCartItems((prev) =>
         prev.map((i) =>
           i.id === productId
-            ? { ...i, quantity: newQuantity, maxQuantity: availableQty }
+            ? { ...i, quantity: newQuantity, maxQuantity: availableQty ?? i.maxQuantity }
             : i
         )
       );
+      return { success: true };
     } catch {
       setStockErrors((prev) => ({
         ...prev,
         [productId]: "Could not verify stock. Try again.",
       }));
+      return { success: false, error: "network_error" };
     }
-  }, [removeFromCart]);
+  }, [cartItems, removeFromCart]);
 
   // ── CLEAR CART ───────────────────────────────────────────
   const clearCart = useCallback(() => {

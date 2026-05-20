@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 import OwnerDashboard from "../components/OwnerDashboard/OwnerDashboard";
@@ -5,6 +6,9 @@ import OwnerOrders from "./OwnerOrders";
 import OwnerInventory from "./OwnerInventory";
 import OwnerChillies from "./OwnerChillies";
 import OwnerPromoCodes from "./OwnerPromoCodes";
+import { MyToursView } from "./TourguideMain";
+import CreateTourPage from "../components/CreateTourPage/CreateTourPage";
+import OwnerBookings from "./OwnerBookings";
 import "../styles/OwnerMain.css";
 
 function ComingSoon({ section }) {
@@ -26,18 +30,33 @@ function ComingSoon({ section }) {
   );
 }
 
+function OwnerToursView() {
+  const [creating, setCreating] = useState(false);
+  if (creating) {
+    return (
+      <CreateTourPage
+        onTourSaved={() => setCreating(false)}
+        onCancel={() => setCreating(false)}
+      />
+    );
+  }
+  return <MyToursView onCreateNew={() => setCreating(true)} />;
+}
+
 function OwnerMain() {
   const { section } = useParams();
   const activeSection = section ?? "dashboard";
 
   function renderContent() {
     switch (activeSection) {
-      case "dashboard":  return <OwnerDashboard />;
-      case "orders":     return <OwnerOrders />;
-      case "inventory":  return <OwnerInventory />;
-      case "chillies":   return <OwnerChillies />;
+      case "dashboard":   return <OwnerDashboard />;
+      case "orders":      return <OwnerOrders />;
+      case "inventory":   return <OwnerInventory />;
+      case "chillies":    return <OwnerChillies />;
       case "promo-codes": return <OwnerPromoCodes />;
-      default:           return <ComingSoon section={activeSection} />;
+      case "tours":       return <OwnerToursView />;
+      case "bookings":    return <OwnerBookings />;
+      default:            return <ComingSoon section={activeSection} />;
     }
   }
 

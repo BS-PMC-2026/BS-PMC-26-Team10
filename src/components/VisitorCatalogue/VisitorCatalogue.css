@@ -355,6 +355,14 @@
   background: #2e6337;
 }
 
+.visitor-cart-btn--max {
+  background: #7a5c00;
+}
+
+.visitor-cart-btn--max:hover {
+  background: #5e4600;
+}
+
 .visitor-chilli-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

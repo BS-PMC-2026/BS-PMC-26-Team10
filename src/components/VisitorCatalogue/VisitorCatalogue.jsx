@@ -89,10 +89,10 @@ function VisitorCatalogue() {
     });
   }, [chillies, searchInput]);
 
-  const inventoryPriceMap = useMemo(() => {
+  const inventoryByName = useMemo(() => {
     const map = new Map();
     inventory.forEach((item) => {
-      if (item.name) map.set(item.name.toLowerCase().trim(), item.price);
+      if (item.name) map.set(item.name.toLowerCase().trim(), item);
     });
     return map;
   }, [inventory]);
@@ -245,12 +245,17 @@ function VisitorCatalogue() {
     setAddingToCart((prev) => ({ ...prev, [chilli.id]: true }));
     setCartFeedback((prev) => ({ ...prev, [chilli.id]: "" }));
 
-    const result = await cart.addToCart({ ...chilli, _type: "chilli" });
+    const inventoryItem = inventoryByName.get(chilli.name?.toLowerCase().trim());
+    const price = inventoryItem?.price;
+    const inventoryId = inventoryItem?.id;
+    const result = await cart.addToCart({ ...chilli, _type: "chilli", price, inventoryId });
 
     if (result.success) {
       setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Added!" }));
     } else if (result.error === "out_of_stock") {
       setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Sold out!" }));
+    } else if (result.error === "max_quantity") {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Max in cart" }));
     } else {
       setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Try again" }));
     }
@@ -475,9 +480,9 @@ function VisitorCatalogue() {
                         )}
                       </div>
 
-                      {inventoryPriceMap.get(chilli.name?.toLowerCase().trim()) != null && (
+                      {inventoryByName.get(chilli.name?.toLowerCase().trim())?.price != null && (
                         <p className="visitor-chilli-price">
-                          ₪{parseFloat(inventoryPriceMap.get(chilli.name?.toLowerCase().trim())).toFixed(2)}
+                          ₪{parseFloat(inventoryByName.get(chilli.name?.toLowerCase().trim()).price).toFixed(2)}
                           <span className="visitor-chilli-price-unit">/pack</span>
                         </p>
                       )}
@@ -488,6 +493,8 @@ function VisitorCatalogue() {
                           className={`visitor-chilli-btn visitor-cart-btn${
                             cartFeedback[chilli.id] === "Added!"
                               ? " visitor-cart-btn--added"
+                              : cartFeedback[chilli.id] === "Max in cart"
+                              ? " visitor-cart-btn--max"
                               : ""
                           }`}
                           disabled={

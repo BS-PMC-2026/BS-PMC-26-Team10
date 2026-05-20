@@ -87,10 +87,9 @@ test("addToCart won't exceed available stock", async () => {
   mockFetch(mockProductLowStock); // only 1 in stock
   const { result } = renderHook(() => useCart());
 
-  await act(async () => {
-    await result.current.addToCart(mockProductLowStock);
-    await result.current.addToCart(mockProductLowStock); // try to add second
-  });
+  // Split into separate acts so the second call sees the updated cartItems state
+  await act(async () => { await result.current.addToCart(mockProductLowStock); });
+  await act(async () => { await result.current.addToCart(mockProductLowStock); }); // try to add second
 
   expect(result.current.cartItems[0].quantity).toBe(1);
   expect(result.current.stockErrors[mockProductLowStock.id]).toBeTruthy();
@@ -461,10 +460,8 @@ describe("chilli-type stock validation", () => {
 
     const { result } = renderHook(() => useCart());
 
-    await act(async () => {
-      await result.current.addToCart(mockChilliItem);
-      await result.current.addToCart(mockChilliItem);
-    });
+    await act(async () => { await result.current.addToCart(mockChilliItem); });
+    await act(async () => { await result.current.addToCart(mockChilliItem); }); // try second
 
     expect(result.current.cartItems[0].quantity).toBe(1);
     expect(result.current.stockErrors[mockChilliItem.id]).toBeTruthy();
@@ -519,6 +516,139 @@ describe("chilli-type stock validation", () => {
 
     expect(validation.isValid).toBe(false);
     expect(validation.errors[mockChilliItem.id]).toBeTruthy();
+  });
+});
+
+// ── UNIT: inventory-id stock routing ─────────────────────────────────────────
+// When a chilli is added from the homepage catalogue it carries an inventoryId
+// (the id of the matching row in the inventory table). Stock must be checked
+// against /inventory/{inventoryId}, not /chillies/{id}.
+
+const mockChilliWithInventory = {
+  id: 10,
+  name: "Datil",
+  price: 30,
+  image_url: "",
+  _type: "chilli",
+  inventoryId: 99, // inventory row id, different from chilli id
+};
+
+describe("chilli with inventoryId stock routing", () => {
+  test("addToCart calls /inventory/{inventoryId} when inventoryId is set", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 5, name: "Datil" }),
+    });
+    global.fetch = fetchMock;
+
+    const { result } = renderHook(() => useCart());
+    await act(async () => { await result.current.addToCart(mockChilliWithInventory); });
+
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/inventory/99"));
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining("/chillies/10"));
+  });
+
+  test("addToCart reads quantity (not stock_quantity) from inventory response", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 3, name: "Datil" }),
+    });
+
+    const { result } = renderHook(() => useCart());
+    await act(async () => { await result.current.addToCart(mockChilliWithInventory); });
+
+    expect(result.current.cartItems[0].maxQuantity).toBe(3);
+  });
+
+  test("addToCart returns out_of_stock when inventory quantity is 0", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 0, name: "Datil" }),
+    });
+
+    const { result } = renderHook(() => useCart());
+    let res;
+    await act(async () => { res = await result.current.addToCart(mockChilliWithInventory); });
+
+    expect(res.success).toBe(false);
+    expect(res.error).toBe("out_of_stock");
+    expect(result.current.cartItems).toHaveLength(0);
+  });
+
+  test("addToCart returns max_quantity when cart already holds all available stock", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 3, name: "Datil" }),
+    });
+
+    const { result } = renderHook(() => useCart());
+
+    // add 3 (hits the limit)
+    await act(async () => {
+      await result.current.addToCart(mockChilliWithInventory);
+      await result.current.addToCart(mockChilliWithInventory);
+      await result.current.addToCart(mockChilliWithInventory);
+    });
+    expect(result.current.cartItems[0].quantity).toBe(3);
+
+    // try to add a 4th
+    let res;
+    await act(async () => { res = await result.current.addToCart(mockChilliWithInventory); });
+
+    expect(res.success).toBe(false);
+    expect(res.error).toBe("max_quantity");
+    expect(result.current.cartItems[0].quantity).toBe(3);
+  });
+
+  test("updateQuantity calls /inventory/{inventoryId} for chilli-with-inventoryId items", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 5, name: "Datil" }),
+    });
+
+    const { result } = renderHook(() => useCart());
+    await act(async () => { await result.current.addToCart(mockChilliWithInventory); });
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 5, name: "Datil" }),
+    });
+    global.fetch = fetchMock;
+
+    await act(async () => { await result.current.updateQuantity(mockChilliWithInventory.id, 3); });
+
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/inventory/99"));
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining("/chillies/10"));
+  });
+
+  test("updateQuantity clamps quantity to inventory stock ceiling", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 2, name: "Datil" }),
+    });
+
+    const { result } = renderHook(() => useCart());
+    await act(async () => { await result.current.addToCart(mockChilliWithInventory); });
+
+    // try to increase to 10 when only 2 are available
+    let res;
+    await act(async () => { res = await result.current.updateQuantity(mockChilliWithInventory.id, 10); });
+
+    expect(res.success).toBe(false);
+    expect(res.error).toBe("max_quantity");
+    expect(result.current.cartItems[0].quantity).toBe(2);
+  });
+
+  test("inventoryId is stored on the cart item", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 99, quantity: 5, name: "Datil" }),
+    });
+
+    const { result } = renderHook(() => useCart());
+    await act(async () => { await result.current.addToCart(mockChilliWithInventory); });
+
+    expect(result.current.cartItems[0].inventoryId).toBe(99);
   });
 });
 
