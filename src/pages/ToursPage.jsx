@@ -156,9 +156,13 @@ function TourCalendar({ tours, selectedDate, onSelectDate }) {
 
 function ToursPage() {
   const [tours, setTours] = useState([]);
+  const [faqItems, setFaqItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [faqLoading, setFaqLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [faqError, setFaqError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [openFaqIds, setOpenFaqIds] = useState([]);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/tours")
@@ -176,6 +180,28 @@ function ToursPage() {
       });
   }, []);
 
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/faq")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load FAQ.");
+        return res.json();
+      })
+      .then((data) => {
+        setFaqItems(Array.isArray(data) ? data : []);
+        setFaqLoading(false);
+      })
+      .catch((err) => {
+        setFaqError(err.message);
+        setFaqLoading(false);
+      });
+  }, []);
+
+  function toggleFaq(id) {
+    setOpenFaqIds((prev) => (
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    ));
+  }
+
   const visibleTours = selectedDate
     ? tours.filter((t) => t.date === selectedDate)
     : tours;
@@ -187,6 +213,7 @@ function ToursPage() {
         <div className="tours-page-header-text">
           <p className="tours-page-kicker">ChiliLand Farm Experiences</p>
           <h1 className="tours-page-title">Available Tours</h1>
+          <a href="#tour-faq" className="tours-page-faq-link">FAQ</a>
           <p className="tours-page-subtitle">
             Choose a tour, pick your date, and secure your spot — no account needed.
           </p>
@@ -293,6 +320,54 @@ function ToursPage() {
               onSelectDate={setSelectedDate}
             />
           </div>
+        )}
+
+        {!loading && !error && (
+          <section id="tour-faq" className="tours-faq" aria-labelledby="tour-faq-title">
+            <div className="tours-faq-heading">
+              <p className="tours-faq-kicker">Tour FAQ</p>
+              <h2 id="tour-faq-title">Quick answers before you book</h2>
+              <p>
+                Helpful details about booking, cancellations, greenhouse visits, and spicy tastings.
+              </p>
+            </div>
+
+            {faqLoading && <p className="tours-faq-status">Loading FAQ...</p>}
+            {faqError && (
+              <p className="tours-faq-status tours-faq-status--error">
+                FAQ is temporarily unavailable.
+              </p>
+            )}
+            {!faqLoading && !faqError && faqItems.length === 0 && (
+              <p className="tours-faq-status">No FAQ items are available yet.</p>
+            )}
+            {!faqLoading && !faqError && faqItems.length > 0 && (
+              <div className="tours-faq-list">
+                {faqItems.map((item) => {
+                  const isOpen = openFaqIds.includes(item.id);
+                  return (
+                    <article key={item.id} className={`tours-faq-item${isOpen ? " tours-faq-item--open" : ""}`}>
+                      <button
+                        type="button"
+                        className="tours-faq-question"
+                        onClick={() => toggleFaq(item.id)}
+                        aria-expanded={isOpen}
+                      >
+                        <span>
+                          {item.category && <span className="tours-faq-category">{item.category}</span>}
+                          {item.question}
+                        </span>
+                        <span className="tours-faq-icon" aria-hidden="true">{isOpen ? "-" : "+"}</span>
+                      </button>
+                      {isOpen && (
+                        <p className="tours-faq-answer">{item.answer}</p>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </section>
         )}
       </main>
     </div>
