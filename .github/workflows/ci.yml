@@ -1,59 +1,70 @@
 name: CI
-
 on:
   push:
     branches:
       - "**"
-
 jobs:
   frontend:
     name: Frontend Checks
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
       - name: Install frontend dependencies
         run: npm ci
-
       - name: Lint frontend
         run: npm run lint
-
       - name: Build frontend
         run: npm run build
-
       - name: Run frontend unit tests
         run: npm run test:run
-
   backend:
     name: Backend Checks
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install backend dependencies
         run: pip install -r Backend/requirements.txt
-
       - name: Validate backend syntax
         run: python -m compileall Backend/main.py Backend/app Backend/db/scripts
-
       - name: Run backend unit tests
         working-directory: Backend
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python -m unittest discover -s tests -v
+  build-artifact:
+    name: Build & Upload Artifact
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Build frontend
+        run: npm run build
+      - name: Zip bundle
+        run: zip -r dist/chilliland-${{ github.sha }}.zip dist/ Backend/
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chilliland-${{ github.run_number }}-${{ github.sha }}
+          path: dist/chilliland-${{ github.sha }}.zip
+          if-no-files-found: error
+          retention-days: 14
