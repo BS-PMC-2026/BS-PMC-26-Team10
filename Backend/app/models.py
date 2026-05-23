@@ -11,6 +11,7 @@ class Chilli(BaseModel):
     shuMax : int
     season : str
     full_description : str = ''
+    price : Optional[float] = None
 class Product(BaseModel):
     name : str
     description : str
@@ -38,6 +39,7 @@ class Tour(BaseModel):
         "Your tour reservation was successful. Please keep this email and your booking "
         "reference for future changes or cancellation."
     )
+    picture: str = ""
 
 class BookingCreate(BaseModel):
     tour_id: int

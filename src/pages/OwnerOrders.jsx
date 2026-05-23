@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 import "../styles/OwnerOrders.css";
 
 function OwnerOrders() {
@@ -59,13 +58,7 @@ function OwnerOrders() {
   ).length;
 
   return (
-    <div className="owner-orders-layout">
-      <div className="owner-orders-bg-shape owner-orders-bg-shape-1"></div>
-      <div className="owner-orders-bg-shape owner-orders-bg-shape-2"></div>
-
-      <OwnerSidebar />
-
-      <main className="owner-orders-content">
+    <div className="owner-orders-content">
         <div className="owner-orders-header">
           <p className="owner-orders-overline">Owner Control Center</p>
           <h1>Orders</h1>
@@ -161,7 +154,6 @@ function OwnerOrders() {
             </table>
           </div>
         )}
-      </main>
     </div>
   );
 }

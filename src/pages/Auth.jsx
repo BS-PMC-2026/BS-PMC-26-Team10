@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CLMonogram } from "../components/ChiliMark/ChiliMark";
 import "../styles/auth.css";
 
 function Auth() {
@@ -58,6 +59,13 @@ function Auth() {
     <div className="page">
       <div className="box">
         <div className="left">
+          <CLMonogram
+            className="auth-mark"
+            size={56}
+            color="#ffffff"
+            stemColor="rgba(255, 226, 214, 0.95)"
+            title="ChiliLand"
+          />
           <h1 className="title">ChiliLand</h1>
           <p className="subtitle">Farm Platform</p>
 

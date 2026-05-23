@@ -72,10 +72,30 @@ const mockTours = [
   },
 ];
 
-function renderPage(tours = mockTours) {
-  vi.stubGlobal("fetch", vi.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve(tours) })
-  ));
+const mockFaq = [
+  {
+    id: 1,
+    question: "How do I book a tour?",
+    answer: "Choose an available tour and confirm your booking online.",
+    category: "Booking",
+    display_order: 1,
+  },
+  {
+    id: 2,
+    question: "Can I cancel my booking?",
+    answer: "Yes, you can cancel before the tour starts using your booking reference.",
+    category: "Cancellation",
+    display_order: 2,
+  },
+];
+
+function renderPage(tours = mockTours, faq = mockFaq, fetchOverride = null) {
+  vi.stubGlobal("fetch", fetchOverride ?? vi.fn((url) => {
+    if (url.includes("/faq")) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(faq) });
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(tours) });
+  }));
   return render(<MemoryRouter><ToursPage /></MemoryRouter>);
 }
 
@@ -119,10 +139,12 @@ describe("ToursPage", () => {
     await waitFor(() => expect(screen.getByText("Book Now")).toBeInTheDocument());
   });
 
-  test("disables button and shows Fully Booked for full tours", async () => {
+  test("shows details link for full future tours", async () => {
     renderPage();
-    await waitFor(() => expect(screen.getByText("Fully Booked")).toBeInTheDocument());
-    expect(screen.getByText("Fully Booked")).toBeDisabled();
+    await waitFor(() => expect(screen.getByText("Full Tour")).toBeInTheDocument());
+
+    const detailsLink = screen.getByRole("link", { name: "View Details" });
+    expect(detailsLink).toHaveAttribute("href", "/tours/2");
   });
 
   test("shows Past badge and Tour Passed button for past tours", async () => {
@@ -145,6 +167,57 @@ describe("ToursPage", () => {
     await waitFor(() =>
       expect(screen.getByText(/No tours are currently available/)).toBeInTheDocument()
     );
+  });
+
+  test("renders tour image when picture is set", async () => {
+    const tours = [{ ...mockTours[0], picture: "https://example.com/tour.jpg" }];
+    renderPage(tours);
+    await waitFor(() => {
+      const img = screen.getByRole("img", { name: "Field Walk" });
+      expect(img).toHaveAttribute("src", "https://example.com/tour.jpg");
+    });
+  });
+
+  test("does not render image when picture is absent", async () => {
+    renderPage([mockTours[0]]);
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  test("does not render image when picture is null", async () => {
+    renderPage([{ ...mockTours[0], picture: null }]);
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  test("shows FAQ link and section", async () => {
+    renderPage();
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+
+    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "#tour-faq");
+    expect(screen.getByText("Quick answers before you book")).toBeInTheDocument();
+    expect(screen.getByText("How do I book a tour?")).toBeInTheDocument();
+  });
+
+  test("expands FAQ answers when a question is clicked", async () => {
+    renderPage();
+    await waitFor(() => expect(screen.getByText("How do I book a tour?")).toBeInTheDocument());
+
+    expect(screen.queryByText("Choose an available tour and confirm your booking online.")).not.toBeInTheDocument();
+    await userEvent.click(screen.getByText("How do I book a tour?"));
+    expect(screen.getByText("Choose an available tour and confirm your booking online.")).toBeInTheDocument();
+  });
+
+  test("shows FAQ unavailable message when FAQ fetch fails", async () => {
+    renderPage(mockTours, mockFaq, vi.fn((url) => {
+      if (url.includes("/faq")) {
+        return Promise.reject(new Error("FAQ failed"));
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockTours) });
+    }));
+
+    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
+    expect(screen.getByText("FAQ is temporarily unavailable.")).toBeInTheDocument();
   });
 });
 
@@ -186,9 +259,12 @@ const calTours = [
 ];
 
 function renderCalPage(tours = calTours) {
-  vi.stubGlobal("fetch", vi.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve(tours) })
-  ));
+  vi.stubGlobal("fetch", vi.fn((url) => {
+    if (url.includes("/faq")) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockFaq) });
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(tours) });
+  }));
   return render(<MemoryRouter><ToursPage /></MemoryRouter>);
 }
 

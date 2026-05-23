@@ -13,6 +13,7 @@ function ChilliFormModal({ isOpen, onClose, onChilliAdded }) {
     origin: "",
     color: "",
     season: "",
+    price: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
@@ -27,7 +28,7 @@ function ChilliFormModal({ isOpen, onClose, onChilliAdded }) {
   };
 
   const resetForm = () => {
-    setFormData({ name: "", description: "", fullDescription: "", shuMin: "", shuMax: "", origin: "", color: "", season: "" });
+    setFormData({ name: "", description: "", fullDescription: "", shuMin: "", shuMax: "", origin: "", color: "", season: "", price: "" });
     setImageFile(null);
     setImageName("");
     setError("");
@@ -72,6 +73,7 @@ function ChilliFormModal({ isOpen, onClose, onChilliAdded }) {
           origin: formData.origin.trim(),
           color: formData.color.trim(),
           season: formData.season.trim(),
+          price: formData.price !== "" ? Number(formData.price) : null,
         }),
       });
 
@@ -141,6 +143,11 @@ function ChilliFormModal({ isOpen, onClose, onChilliAdded }) {
           <div className="chilli-form-group">
             <label>Season</label>
             <input type="text" name="season" value={formData.season} onChange={handleChange} placeholder="Summer" />
+          </div>
+
+          <div className="chilli-form-group">
+            <label>Price per pack (₪)</label>
+            <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="e.g. 25" min="0" step="0.01" />
           </div>
 
           <div className="chilli-form-group">

@@ -161,7 +161,7 @@ test("cart drawer opens when cart button clicked", async () => {
   renderPage();
   await waitFor(() => screen.getByText("Red Habanero"));
 
-  fireEvent.click(screen.getByText("🛒"));
+  fireEvent.click(screen.getByTestId("cart-trigger"));
   expect(screen.getByTestId("cart-drawer")).toBeInTheDocument();
 });
 

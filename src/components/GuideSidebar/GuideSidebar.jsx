@@ -1,17 +1,18 @@
+import { Calendar, Plus, ClipboardList, Settings } from "lucide-react";
 import "./GuideSidebar.css";
 
 const NAV = [
   {
     group: "My work",
     items: [
-      { key: "my-tours", label: "My tours", icon: "🗓" },
-      { key: "create", label: "Create tour", icon: "＋" },
-      { key: "bookings", label: "Bookings", icon: "📋" },
+      { key: "my-tours", label: "My tours", icon: <Calendar size={16} /> },
+      { key: "create", label: "Create tour", icon: <Plus size={16} /> },
+      { key: "bookings", label: "Bookings", icon: <ClipboardList size={16} /> },
     ],
   },
   {
     group: "Account",
-    items: [{ key: "settings", label: "Settings", icon: "⚙" }],
+    items: [{ key: "settings", label: "Settings", icon: <Settings size={16} /> }],
   },
 ];
 

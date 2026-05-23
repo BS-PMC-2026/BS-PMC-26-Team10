@@ -1,6 +1,6 @@
-// Tests for TourCard component (BSPMT10-12-usn12)
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+// Tests for TourCard component
+import { describe, test, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TourCard from "../components/TourCard/TourCard";
 
@@ -15,16 +15,6 @@ const mockTour = {
 };
 
 describe("TourCard", () => {
-  beforeEach(() => {
-    vi.stubGlobal("fetch", vi.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve([]) })
-    ));
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   test("renders the tour title", () => {
     render(<TourCard tour={mockTour} onEdit={() => {}} onDelete={() => {}} />);
     expect(screen.getByText("Field & Tasting Tour")).toBeInTheDocument();
@@ -40,6 +30,13 @@ describe("TourCard", () => {
     const tour = { ...mockTour, capacity: 10, remaining_spots: 10 };
     render(<TourCard tour={tour} onEdit={() => {}} onDelete={() => {}} />);
     expect(screen.getByText("0 / 10 booked")).toBeInTheDocument();
+  });
+
+  test("shows capacity booked when remaining_spots is undefined", () => {
+    const tour = { ...mockTour, capacity: 8, remaining_spots: undefined };
+    render(<TourCard tour={tour} onEdit={() => {}} onDelete={() => {}} />);
+    // remaining_spots ?? capacity → capacity, so booked = capacity - capacity = 0
+    expect(screen.getByText("0 / 8 booked")).toBeInTheDocument();
   });
 
   test("renders the description when provided", () => {
@@ -77,42 +74,26 @@ describe("TourCard", () => {
     expect(mockDelete).toHaveBeenCalledWith(1);
   });
 
-  test("renders View bookings toggle button", () => {
+  test("does not render a 'View bookings' toggle (moved to Booking Requests tab)", () => {
     render(<TourCard tour={mockTour} onEdit={() => {}} onDelete={() => {}} />);
-    expect(screen.getByText(/View bookings/)).toBeInTheDocument();
+    expect(screen.queryByText(/view bookings/i)).not.toBeInTheDocument();
   });
 
-  test("shows booking count in toggle button", () => {
-    render(<TourCard tour={mockTour} onEdit={() => {}} onDelete={() => {}} />);
-    expect(screen.getByText(/View bookings \(5\)/)).toBeInTheDocument();
+  test("renders thumbnail image when picture is set", () => {
+    const tour = { ...mockTour, picture: "https://example.com/tour.jpg" };
+    render(<TourCard tour={tour} onEdit={() => {}} onDelete={() => {}} />);
+    const img = screen.getByRole("img", { name: mockTour.title });
+    expect(img).toHaveAttribute("src", "https://example.com/tour.jpg");
   });
 
-  test("fetches and shows bookings when toggle is clicked", async () => {
-    const mockBookings = [
-      { full_name: "Alice Cohen", phone: "0521234567", email: "alice@example.com", participants_count: 2, booking_reference: "ABC12345", created_at: "2026-05-01" },
-    ];
-    vi.stubGlobal("fetch", vi.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve(mockBookings) })
-    ));
-
+  test("does not render image when picture is absent", () => {
     render(<TourCard tour={mockTour} onEdit={() => {}} onDelete={() => {}} />);
-    await userEvent.click(screen.getByText(/View bookings/));
-
-    await waitFor(() => expect(screen.getByText("Alice Cohen")).toBeInTheDocument());
-    expect(screen.getByText("0521234567")).toBeInTheDocument();
-    expect(screen.getByText("ABC12345")).toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
-  test("shows empty message when tour has no bookings", async () => {
-    vi.stubGlobal("fetch", vi.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve([]) })
-    ));
-
-    render(<TourCard tour={mockTour} onEdit={() => {}} onDelete={() => {}} />);
-    await userEvent.click(screen.getByText(/View bookings/));
-
-    await waitFor(() =>
-      expect(screen.getByText("No bookings yet.")).toBeInTheDocument()
-    );
+  test("does not render image when picture is null", () => {
+    const tour = { ...mockTour, picture: null };
+    render(<TourCard tour={tour} onEdit={() => {}} onDelete={() => {}} />);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 });

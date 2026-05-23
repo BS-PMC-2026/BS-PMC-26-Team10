@@ -1,43 +1,53 @@
 import { useNavigate } from "react-router-dom";
+import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe } from "lucide-react";
+import { CLMonogram } from "../ChiliMark/ChiliMark";
 import "./OwnerSidebar.css";
 
-const actions = [
-  { icon: "🌶️", label: "Add Tour" },
-  { icon: "📦", label: "Add Product" },
-  { icon: "👨‍🌾", label: "Add Worker" },
-  { icon: "🕒", label: "Add Shift" },
-  { icon: "🎟️", label: "Add Workshop" },
-  { icon: "🏷️", label: "Add Promo Code", route: "/owner/promo-codes" },
-  { icon: "💬", label: "Reply to Reviews" },
+const navItems = [
+  { id: "dashboard",   icon: <LayoutDashboard size={16} />, label: "Dashboard" },
+  { id: "orders",      icon: <ClipboardList size={16} />,   label: "Orders" },
+  { id: "inventory",   icon: <Package size={16} />,          label: "Stock & Inventory" },
+  { id: "chillies",    icon: <Leaf size={16} />,             label: "Pepper Catalogue" },
+  { id: "promo-codes", icon: <Tag size={16} />,              label: "Promo Codes" },
+  { id: "tours",       icon: <Flame size={16} />,            label: "Tours Overview" },
+  { id: "bookings",    icon: <Calendar size={16} />,         label: "Booking Requests" },
+  { id: "team",        icon: <Users size={16} />,            label: "Team Schedule" },
+  { id: "reviews",     icon: <MessageSquare size={16} />,    label: "Reviews" },
 ];
 
-function OwnerSidebar() {
+function OwnerSidebar({ activeSection }) {
   const navigate = useNavigate();
 
   return (
     <aside className="owner-sidebar">
       <div className="owner-sidebar-top">
-        <div className="owner-sidebar-badge">ChiliLand</div>
-        <h2>Quick actions</h2>
-        <p>Start tasks fast without digging through menus.</p>
+        <div className="owner-sidebar-badge">
+          <CLMonogram size={18} color="#ffffff" stemColor="#ffd6d6" />
+          <span>ChiliLand</span>
+        </div>
+        <h2>Owner Panel</h2>
+        <p>Manage every part of the farm from one place.</p>
       </div>
 
-      <div className="owner-sidebar-actions">
-        {actions.map((action) => (
-          <button
-            key={action.label}
-            className="owner-action-btn"
-            onClick={() => action.route && navigate(action.route)}
-          >
-            <span className="owner-action-icon">{action.icon}</span>
-            <span className="owner-action-text">{action.label}</span>
-            <span className="owner-action-arrow">→</span>
-          </button>
-        ))}
-      </div>
+      <nav className="owner-sidebar-nav">
+        {navItems.map((item) => {
+          const isActive = activeSection === item.id || (!activeSection && item.id === "dashboard");
+          return (
+            <button
+              key={item.id}
+              className={`owner-nav-btn${isActive ? " owner-nav-btn--active" : ""}`}
+              onClick={() => navigate(`/owner/${item.id}`)}
+            >
+              <span className="owner-nav-icon">{item.icon}</span>
+              <span className="owner-nav-label">{item.label}</span>
+              {isActive && <span className="owner-nav-indicator" />}
+            </button>
+          );
+        })}
+      </nav>
 
       <button className="owner-sidebar-view-site" onClick={() => navigate("/")}>
-        <span>🌐</span>
+        <Globe size={16} />
         <span>View Site</span>
       </button>
     </aside>

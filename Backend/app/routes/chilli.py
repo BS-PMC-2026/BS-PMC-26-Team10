@@ -43,6 +43,7 @@ def serialize_chillies(chillies, request: Request):
             "stock_quantity": chilli[9],
             "season": chilli[10],
             "full_description": chilli[11],
+            "price": chilli[12] if len(chilli) > 12 else None,
         }
         for chilli in chillies
     ]

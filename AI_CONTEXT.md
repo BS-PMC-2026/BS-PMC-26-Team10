@@ -1,181 +1,241 @@
-# ChiliLand Frontend - AI Context
+# ChiliLand — AI Context
 
-Use this file as a quick orientation note for AI-assisted work on the ChiliLand frontend.
+Quick orientation for AI-assisted work on this project.
+
+---
 
 ## Project Summary
 
-- Frontend framework: React with Vite
-- Routing: React Router
-- Main implemented experience: visitor landing page
-- Supporting screens: auth page plus placeholder owner and tour guide pages
-- Backend: FastAPI at `http://127.0.0.1:8000`
-- Backend also exposes inventory/product endpoints and static product images
+| | |
+|---|---|
+| Frontend | React 19 + Vite 8 |
+| Routing | React Router 7 |
+| Styling | Plain CSS per component/page, no CSS-in-JS |
+| Icons | `lucide-react` throughout the visitor UI |
+| Backend | FastAPI at `http://127.0.0.1:8000` |
+| Database | PostgreSQL via Supabase |
+| File storage | Supabase storage (`tours-booking-images`, `chilli-images`, `product-images` buckets) |
+| Tests | Vitest + @testing-library/react (frontend), pytest + FastAPI TestClient (backend) |
 
-## Current Routes
+---
 
-- `/` -> visitor homepage
-- `/staffLogin` -> login/signup UI
-- `/owner` -> placeholder owner page
-- `/tourguide` -> placeholder tour guide page
+## Frontend Routes
+
+```
+/                   → VisitorMain        (landing page)
+/products           → VisitorProducts    (shop / inventory)
+/pepper/:id         → PepperDetailsPage  (chilli detail)
+/tours              → ToursPage          (public tour listing + FAQ + calendar)
+/tours/:id          → TourDetailPage     (single tour + booking form)
+/about              → AboutPage
+/farm-location      → FarmLocation
+/staffLogin         → Auth               (login / signup)
+/owner              → OwnerMain          (owner dashboard)
+/owner/:section     → OwnerMain
+/tourguide          → TourguideMain      (guide dashboard)
+```
+
+The routes `/`, `/products`, `/pepper/:id`, `/tours`, `/tours/:id`, `/about`, and `/farm-location` are wrapped in `VisitorLayout` (in `App.jsx`), which renders the `Navbar` alongside the page. Staff routes (`/owner`, `/tourguide`, `/staffLogin`) do **not** get the navbar.
+
+---
 
 ## Frontend Structure
 
-```text
+```
 src/
-  App.jsx
+  App.jsx                         ← route definitions + VisitorLayout
   main.jsx
+  assets/
+    header-desk.mp4
+    header-mob.mp4
+    hero.png
+    image4–7.jpeg / imgae1–3.jpeg
+    owner.png
   components/
-    HeaderVisitor/
-    WelcomeStrip/
-    VisitorCatalogue/
-    FooterVisitor/
+    Navbar/                       ← left-side vertical nav rail (visitor only)
+    HeaderVisitor/                ← full-viewport hero with looping video
+    WelcomeStrip/                 ← four value cards below the hero
+    VisitorCatalogue/             ← chilli catalogue with search + filters
+    VisitorCart/                  ← shopping cart sidebar
+    CheckoutModel/                ← checkout flow modal
+    FooterVisitor/                ← site footer
+    TourCard/                     ← admin-facing tour card (with bookings toggle)
+    TourFormModal/                ← edit-tour modal for owner
+    CreateTourPage/               ← create-tour form for owner
+    TourGrid/                     ← grid of TourCards used in OwnerMain
+    OwnerDashboard/
+    OwnerCardsGrid/
+    OwnerPanelCard/
+    OwnerSidebar/
+    GuideSidebar/
+    InventoryCard/
+    InventoryGrid/
+    InventoryFormModal/
+    ChilliFormModal/
   pages/
     VisitorMain.jsx
+    VisitorProducts.jsx
+    PepperDetailsPage.jsx
+    ToursPage.jsx
+    TourDetailPage.jsx
+    AboutPage.jsx
+    FarmLocation.jsx
     Auth.jsx
     OwnerMain.jsx
     TourguideMain.jsx
   styles/
+    AboutPage.css
+    FarmLocation.css
+    OwnerInventory.css
+    OwnerMain.css
+    OwnerOrders.css
+    TourDetailPage.css
+    TourguideMain.css
+    ToursPage.css
+    VisitorMain.css          ← legacy file, largely unused
+    VisitorProducts.css
     auth.css
-    VisitorMain.css
+    pepperDetailsPage.css
+  tests/
+    TourCard.test.jsx
+    TourImageUpload.test.jsx
+    ToursPage.test.jsx
 ```
 
-## Component Responsibilities
+---
 
-### VisitorMain
+## Design System
 
-[`src/pages/VisitorMain.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/pages/VisitorMain.jsx) composes the visitor homepage from four sections:
+### Colors
 
-- hero
-- welcome strip
-- catalogue
-- footer
+| Token | Value | Usage |
+|---|---|---|
+| Primary red | `#bb3e22` | CTAs, active states, accent dots |
+| Dark brown | `rgba(45, 24, 13, ...)` / `#2d180d` | Navbar background, overlays |
+| Cream | `#fff4e6` | Text on dark backgrounds |
+| Hover red | `#a8341b` | Primary button hover |
 
-### HeaderVisitor
+### Typography
 
-[`src/components/HeaderVisitor/HeaderVisitor.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/components/HeaderVisitor/HeaderVisitor.jsx) renders:
+The site currently uses the **system font stack** — no custom fonts are loaded.
 
-- desktop and mobile background videos
-- hero copy
-- two CTA buttons
+```css
+/* from src/index.css */
+--sans:    system-ui, 'Segoe UI', Roboto, sans-serif;
+--heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+--mono:    ui-monospace, Consolas, monospace;
+```
 
-### WelcomeStrip
+When generating new UI, match this convention:
+- **Headings**: `font-weight: 700`, sized in `vw` units for marketing sections, `rem` for UI components
+- **Labels / buttons**: `font-weight: 600`
+- **Body**: `font-weight: 400`, `line-height: 1.6–1.7`
+- **Kicker text** (small uppercase labels above headings): `font-size: 1vw`, `letter-spacing: 0.16vw`, `text-transform: uppercase`
 
-[`src/components/WelcomeStrip/WelcomeStrip.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/components/WelcomeStrip/WelcomeStrip.jsx) renders a static set of four value cards.
+### Spacing & Sizing
 
-### VisitorCatalogue
+- **vw-based units** throughout marketing/hero sections (responsive without breakpoints)
+- **rem-based units** in UI components (forms, modals, cards)
+- **Border radius**: `999vw` for pill shapes; `1–1.4vw` for cards
+- **Transitions**: `0.25s ease` standard; `0.32s cubic-bezier(0.4, 0, 0.2, 1)` for slide animations
 
-[`src/components/VisitorCatalogue/VisitorCatalogue.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/components/VisitorCatalogue/VisitorCatalogue.jsx) handles:
+### Icons
 
-- fetching catalogue data
-- loading state
-- error state
-- empty state
-- search input
-- origin filter
-- SHU range filters
-- filter reset
+Use `lucide-react` for all icons. Common icons already in use:
+`Flame`, `Users`, `Package`, `GraduationCap`, `Sprout`, `FlaskConical`, `MapPin`, `ShoppingCart`, `ShoppingBag`, `Tractor`, `Camera`, `Car`, `Compass`, `Bus`, `Phone`, `Mail`, `Home`, `Info`, `LogIn`, `Menu`, `X`
 
-It uses a debounced fetch and hardcodes `API_BASE_URL = "http://127.0.0.1:8000"`.
+---
 
-### Auth
+## Backend API
 
-[`src/pages/Auth.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/pages/Auth.jsx) is currently local-state only:
+Base URL: `http://127.0.0.1:8000`
 
-- no backend auth call
-- login just logs to the console
-- signup just logs to the console and navigates by selected role
+### Chillies
+```
+GET    /chillies                  ?shu_min= &shu_max= &origin=
+GET    /chillies/{id}
+GET    /chillies/search?q=        ⚠ route ordering bug: defined after /{id}, returns 422
+POST   /chillies
+DELETE /chillies/{id}
+POST   /chillies/upload-image
+```
 
-## Backend Contract
+### Inventory (products)
+```
+GET    /inventory
+GET    /inventory/{id}
+POST   /inventory/add
+PUT    /inventory/{id}
+DELETE /inventory/{id}
+POST   /inventory/upload-image
+POST   /inventory/upload-ingredients-image
+```
 
-Relevant backend files:
+### Tours
+```
+GET    /tours
+POST   /tours
+PUT    /tours/{id}
+DELETE /tours/{id}
+POST   /tours/upload-image        ⚠ must be defined BEFORE /tours/{id} in router
+```
 
-- [`Backend/main.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/main.py)
-- [`Backend/app/routes/chilli.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/routes/chilli.py)
-- [`Backend/app/routes/product.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/routes/product.py)
-- [`Backend/app/services/product_services.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/services/product_services.py)
+### Bookings
+```
+GET    /tours/{tour_id}/bookings
+POST   /bookings
+POST   /bookings/{reference}/cancel
+```
 
-Current routes:
+### FAQ
+```
+GET    /faq
+```
 
-- `GET /chillies`
-- `GET /chillies/search?q=...`
-- `POST /chillies`
-- `GET /inventory`
-- `POST /inventory/add`
+### Orders
+```
+GET    /orders
+GET    /orders/recent
+POST   /orders
+```
 
-`GET /chillies` also supports:
+### Promo codes
+```
+GET    /codes
+POST   /codes
+PUT    /codes/{id}
+DELETE /codes/{id}
+POST   /validate
+```
 
-- `shu_min`
-- `shu_max`
-- `origin`
+---
 
-The API returns chilli objects with fields such as:
+## Known Issues
 
-- `id`
-- `name`
-- `description`
-- `image_url`
-- `shu_min`
-- `shu_max`
-- `origin`
-- `color`
-- `is_available`
-- `stock_quantity`
-- `season`
+- `GET /chillies/search` is defined after `GET /chillies/{chilli_id}` in the router, so FastAPI matches "search" as an integer param and returns 422. Fix: move the search route above the `{id}` route.
+- `src/styles/VisitorMain.css` is legacy from an older non-component architecture; largely unused.
+- No real authentication — the Auth page navigates by role without a backend auth call.
 
-The inventory API returns objects with:
+---
 
-- `id`
-- `name`
-- `description`
-- `quantity`
-- `last_updated`
-- `restock_date`
-- `price`
-- `image_url`
+## Run Commands
 
-Inventory image URLs are built from an image stem such as `hot_sour` and stored under `../product_images/` with either `.jpg` or `.jpeg`.
-
-Database helpers:
-
-- [`Backend/db/sql/create_inventory_table.sql`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/sql/create_inventory_table.sql)
-- [`Backend/db/scripts/create_inventory_table.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/scripts/create_inventory_table.py)
-- [`Backend/db/scripts/load_peppers.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/db/scripts/load_peppers.py)
-
-## Current Risks And Mismatches
-
-- The auth page navigates to `/visitor`, but there is no `/visitor` route in the router
-- `src/styles/VisitorMain.css` appears to be legacy CSS from an older page architecture
-- The frontend does not yet use the inventory API
-
-## Working Style For Future Changes
-
-- Treat the visitor page as the primary product surface
-- Preserve the existing component-based React structure
-- Prefer editing existing component CSS rather than reintroducing inline styling
-- Keep user-facing states explicit: loading, success, empty, error
-- If you change routes, filenames, or backend endpoints, update the markdown files too
-
-## Useful Run Commands
-
-Frontend from repo root:
-
+**Frontend** (from repo root):
 ```bash
 npm install
 npm run dev
 ```
 
-Backend from `Backend/`:
-
+**Backend** (from `Backend/`):
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install fastapi uvicorn psycopg2-binary python-dotenv pydantic
+pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Database scripts from repo root:
-
+**Tests**:
 ```bash
-python3 Backend/db/scripts/create_inventory_table.py
-python3 Backend/db/scripts/load_peppers.py
+npm run test            # frontend (Vitest)
+cd Backend && pytest    # backend (pytest)
 ```

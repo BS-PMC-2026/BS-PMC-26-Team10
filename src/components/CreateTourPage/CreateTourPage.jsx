@@ -41,13 +41,36 @@ function CreateTourPage({ onTourSaved, onCancel }) {
     accessibility: "mostly-yes",
     visibility: "draft",
     confirmation_message: DEFAULT_CONFIRMATION_MESSAGE,
+    picture: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [error, setError] = useState("");
   const [toast, setToast] = useState("");
 
   const set = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      const res = await fetch("http://127.0.0.1:8000/tours/upload-image", {
+        method: "POST",
+        body: data,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const json = await res.json();
+      set("picture", json.image_url);
+    } catch {
+      setError("Image upload failed. Please try again.");
+    } finally {
+      setImageUploading(false);
+    }
+  };
 
   const handleSubmit = async (e, visibility) => {
     e.preventDefault();
@@ -75,6 +98,7 @@ function CreateTourPage({ onTourSaved, onCancel }) {
         accessibility: form.accessibility,
         visibility: visibility ?? form.visibility,
         confirmation_message: form.confirmation_message.trim() || DEFAULT_CONFIRMATION_MESSAGE,
+        picture: form.picture || "",
       };
 
       const res = await fetch("http://127.0.0.1:8000/tours", {
@@ -285,6 +309,22 @@ function CreateTourPage({ onTourSaved, onCancel }) {
             </div>
 
             <div className="ctp-group">
+              <label className="ctp-label" htmlFor="ctp-tour-image">Tour image</label>
+              <input
+                id="ctp-tour-image"
+                type="file"
+                accept="image/*"
+                className="ctp-input"
+                onChange={handleImageUpload}
+                disabled={imageUploading}
+              />
+              {imageUploading && <p className="ctp-hint">Uploading…</p>}
+              {form.picture && (
+                <img src={form.picture} alt="Tour preview" className="ctp-image-preview" />
+              )}
+            </div>
+
+            <div className="ctp-group">
               <label className="ctp-label">
                 Confirmation email message
                 <span className="ctp-hint">{form.confirmation_message.length}/220</span>
@@ -322,8 +362,8 @@ function CreateTourPage({ onTourSaved, onCancel }) {
               <p className="ctp-card-sub">How visitors will see this tour.</p>
             </div>
             <div className="ctp-preview">
-              <div className="ctp-preview-cover">
-                <div className="ctp-preview-pattern" />
+              <div className="ctp-preview-cover" style={form.picture ? { backgroundImage: `url(${form.picture})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}>
+                {!form.picture && <div className="ctp-preview-pattern" />}
                 <span className="ctp-preview-badge">{kindLabel}</span>
               </div>
               <h3 className="ctp-preview-title">{form.title || "Untitled tour"}</h3>

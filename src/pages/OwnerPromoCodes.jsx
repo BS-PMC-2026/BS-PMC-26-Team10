@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
@@ -156,20 +154,7 @@ function OwnerPromoCodes() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <OwnerSidebar />
-
-      <main style={{ flex: 1, padding: "2rem" }}>
-        <Link
-          to="/owner"
-          style={{
-            display: "inline-flex", alignItems: "center", gap: "0.35rem",
-            color: "#888", fontSize: "0.88rem", textDecoration: "none",
-            marginBottom: "0.75rem",
-          }}
-        >
-          ← Back to Owner Panel
-        </Link>
+    <div style={{ flex: 1, padding: "2rem" }}>
         <p style={{ color: "#888", margin: 0 }}>Owner Control Center</p>
         <h1 style={{ margin: "0.25rem 0 0.5rem" }}>Promo Codes</h1>
         <p style={{ color: "#666", marginBottom: "1.5rem" }}>
@@ -337,7 +322,6 @@ function OwnerPromoCodes() {
             </tbody>
           </table>
         )}
-      </main>
     </div>
   );
 }

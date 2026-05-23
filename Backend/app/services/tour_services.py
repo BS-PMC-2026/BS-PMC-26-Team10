@@ -19,6 +19,8 @@ def _tour_payload(tour, include_confirmation=True):
     }
     if include_confirmation:
         payload["confirmation_message"] = tour.confirmation_message
+    if tour.picture:
+        payload["picture"] = tour.picture
     return payload
 
 
@@ -61,7 +63,7 @@ def get_all_tours():
     try:
         tours_resp = supabase.table("tours").select(
             "id, title, kind, description, date, time, duration, capacity, price, "
-            "meeting_point, includes, accessibility, visibility, created_at, confirmation_message"
+            "meeting_point, includes, accessibility, visibility, created_at, confirmation_message, picture"
         ).order("date").order("time").execute()
 
         bookings_resp = supabase.table("bookings").select(
@@ -77,7 +79,8 @@ def get_all_tours():
             (t["id"], t["title"], t["kind"], t["description"], t["date"], t["time"],
              t["duration"], t["capacity"], t["price"], t["meeting_point"],
              t["includes"], t["accessibility"], t["visibility"], t["created_at"],
-             booked_map.get(t["id"], 0), t.get("confirmation_message", ""))
+             booked_map.get(t["id"], 0), t.get("confirmation_message", ""),
+             t.get("picture") or None)
             for t in tours_resp.data
         ]
     except Exception as e:

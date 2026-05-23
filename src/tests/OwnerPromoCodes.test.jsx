@@ -58,12 +58,6 @@ describe("OwnerPromoCodes", () => {
     expect(screen.getByText("Promo Codes")).toBeInTheDocument();
   });
 
-  test("renders back to owner panel link", async () => {
-    renderPage();
-    await waitFor(() => screen.getByText("SUMMER20"));
-    expect(screen.getByText("← Back to Owner Panel")).toBeInTheDocument();
-  });
-
   test("shows promo codes in table after loading", async () => {
     renderPage();
     await waitFor(() => screen.getByText("SUMMER20"));

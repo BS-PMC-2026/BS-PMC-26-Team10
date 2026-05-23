@@ -163,7 +163,7 @@ def create_booking(booking):
 def get_bookings_for_tour(tour_id):
     try:
         response = supabase.table("bookings").select(
-            "full_name, phone, email, participants_count, booking_reference, created_at"
+            "full_name, phone, email, participants_count, booking_reference, created_at, payment_status, paypal_order_id"
         ).eq("tour_id", tour_id).eq("status", "confirmed").order("created_at").execute()
         return [
             {
@@ -173,6 +173,8 @@ def get_bookings_for_tour(tour_id):
                 "participants_count": r["participants_count"],
                 "booking_reference": r["booking_reference"],
                 "created_at": str(r["created_at"]),
+                "payment_status": r.get("payment_status", "free"),
+                "paypal_order_id": r.get("paypal_order_id"),
             }
             for r in response.data
         ]
@@ -227,9 +229,7 @@ def cancel_booking(booking_reference, email):
         if _tour_has_started(tour["date"], tour.get("time")):
             return {"error": "tour_started", "message": "Cannot cancel a booking after the tour has started."}
 
-        supabase.table("bookings").update({
-            "status": "cancelled",
-        }).eq("id", booking["id"]).execute()
+        supabase.table("bookings").delete().eq("id", booking["id"]).execute()
 
         email_sent = send_tour_cancellation_confirmation(
             booking_reference=clean_reference,

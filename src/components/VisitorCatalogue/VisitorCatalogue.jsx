@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../hooks/useCart";
+import VisitorCart from "../VisitorCart/VisitorCart";
 import "./VisitorCatalogue.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
@@ -38,7 +40,12 @@ function VisitorCatalogue() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCompareItems, setSelectedCompareItems] = useState([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartFeedback, setCartFeedback] = useState({});
+  const [addingToCart, setAddingToCart] = useState({});
+  const [inventory, setInventory] = useState([]);
 
+  const cart = useCart();
   const navigate = useNavigate();
   const debounceTimeoutRef = useRef(null);
 
@@ -81,6 +88,14 @@ function VisitorCatalogue() {
       );
     });
   }, [chillies, searchInput]);
+
+  const inventoryByName = useMemo(() => {
+    const map = new Map();
+    inventory.forEach((item) => {
+      if (item.name) map.set(item.name.toLowerCase().trim(), item);
+    });
+    return map;
+  }, [inventory]);
 
   const hasActiveFilters =
     searchInput.trim() !== "" ||
@@ -148,6 +163,21 @@ function VisitorCatalogue() {
   }, []);
 
   useEffect(() => {
+    async function fetchInventory() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/inventory`);
+        if (res.ok) {
+          const data = await res.json();
+          setInventory(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchInventory();
+  }, []);
+
+  useEffect(() => {
     async function fetchChillies() {
       setIsLoading(true);
       setIsError(false);
@@ -211,6 +241,31 @@ function VisitorCatalogue() {
     setSelectedCompareItems([]);
   }
 
+  async function handleAddToCart(chilli) {
+    setAddingToCart((prev) => ({ ...prev, [chilli.id]: true }));
+    setCartFeedback((prev) => ({ ...prev, [chilli.id]: "" }));
+
+    const inventoryItem = inventoryByName.get(chilli.name?.toLowerCase().trim());
+    const price = inventoryItem?.price;
+    const inventoryId = inventoryItem?.id;
+    const result = await cart.addToCart({ ...chilli, _type: "chilli", price, inventoryId });
+
+    if (result.success) {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Added!" }));
+    } else if (result.error === "out_of_stock") {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Sold out!" }));
+    } else if (result.error === "max_quantity") {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Max in cart" }));
+    } else {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Try again" }));
+    }
+
+    setAddingToCart((prev) => ({ ...prev, [chilli.id]: false }));
+    setTimeout(() => {
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "" }));
+    }, 2000);
+  }
+
   const comparisonRows = [
     {
       label: "Origin",
@@ -271,6 +326,19 @@ function VisitorCatalogue() {
             </div>
 
             <div className="visitor-catalogue-actions">
+              <button
+                type="button"
+                className="visitor-catalogue-cart-btn"
+                onClick={() => setIsCartOpen(true)}
+              >
+                Cart
+                {cart.totalItems > 0 && (
+                  <span className="visitor-catalogue-cart-count">
+                    {cart.totalItems}
+                  </span>
+                )}
+              </button>
+
               <button
                 type="button"
                 className="visitor-catalogue-compare-btn"
@@ -412,17 +480,50 @@ function VisitorCatalogue() {
                         )}
                       </div>
 
-                      <button
-                        type="button"
-                        className="visitor-chilli-btn"
-                        onClick={() =>
-                          navigate(`/pepper/${chilli.id}`, {
-                            state: { pepper: chilli },
-                          })
-                        }
-                      >
-                        Learn More
-                      </button>
+                      {inventoryByName.get(chilli.name?.toLowerCase().trim())?.price != null && (
+                        <p className="visitor-chilli-price">
+                          ₪{parseFloat(inventoryByName.get(chilli.name?.toLowerCase().trim()).price).toFixed(2)}
+                          <span className="visitor-chilli-price-unit">/pack</span>
+                        </p>
+                      )}
+
+                      <div className="visitor-chilli-card-actions">
+                        <button
+                          type="button"
+                          className={`visitor-chilli-btn visitor-cart-btn${
+                            cartFeedback[chilli.id] === "Added!"
+                              ? " visitor-cart-btn--added"
+                              : cartFeedback[chilli.id] === "Max in cart"
+                              ? " visitor-cart-btn--max"
+                              : ""
+                          }`}
+                          disabled={
+                            !chilli.is_available ||
+                            addingToCart[chilli.id]
+                          }
+                          onClick={() => handleAddToCart(chilli)}
+                        >
+                          {addingToCart[chilli.id]
+                            ? "..."
+                            : cartFeedback[chilli.id]
+                            ? cartFeedback[chilli.id]
+                            : chilli.is_available
+                            ? "+ Add to Cart"
+                            : "Unavailable"}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="visitor-chilli-btn"
+                          onClick={() =>
+                            navigate(`/pepper/${chilli.id}`, {
+                              state: { pepper: chilli },
+                            })
+                          }
+                        >
+                          Learn More
+                        </button>
+                      </div>
                     </div>
                   </article>
                 );
@@ -537,6 +638,12 @@ function VisitorCatalogue() {
           </div>
         )}
       </div>
+
+      <VisitorCart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+      />
     </section>
   );
 }

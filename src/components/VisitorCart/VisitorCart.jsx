@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ShoppingCart, ShoppingBag, Flame, X, AlertTriangle, Tag } from "lucide-react";
 import "./VisitorCart.css";
 import CheckoutModel from "../CheckoutModel/CheckoutModel";
 
@@ -26,6 +27,17 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [promoInput, setPromoInput] = useState("");
+  const [updatingItems, setUpdatingItems] = useState(new Set());
+
+  const handleUpdateQuantity = async (id, newQty) => {
+    setUpdatingItems((prev) => new Set([...prev, id]));
+    await updateQuantity(id, newQty);
+    setUpdatingItems((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -58,7 +70,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
         {/* header */}
         <div className="vc-header">
           <div className="vc-header-left">
-            <span className="vc-header-icon">🛒</span>
+            <ShoppingCart size={22} className="vc-header-icon" />
             <div>
               <h2 className="vc-header-title">Your Cart</h2>
               <p className="vc-header-count">
@@ -69,7 +81,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
             </div>
           </div>
           <button className="vc-close-btn" onClick={onClose} aria-label="Close cart">
-            ✕
+            <X size={18} />
           </button>
         </div>
 
@@ -77,7 +89,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
         <div className="vc-body">
           {isEmpty ? (
             <div className="vc-empty">
-              <span className="vc-empty-icon">🫙</span>
+              <ShoppingBag size={48} className="vc-empty-icon" />
               <p className="vc-empty-title">Your cart is empty</p>
               <p className="vc-empty-sub">
                 Add some fiery products and come back!
@@ -101,7 +113,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                         className="vc-item-img"
                       />
                     ) : (
-                      <div className="vc-item-img-placeholder">🌶</div>
+                      <div className="vc-item-img-placeholder"><Flame size={24} /></div>
                     )}
                   </div>
 
@@ -113,7 +125,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                         onClick={() => removeFromCart(item.id)}
                         aria-label="Remove item"
                       >
-                        ✕
+                        <X size={14} />
                       </button>
                     </div>
 
@@ -132,8 +144,8 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                       <div className="vc-qty">
                         <button
                           className="vc-qty-btn"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          disabled={isValidating}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                          disabled={isValidating || updatingItems.has(item.id)}
                           aria-label="Decrease quantity"
                         >
                           −
@@ -141,11 +153,12 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                         <span className="vc-qty-value">{item.quantity}</span>
                         <button
                           className="vc-qty-btn"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                           disabled={
                             isValidating ||
+                            updatingItems.has(item.id) ||
                             item.outOfStock ||
-                            item.quantity >= item.maxQuantity
+                            (typeof item.maxQuantity === "number" && item.quantity >= item.maxQuantity)
                           }
                           aria-label="Increase quantity"
                         >
@@ -169,7 +182,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
           <div className="vc-footer">
             {Object.keys(stockErrors).length > 0 && (
               <div className="vc-footer-errors">
-                <p>⚠️ Some items have stock issues — please review above.</p>
+                <p><AlertTriangle size={14} style={{display:"inline",marginRight:4}} /> Some items have stock issues — please review above.</p>
               </div>
             )}
 
@@ -177,10 +190,10 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
             {promoCode ? (
               <div className="vc-promo-applied">
                 <span className="vc-promo-applied-text">
-                  🏷️ <strong>{promoCode}</strong> — {promoMessage}
+                  <Tag size={14} style={{display:"inline",marginRight:4}} /><strong>{promoCode}</strong> — {promoMessage}
                 </span>
                 <button className="vc-promo-remove" onClick={removePromoCode} aria-label="Remove promo">
-                  ✕
+                  <X size={14} />
                 </button>
               </div>
             ) : (

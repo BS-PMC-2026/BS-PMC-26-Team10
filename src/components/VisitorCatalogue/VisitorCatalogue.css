@@ -182,8 +182,8 @@
 
 .visitor-catalogue-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.6vw;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2vw;
 }
 
 .visitor-chilli-card {
@@ -245,15 +245,13 @@
 }
 
 .visitor-compare-toggle {
-  border: 0.08vw solid rgba(187, 62, 34, 0.24);
-  background: #fff4ec;
-  color: #8a351f;
-  border-radius: 999vw;
-  padding: 0.5vw 0.9vw;
+  text-decoration: underline;
+  color: #F54900;
   font-size: 0.8vw;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  background: transparent;
+  border: none;
 }
 
 .visitor-compare-toggle.selected {
@@ -276,8 +274,8 @@
 .visitor-chilli-origin {
   margin: 0;
   font-size: 0.92vw;
-  color: #a14d2a;
-  font-weight: 600;
+  color: #6A7282;
+  font-weight: 400;
 }
 
 .visitor-chilli-description {
@@ -292,24 +290,93 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.6vw;
-  margin-bottom: 1vw;
+  margin-bottom: 0.8vw;
+}
+
+.visitor-chilli-price {
+  margin: 0 0 1vw 0;
+  font-size: 1.15vw;
+  font-weight: 700;
+  color: #4a2a1f;
+}
+
+.visitor-chilli-price-unit {
+  font-size: 0.88vw;
+  font-weight: 400;
+  color: #6d5447;
+  margin-left: 0.1vw;
+}
+
+.visitor-chilli-card-actions {
+  display: flex;
+  gap: 0.6vw;
 }
 
 .visitor-meta-pill {
-  background: #f3dfcc;
-  color: #6a4330;
+  background: #F2DFD0;
+  color: #9F2D00;
   border-radius: 999vw;
   padding: 0.45vw 0.8vw;
   font-size: 0.82vw;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .visitor-chilli-btn {
-  width: 100%;
+  flex: 1;
   border: none;
   background: #bb3e22;
   color: white;
-  height: 3vw;
+  height: 2.5vw;
+  border-radius: 999vw;
+  font-size: 0.95vw;
+  font-weight: 400;
+  cursor: pointer;
+  
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.visitor-cart-btn {
+  flex: 1.6;
+  background: #D0634D;
+}
+
+.visitor-chilli-btn:not(.visitor-cart-btn) {
+  flex: 1;
+}
+.visitor-chilli-btn:hover {
+  background: #a8341b;
+  transform: translateY(-0.08vw);
+}
+
+.visitor-cart-btn--added {
+  background: #3a7d44;
+}
+
+.visitor-cart-btn--added:hover {
+  background: #2e6337;
+}
+
+.visitor-cart-btn--max {
+  background: #7a5c00;
+}
+
+.visitor-cart-btn--max:hover {
+  background: #5e4600;
+}
+
+.visitor-chilli-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.visitor-catalogue-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  border: none;
+  background: #bb3e22;
+  color: white;
+  padding: 0.85vw 1.4vw;
   border-radius: 999vw;
   font-size: 0.95vw;
   font-weight: 600;
@@ -317,9 +384,21 @@
   transition: background 0.25s ease, transform 0.25s ease;
 }
 
-.visitor-chilli-btn:hover {
+.visitor-catalogue-cart-btn:hover {
   background: #a8341b;
-  transform: translateY(-0.08vw);
+  transform: translateY(-0.1vw);
+}
+
+.visitor-catalogue-cart-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5vw;
+  height: 1.5vw;
+  padding: 0 0.25vw;
+  border-radius: 999vw;
+  background: rgba(255, 250, 244, 0.25);
+  font-size: 0.8vw;
 }
 
 .visitor-catalogue-empty {
@@ -720,9 +799,35 @@
     font-size: 3.1vw;
   }
 
+  .visitor-chilli-price {
+    margin: 0 0 3vw 0;
+    font-size: 4.2vw;
+  }
+
+  .visitor-chilli-price-unit {
+    font-size: 3.2vw;
+  }
+
+  .visitor-chilli-card-actions {
+    gap: 2vw;
+  }
+
   .visitor-chilli-btn {
     height: 11.5vw;
     font-size: 3.8vw;
+  }
+
+  .visitor-catalogue-cart-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 3.6vw 4vw;
+    font-size: 3.8vw;
+  }
+
+  .visitor-catalogue-cart-count {
+    min-width: 6vw;
+    height: 6vw;
+    font-size: 3vw;
   }
 
   .visitor-catalogue-empty {
