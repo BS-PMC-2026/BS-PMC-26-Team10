@@ -385,6 +385,62 @@ describe("add to cart", () => {
   });
 });
 
+  test("shows 'Max in cart' feedback when cart is already at stock limit", async () => {
+    mockAddToCart.mockResolvedValue({ success: false, error: "max_quantity" });
+    renderComponent();
+    await waitFor(() => screen.getByText("Red Habanero"));
+
+    fireEvent.click(screen.getAllByText(/\+ add to cart/i)[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText("Max in cart")).toBeInTheDocument();
+    });
+  });
+
+  test("passes inventoryId from name-matched inventory item to addToCart", async () => {
+    const mockInventory = [
+      { id: 201, name: "Red Habanero", price: 20, quantity: 5 },
+      { id: 202, name: "Mild Jalapeño", price: 12, quantity: 10 },
+    ];
+
+    global.fetch = vi.fn((url) => {
+      if (url.includes("/inventory")) {
+        return Promise.resolve({ ok: true, json: async () => mockInventory });
+      }
+      return Promise.resolve({ ok: true, json: async () => mockChillies });
+    });
+
+    renderComponent();
+    await waitFor(() => screen.getByText("Red Habanero"));
+
+    const addBtns = screen.getAllByText(/\+ add to cart/i);
+    fireEvent.click(addBtns[0]);
+
+    await waitFor(() => {
+      expect(mockAddToCart).toHaveBeenCalledWith(
+        expect.objectContaining({ inventoryId: 201 })
+      );
+    });
+  });
+
+  test("price shown on card comes from inventory, not chilli object", async () => {
+    const mockInventory = [
+      { id: 201, name: "Red Habanero", price: 99, quantity: 5 },
+    ];
+
+    global.fetch = vi.fn((url) => {
+      if (url.includes("/inventory")) {
+        return Promise.resolve({ ok: true, json: async () => mockInventory });
+      }
+      return Promise.resolve({ ok: true, json: async () => mockChillies });
+    });
+
+    renderComponent();
+    await waitFor(() => {
+      expect(screen.getByText("₪99.00")).toBeInTheDocument();
+    });
+  });
+
 // ── INTEGRATION: cart drawer ──────────────────────────────────────────────────
 
 describe("cart drawer", () => {

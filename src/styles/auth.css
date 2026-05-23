@@ -38,6 +38,17 @@ body {
     text-align: center;
 }
 
+.auth-mark {
+    display: block;
+    margin: 0 auto 2vw;
+    filter: drop-shadow(0 0 6px rgba(255, 200, 180, 0.45));
+    transition: transform 0.35s ease;
+}
+
+.auth-mark:hover {
+    transform: rotate(-8deg) scale(1.08);
+}
+
 .title {
     font-size: 8vw;
     margin-bottom: 2vw;
@@ -147,6 +158,10 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: center;
+    }
+
+    .auth-mark {
+        margin-bottom: 1vw;
     }
 
     .title {

@@ -50,6 +50,17 @@
   font-size: 2vw;
   font-weight: 700;
   color: #ff7a3d;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.footer-logo svg {
+  transition: transform 0.3s ease;
+}
+
+.footer-logo:hover svg {
+  transform: rotate(-8deg) scale(1.1);
 }
 
 .footer-tagline {
@@ -87,6 +98,7 @@
   .footer-logo {
     font-size: 7vw;
     margin-bottom: 3vw;
+    gap: 2vw;
   }
 
   .footer-tagline {

@@ -27,6 +27,17 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [promoInput, setPromoInput] = useState("");
+  const [updatingItems, setUpdatingItems] = useState(new Set());
+
+  const handleUpdateQuantity = async (id, newQty) => {
+    setUpdatingItems((prev) => new Set([...prev, id]));
+    await updateQuantity(id, newQty);
+    setUpdatingItems((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -133,8 +144,8 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                       <div className="vc-qty">
                         <button
                           className="vc-qty-btn"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          disabled={isValidating}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                          disabled={isValidating || updatingItems.has(item.id)}
                           aria-label="Decrease quantity"
                         >
                           −
@@ -142,11 +153,12 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                         <span className="vc-qty-value">{item.quantity}</span>
                         <button
                           className="vc-qty-btn"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                           disabled={
                             isValidating ||
+                            updatingItems.has(item.id) ||
                             item.outOfStock ||
-                            item.quantity >= item.maxQuantity
+                            (typeof item.maxQuantity === "number" && item.quantity >= item.maxQuantity)
                           }
                           aria-label="Increase quantity"
                         >

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe } from "lucide-react";
+import { CLMonogram } from "../ChiliMark/ChiliMark";
 import "./OwnerSidebar.css";
 
 const navItems = [
@@ -20,7 +21,10 @@ function OwnerSidebar({ activeSection }) {
   return (
     <aside className="owner-sidebar">
       <div className="owner-sidebar-top">
-        <div className="owner-sidebar-badge">ChiliLand</div>
+        <div className="owner-sidebar-badge">
+          <CLMonogram size={18} color="#ffffff" stemColor="#ffd6d6" />
+          <span>ChiliLand</span>
+        </div>
         <h2>Owner Panel</h2>
         <p>Manage every part of the farm from one place.</p>
       </div>

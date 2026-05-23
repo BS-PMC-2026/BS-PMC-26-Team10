@@ -5,7 +5,7 @@ import TourFormModal from "../components/TourFormModal/TourFormModal";
 import CreateTourPage from "../components/CreateTourPage/CreateTourPage";
 import "../styles/TourguideMain.css";
 
-function MyToursView({ onCreateNew }) {
+export function MyToursView({ onCreateNew }) {
   const [tours, setTours] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
