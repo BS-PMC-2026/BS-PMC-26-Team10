@@ -5,10 +5,16 @@ import { MemoryRouter } from "react-router-dom";
 import OwnerSidebar from "../components/OwnerSidebar/OwnerSidebar";
 
 const mockNavigate = vi.fn();
+const mockLogout = vi.fn();
+
 vi.mock("react-router-dom", async (importOriginal) => {
   const actual = await importOriginal();
   return { ...actual, useNavigate: () => mockNavigate };
 });
+
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({ logout: mockLogout }),
+}));
 
 function renderSidebar(activeSection = "dashboard") {
   return render(
@@ -70,5 +76,17 @@ describe("OwnerSidebar", () => {
     renderSidebar();
     await userEvent.click(screen.getByText("View Site"));
     expect(mockNavigate).toHaveBeenCalledWith("/");
+  });
+
+  test("renders the Log Out button", () => {
+    renderSidebar();
+    expect(screen.getByText("Log Out")).toBeInTheDocument();
+  });
+
+  test("clicking Log Out calls logout() and navigates to /staffLogin", async () => {
+    renderSidebar();
+    await userEvent.click(screen.getByText("Log Out"));
+    expect(mockLogout).toHaveBeenCalledOnce();
+    expect(mockNavigate).toHaveBeenCalledWith("/staffLogin", { replace: true });
   });
 });

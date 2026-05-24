@@ -52,3 +52,24 @@ class BookingCreate(BaseModel):
 
 class BookingCancel(BaseModel):
     email: str
+
+
+class AdminRegister(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    password: str
+
+
+class AdminLogin(BaseModel):
+    email: str
+    password: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
