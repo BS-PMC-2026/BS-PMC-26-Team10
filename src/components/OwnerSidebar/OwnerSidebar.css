@@ -114,9 +114,19 @@
     flex-shrink: 0;
 }
 
+/* Bottom button group */
+.owner-sidebar-bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
+    position: relative;
+    z-index: 2;
+}
+
 /* View site button */
 .owner-sidebar-view-site {
-    margin-top: auto;
+    margin-top: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -138,6 +148,32 @@
 .owner-sidebar-view-site:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
+}
+
+/* Logout button */
+.owner-sidebar-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6vw;
+    width: 100%;
+    border: 0.08vw solid rgba(220, 80, 80, 0.45);
+    border-radius: 1vw;
+    padding: 0.85vw 1vw;
+    background: rgba(178, 34, 34, 0.12);
+    color: rgba(255, 160, 160, 0.85);
+    cursor: pointer;
+    font-size: 0.92vw;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.owner-sidebar-logout:hover {
+    background: rgba(178, 34, 34, 0.28);
+    color: #ffb3b3;
+    border-color: rgba(220, 80, 80, 0.7);
 }
 
 @media (max-width: 768px) {
@@ -175,7 +211,19 @@
 
     .owner-nav-indicator { width: 1.5vw; height: 1.5vw; }
 
+    .owner-sidebar-bottom {
+        gap: 2.5vw;
+    }
+
     .owner-sidebar-view-site {
+        font-size: 3.8vw;
+        border-radius: 4vw;
+        padding: 3.5vw;
+        gap: 2.5vw;
+        border-width: 0.25vw;
+    }
+
+    .owner-sidebar-logout {
         font-size: 3.8vw;
         border-radius: 4vw;
         padding: 3.5vw;

@@ -1,180 +1,285 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CLMonogram } from "../components/ChiliMark/ChiliMark";
+import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
+
+const API_BASE = "http://127.0.0.1:8000";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Auth() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("login");
+  const [searchParams] = useSearchParams();
+  const { admin, login } = useAuth();
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+  const resetToken = searchParams.get("reset");
 
-  const [signupData, setSignupData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    role: "visitor",
-  });
+  const [view, setView] = useState(resetToken ? "reset" : "login");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleLoginChange = (e) => {
-    const { id, value } = e.target;
-    setLoginData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resetData, setResetData] = useState({ password: "", confirm: "" });
 
-  const handleSignupChange = (e) => {
-    const { id, value } = e.target;
-    setSignupData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
+  useEffect(() => {
+    if (admin) navigate("/owner", { replace: true });
+  }, [admin, navigate]);
 
-  const handleLogin = () => {
-    console.log("Login data:", loginData);
-  };
+  function switchView(next) {
+    setError("");
+    setSuccess("");
+    setView(next);
+  }
 
-  const handleSignup = () => {
-    console.log("Signup data:", signupData);
+  function setL(setter) {
+    return (e) => setter((p) => ({ ...p, [e.target.name]: e.target.value }));
+  }
 
-    if (signupData.role === "visitor") {
-      navigate("/visitor");
-    } else if (signupData.role === "worker") {
-      navigate("/tourguide");
-    } else if (signupData.role === "admin") {
-      navigate("/owner");
+  async function handleLogin(e) {
+    e.preventDefault();
+    if (!loginData.email || !EMAIL_RE.test(loginData.email)) {
+      setError("Please enter a valid email address.");
+      return;
     }
-  };
+    if (!loginData.password) {
+      setError("Password is required.");
+      return;
+    }
 
-  const handleGuest = () => {
-    navigate("/visitor");
-  };
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.detail || "Login failed. Please try again.");
+        return;
+      }
+
+      login(data.token, data.admin, data.expires_in);
+      navigate("/owner", { replace: true });
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleForgot(e) {
+    e.preventDefault();
+    if (!forgotEmail || !EMAIL_RE.test(forgotEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.detail || "Request failed. Please try again.");
+        return;
+      }
+
+      setSuccess(
+        "If an admin account with this email exists, a reset link has been sent. Check your inbox."
+      );
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleReset(e) {
+    e.preventDefault();
+    if (resetData.password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (resetData.password !== resetData.confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: resetToken, new_password: resetData.password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.detail || "Password reset failed. Please try again.");
+        return;
+      }
+
+      setSuccess("Password reset successfully! Redirecting to login...");
+      setTimeout(() => {
+        setView("login");
+        navigate("/staffLogin", { replace: true });
+      }, 2000);
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="page">
-      <div className="box">
-        <div className="left">
-          <CLMonogram
-            className="auth-mark"
-            size={56}
-            color="#ffffff"
-            stemColor="rgba(255, 226, 214, 0.95)"
-            title="ChiliLand"
-          />
-          <h1 className="title">ChiliLand</h1>
-          <p className="subtitle">Farm Platform</p>
+    <div className="auth-page">
+      <div className="auth-card">
 
-          <div className="tabs">
-            <button
-              id="loginTab"
-              className={`tab ${activeTab === "login" ? "active" : ""}`}
-              onClick={() => setActiveTab("login")}
-            >
-              Login
-            </button>
-
-            <button
-              id="signupTab"
-              className={`tab ${activeTab === "signup" ? "active" : ""}`}
-              onClick={() => setActiveTab("signup")}
-            >
-              Sign Up
-            </button>
+        {/* ── Left panel ── */}
+        <div className="auth-left">
+          <div className="auth-brand">
+            <CLMonogram
+              size={52}
+              color="#ffffff"
+              stemColor="rgba(255, 220, 180, 0.9)"
+              title="ChilliLand"
+            />
+            <h1 className="auth-brand-title">ChilliLand</h1>
+            <p className="auth-brand-badge">Admin Portal</p>
           </div>
+          <p className="auth-brand-note">Secure staff access only</p>
+          <button className="auth-back-to-site" onClick={() => navigate("/")}>
+            ← Back to site
+          </button>
         </div>
 
-        <div className="right">
-          {activeTab === "login" && (
-            <div id="login" className="form active">
-              <h2>Login</h2>
+        {/* ── Right panel ── */}
+        <div className="auth-right">
+          {error && <div className="auth-alert auth-alert--error" role="alert">{error}</div>}
+          {success && <div className="auth-alert auth-alert--success" role="status">{success}</div>}
 
-              <input
-                type="email"
-                placeholder="Email"
-                id="email"
-                value={loginData.email}
-                onChange={handleLoginChange}
-              />
+          {/* Login */}
+          {view === "login" && (
+            <form className="auth-form" onSubmit={handleLogin} noValidate>
+              <h2 className="auth-form-title">Welcome back</h2>
+              <p className="auth-form-sub">Sign in to your admin account</p>
 
-              <input
-                type="password"
-                placeholder="Password"
-                id="password"
-                value={loginData.password}
-                onChange={handleLoginChange}
-              />
+              <div className="auth-field">
+                <label htmlFor="l-email">Email</label>
+                <input
+                  id="l-email"
+                  name="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={loginData.email}
+                  onChange={setL(setLoginData)}
+                  autoComplete="email"
+                />
+              </div>
 
-              <button id="loginBtn" onClick={handleLogin}>
-                Login
+              <div className="auth-field">
+                <label htmlFor="l-password">Password</label>
+                <input
+                  id="l-password"
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={loginData.password}
+                  onChange={setL(setLoginData)}
+                  autoComplete="current-password"
+                />
+              </div>
+
+              <div className="auth-forgot-row">
+                <span onClick={() => switchView("forgot")}>Forgot password?</span>
+              </div>
+
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? <span className="auth-spinner" /> : "Sign In"}
               </button>
-
-              <p className="switch">
-                Don’t have an account?{" "}
-                <span id="goSignup" onClick={() => setActiveTab("signup")}>
-                  Sign Up
-                </span>
-              </p>
-            </div>
+            </form>
           )}
 
-          {activeTab === "signup" && (
-            <div id="signup" className="form active">
-              <h2>Sign Up</h2>
-
-              <input
-                type="text"
-                placeholder="Full Name"
-                id="fullName"
-                value={signupData.fullName}
-                onChange={handleSignupChange}
-              />
-
-              <input
-                type="email"
-                placeholder="Email"
-                id="email"
-                value={signupData.email}
-                onChange={handleSignupChange}
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-                id="password"
-                value={signupData.password}
-                onChange={handleSignupChange}
-              />
-
-              <select
-                id="role"
-                value={signupData.role}
-                onChange={handleSignupChange}
-              >
-                <option value="visitor">Visitor</option>
-                <option value="worker">Worker</option>
-                <option value="admin">Admin</option>
-              </select>
-
-              <button id="signupBtn" onClick={handleSignup}>
-                Create Account
+          {/* Forgot Password */}
+          {view === "forgot" && (
+            <form className="auth-form" onSubmit={handleForgot} noValidate>
+              <button type="button" className="auth-back" onClick={() => switchView("login")}>
+                ← Back to login
               </button>
 
-              <button id="guestBtn" className="guest" onClick={handleGuest}>
-                Continue as Guest
-              </button>
-
-              <p className="switch">
-                Already have an account?{" "}
-                <span id="goLogin" onClick={() => setActiveTab("login")}>
-                  Login
-                </span>
+              <h2 className="auth-form-title">Reset password</h2>
+              <p className="auth-form-sub">
+                Enter your admin email and we'll send you a secure reset link.
               </p>
-            </div>
+
+              <div className="auth-field">
+                <label htmlFor="f-email">Email</label>
+                <input
+                  id="f-email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  autoComplete="email"
+                />
+              </div>
+
+              <button type="submit" className="auth-submit" disabled={loading || !!success}>
+                {loading ? <span className="auth-spinner" /> : "Send Reset Link"}
+              </button>
+            </form>
+          )}
+
+          {/* Reset Password */}
+          {view === "reset" && (
+            <form className="auth-form" onSubmit={handleReset} noValidate>
+              <h2 className="auth-form-title">Create new password</h2>
+              <p className="auth-form-sub">Enter and confirm your new admin password.</p>
+
+              <div className="auth-field">
+                <label htmlFor="rp-pass">New Password</label>
+                <input
+                  id="rp-pass"
+                  name="password"
+                  type="password"
+                  placeholder="Min. 8 characters"
+                  value={resetData.password}
+                  onChange={setL(setResetData)}
+                  autoComplete="new-password"
+                />
+              </div>
+
+              <div className="auth-field">
+                <label htmlFor="rp-confirm">Confirm Password</label>
+                <input
+                  id="rp-confirm"
+                  name="confirm"
+                  type="password"
+                  placeholder="Re-enter password"
+                  value={resetData.confirm}
+                  onChange={setL(setResetData)}
+                  autoComplete="new-password"
+                />
+              </div>
+
+              <button type="submit" className="auth-submit" disabled={loading || !!success}>
+                {loading ? <span className="auth-spinner" /> : "Reset Password"}
+              </button>
+            </form>
           )}
         </div>
       </div>

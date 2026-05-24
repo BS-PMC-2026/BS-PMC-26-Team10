@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe, LogOut } from "lucide-react";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
+import { useAuth } from "../../context/AuthContext";
 import "./OwnerSidebar.css";
 
 const navItems = [
@@ -17,6 +18,12 @@ const navItems = [
 
 function OwnerSidebar({ activeSection }) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  function handleLogout() {
+    logout();
+    navigate("/staffLogin", { replace: true });
+  }
 
   return (
     <aside className="owner-sidebar">
@@ -46,10 +53,16 @@ function OwnerSidebar({ activeSection }) {
         })}
       </nav>
 
-      <button className="owner-sidebar-view-site" onClick={() => navigate("/")}>
-        <Globe size={16} />
-        <span>View Site</span>
-      </button>
+      <div className="owner-sidebar-bottom">
+        <button className="owner-sidebar-view-site" onClick={() => navigate("/")}>
+          <Globe size={16} />
+          <span>View Site</span>
+        </button>
+        <button className="owner-sidebar-logout" onClick={handleLogout}>
+          <LogOut size={16} />
+          <span>Log Out</span>
+        </button>
+      </div>
     </aside>
   );
 }

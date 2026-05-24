@@ -11,6 +11,8 @@ import TourDetailPage from "./pages/TourDetailPage";
 import AboutPage from "./pages/AboutPage";
 import FarmLocation from "./pages/FarmLocation";
 import VisitorProducts from "./pages/VisitorProducts";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -30,22 +32,30 @@ function VisitorLayout() {
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
-        <Route element={<VisitorLayout />}>
-          <Route path="/" element={<VisitorMain />} />
-          <Route path="/products" element={<VisitorProducts />} />
-          <Route path="/pepper/:id" element={<PepperDetailsPage />} />
-          <Route path="/tours" element={<ToursPage />} />
-          <Route path="/tours/:id" element={<TourDetailPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/farm-location" element={<FarmLocation />} />
-        </Route>
-        <Route path="/owner" element={<OwnerMain />} />
-        <Route path="/owner/:section" element={<OwnerMain />} />
-        <Route path="/tourguide" element={<TourguideMain />} />
-        <Route path="/staffLogin" element={<Auth />} />
-      </Routes>
+      <AuthProvider>
+        <ScrollToTop />
+        <Routes>
+          <Route element={<VisitorLayout />}>
+            <Route path="/" element={<VisitorMain />} />
+            <Route path="/products" element={<VisitorProducts />} />
+            <Route path="/pepper/:id" element={<PepperDetailsPage />} />
+            <Route path="/tours" element={<ToursPage />} />
+            <Route path="/tours/:id" element={<TourDetailPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/farm-location" element={<FarmLocation />} />
+          </Route>
+          <Route
+            path="/owner"
+            element={<ProtectedRoute><OwnerMain /></ProtectedRoute>}
+          />
+          <Route
+            path="/owner/:section"
+            element={<ProtectedRoute><OwnerMain /></ProtectedRoute>}
+          />
+          <Route path="/tourguide" element={<TourguideMain />} />
+          <Route path="/staffLogin" element={<Auth />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
