@@ -233,6 +233,66 @@ def send_tour_booking_confirmation(
     )
 
 
+def send_password_reset_email(to_email: str, reset_url: str, first_name: str = "Admin") -> bool:
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    </head>
+    <body style="margin:0;padding:0;background:#fdf7f0;font-family:'Segoe UI',Arial,sans-serif;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#fdf7f0;padding:40px 20px;">
+        <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+            <tr>
+                <td style="background:linear-gradient(135deg,#4a2a1f 0%,#2e1a10 100%);border-radius:16px 16px 0 0;padding:36px 40px;text-align:center;">
+                    <p style="margin:0 0 6px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#e8a838;font-weight:600;">ChilliLand Farm</p>
+                    <h1 style="margin:0;font-size:28px;color:#ffffff;font-weight:700;">Password Reset Request</h1>
+                    <p style="margin:12px 0 0;font-size:15px;color:rgba(255,255,255,0.7);">Hi {first_name}, we received a request to reset your admin password.</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="background:#ffffff;padding:36px 40px;text-align:center;">
+                    <p style="margin:0 0 24px;font-size:15px;color:#7b5c4d;line-height:1.6;text-align:left;">
+                        Click the button below to create a new password. This link will expire in <strong>1 hour</strong>.
+                    </p>
+                    <a href="{reset_url}"
+                       style="display:inline-block;background:#b22222;color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:8px;font-size:15px;font-weight:700;letter-spacing:0.5px;">
+                        Reset Password
+                    </a>
+                    <p style="margin:24px 0 0;font-size:12px;color:#a07060;line-height:1.6;text-align:left;">
+                        If the button above doesn't work, copy and paste this link into your browser:<br/>
+                        <span style="color:#b22222;word-break:break-all;">{reset_url}</span>
+                    </p>
+                    <hr style="border:none;border-top:1px solid #efd8cc;margin:28px 0;"/>
+                    <p style="margin:0;font-size:13px;color:#a07060;text-align:left;">
+                        If you did not request a password reset, you can safely ignore this email. Your password will not change.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="background:#fdf7f0;border:1px solid #efd8cc;border-top:none;border-radius:0 0 16px 16px;padding:20px 40px;text-align:center;">
+                    <p style="margin:0;font-size:13px;color:#a07060;">ChilliLand Farm Admin Portal</p>
+                </td>
+            </tr>
+
+        </table>
+        </td></tr>
+        </table>
+    </body>
+    </html>
+    """
+    return _send_smtp_email(
+        to_email=to_email,
+        subject="ChilliLand Admin — Password Reset Request",
+        html=html,
+    )
+
+
 def send_tour_cancellation_confirmation(
     booking_reference,
     visitor_email,
