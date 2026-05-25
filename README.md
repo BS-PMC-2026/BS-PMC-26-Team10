@@ -1,143 +1,208 @@
-# ChiliLand
+# ChilliLand
 
-ChiliLand is a React + Vite frontend with a FastAPI backend for browsing chilli peppers and managing inventory products.
+Full-stack web app for browsing chilli peppers, managing inventory, booking tours, and processing orders.
 
-## Current App Status
+- **Frontend**: React 19 + Vite, served as a static site
+- **Backend**: FastAPI (Python 3.11), served via Gunicorn + Uvicorn workers
+- **Database**: Supabase (PostgreSQL)
+- **Hosting**: Azure App Service (two separate apps)
 
-The frontend currently includes:
+---
 
-- A visitor landing page at `/`
-- A staff login and signup screen at `/staffLogin`
-- Placeholder pages for `/owner` and `/tourguide`
+## Project Structure
 
-The visitor page is the most complete part of the UI. It is assembled from reusable React components and connects to the backend catalogue API.
-
-## Frontend Stack
-
-- React 19
-- Vite 8
-- React Router 7
-- Plain CSS modules by feature folder
-
-## Frontend Structure
-
-```text
-src/
-  App.jsx
-  main.jsx
-  assets/
-  components/
-    FooterVisitor/
-    HeaderVisitor/
-    VisitorCatalogue/
-    WelcomeStrip/
-  pages/
-    Auth.jsx
-    OwnerMain.jsx
-    TourguideMain.jsx
-    VisitorMain.jsx
-  styles/
-    auth.css
-    VisitorMain.css
+```
+BS-PMC-26-Team10/
+  Frontend/          React + Vite app
+    src/
+    public/
+    .env             Frontend env vars (Vite bakes these at build time)
+    package.json
+  Backend/           FastAPI app
+    app/
+      routes/        API route files (chilli, product, order, tour, booking, etc.)
+    chilli_images/
+    product_images/
+    main.py          FastAPI app entry point
+    requirements.txt
+    .env             Backend env vars (loaded at runtime)
 ```
 
-## Routes
+---
 
-- `/` -> visitor homepage
-- `/staffLogin` -> login/signup screen
-- `/owner` -> owner placeholder
-- `/tourguide` -> tour guide placeholder
+## Environment Variables
 
-## Running The Frontend
+### Frontend — `Frontend/.env`
 
-From the repository root:
+```
+VITE_API_URL=https://chillieland-backend-fpdyfhethmhth7hb.southeastasia-01.azurewebsites.net
+VITE_PAYPAL_CLIENT_ID=<your paypal client id>
+```
+
+> **Important:** Vite bakes these into the compiled JS at build time. If you change `.env`, you must run `npm run build` and redeploy the frontend.
+
+### Backend — `Backend/.env`
+
+```
+SUPABASE_URL=https://urfqpdduwmonrhwmidcp.supabase.co
+SUPABASE_KEY=<legacy eyJ... JWT service_role key from Supabase Settings > API > Legacy keys>
+RESEND_API_KEY=<resend api key>
+SENDER_EMAIL=onboarding@resend.dev
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=chililand.team10@gmail.com
+SMTP_APP_PASSWORD=<gmail app password>
+SMTP_SENDER_EMAIL=chililand.team10@gmail.com
+JWT_SECRET=<your jwt secret>
+```
+
+> **Important:** The `SUPABASE_KEY` must be the legacy JWT key (starts with `eyJ...`), NOT the new `sb_secret_` format — the Python supabase library does not support the new format yet. Find it at: Supabase Dashboard → Project Settings → API → Legacy API keys → `service_role`.
+
+Backend env vars are runtime — you can update them in Azure App Settings without redeploying.
+
+---
+
+## Running Locally
+
+### Backend
 
 ```bash
+cd Backend
+python3 -m venv backend
+source backend/bin/activate        # Windows: backend\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+API runs at `http://127.0.0.1:8000`.
+
+### Frontend
+
+```bash
+cd Frontend
 npm install
 npm run dev
 ```
 
-The Vite app runs on the local address shown in the terminal, typically `http://localhost:5173`.
+App runs at `http://localhost:5173`.
 
-## Running The FastAPI Backend
+---
 
-From the `Backend` directory:
+## Azure Infrastructure
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install fastapi uvicorn psycopg2-binary python-dotenv pydantic
-uvicorn main:app --reload
-```
+| | Frontend | Backend |
+|---|---|---|
+| **App name** | `ChilliLand` | `Chillieland-backend` |
+| **Resource group** | `bs-pm-2026-team10` | `bs-pm-2026-team10` |
+| **URL** | https://chilliland-d6dsaxcha2bgc4fc.southeastasia-01.azurewebsites.net | https://chillieland-backend-fpdyfhethmhth7hb.southeastasia-01.azurewebsites.net |
+| **Runtime** | Node 20 (LTS) | Python 3.11 |
+| **Startup command** | `npx serve -s . -l 8080` | `gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app` |
 
-The API is expected at `http://127.0.0.1:8000`.
+---
 
-## Database Scripts
+## Deploying / Redeploying
 
-Reusable database files now live under `Backend/db/`:
+### Redeploy Backend
 
-```text
-Backend/db/
-  scripts/
-    create_inventory_table.py
-    load_peppers.py
-  sql/
-    create_inventory_table.sql
-```
-
-Useful commands from the repo root:
+Run this whenever you change Python code, `requirements.txt`, or backend config.
 
 ```bash
-python3 Backend/db/scripts/create_inventory_table.py
-python3 Backend/db/scripts/load_peppers.py
+cd /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend && \
+rm -f ../backend.zip && \
+zip -r ../backend.zip . \
+  --exclude "backend/*" \
+  --exclude "__pycache__/*" \
+  --exclude "*.pyc" \
+  --exclude ".pytest_cache/*" \
+  --exclude ".deployment" -q && \
+az webapp deployment source config-zip \
+  --resource-group bs-pm-2026-team10 \
+  --name Chillieland-backend \
+  --src ../backend.zip
 ```
 
-`create_inventory_table.py` drops and recreates `inventory`.
-`load_peppers.py` drops and recreates `chilli`, then reloads it from `pepper_list.xlsx`.
+This uses `config-zip` which triggers Azure Oryx build — it installs `requirements.txt` automatically on the server.
 
-## Backend Expectations
+### Redeploy Frontend
 
-The backend reads database settings from [`.env`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/.env) and expects a local PostgreSQL instance:
+Run this whenever you change React code or `Frontend/.env`.
 
-- host: `localhost`
-- database: `postgres`
-- user: `postgres`
-- port: value from `DB_PORT`
-- password: value from `DB_PASSWORD`
+```bash
+cd /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend && \
+npm run build && \
+cd dist && \
+zip -r ../dist.zip . && \
+cd .. && \
+az webapp deploy \
+  --resource-group bs-pm-2026-team10 \
+  --name ChilliLand \
+  --src-path dist.zip \
+  --type zip
+```
 
-## Visitor Experience
+> The zip must contain the **contents** of `dist/` at the root, not the `dist/` folder itself. The `cd dist && zip .` pattern ensures this.
 
-The visitor homepage is composed of:
+---
 
-- A responsive video hero with desktop and mobile background videos
-- A marketing strip describing tours, products, and family visits
-- A chilli catalogue with search and filter controls
-- A footer with placeholder navigation and contact details
+## Updating Backend Environment Variables (No Redeploy Needed)
 
-## API Notes
+To update a single variable:
 
-Frontend catalogue code currently uses `http://127.0.0.1:8000` directly.
+```bash
+az webapp config appsettings set \
+  --resource-group bs-pm-2026-team10 \
+  --name Chillieland-backend \
+  --settings KEY=VALUE
+```
 
-The current backend endpoints in the codebase are:
+To view current settings:
 
-- `GET /chillies`
-- `GET /chillies?shu_min=...&shu_max=...&origin=...`
-- `GET /chillies/search?q=...`
-- `POST /chillies`
-- `GET /inventory`
-- `POST /inventory/add`
+```bash
+az webapp config appsettings list \
+  --resource-group bs-pm-2026-team10 \
+  --name Chillieland-backend \
+  --output table
+```
 
-There is a current integration mismatch: [`src/components/VisitorCatalogue/VisitorCatalogue.jsx`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/components/VisitorCatalogue/VisitorCatalogue.jsx) requests `/chillies/filter`, but the FastAPI router in [`Backend/app/routes/chilli.py`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Backend/app/routes/chilli.py) does not define that route.
+---
 
-The backend also serves static files from:
+## Checking Backend Logs
 
-- `/chilli_images`
-- `/product_images`
+```bash
+az webapp log tail \
+  --resource-group bs-pm-2026-team10 \
+  --name Chillieland-backend
+```
 
-## Known Gaps
+Or open in browser: https://chillieland-backend-fpdyfhethmhth7hb.scm.southeastasia-01.azurewebsites.net/api/logs/docker
 
-- Owner and tour guide pages are placeholders only
-- Auth is client-side only and does not call the backend
-- The auth page navigates to `/visitor`, but the router only defines `/`
-- `src/pages/VisitorMain.jsx` imports `../styles/visitorMain.css` while the file on disk is [`src/styles/VisitorMain.css`](/Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/src/styles/VisitorMain.css)
-- There is no frontend inventory screen yet, even though the backend now exposes inventory routes
+---
+
+## API Routes
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/chillies` | List all chilli peppers (supports filters) |
+| GET | `/chillies/search?q=` | Search chillies by name |
+| POST | `/chillies` | Add a chilli |
+| GET | `/products` | List products |
+| POST | `/products` | Add a product |
+| GET | `/orders` | List orders |
+| POST | `/orders` | Create an order |
+| GET | `/tours` | List tours |
+| POST | `/bookings` | Create a booking |
+| GET | `/promos` | List promos |
+| GET | `/faqs` | List FAQs |
+| POST | `/admin/login` | Admin login (returns JWT) |
+
+Static files served from:
+- `/chilli_images/<filename>`
+- `/product_images/<filename>`
+
+---
+
+## Known Issues
+
+- **Admin login** uses a direct `psycopg2` PostgreSQL connection that currently tries to connect to `localhost:5432`. On Azure this fails. Fix: set `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` as App Settings pointing to the Supabase PostgreSQL connection string (found in Supabase Dashboard → Project Settings → Database → Connection string).
+- **PayPal** returns a 400 error because the Azure frontend domain is not whitelisted. Fix: go to [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/) → Apps & Credentials → your app → add `https://chilliland-d6dsaxcha2bgc4fc.southeastasia-01.azurewebsites.net` to allowed return URLs.
+- **CORS**: `allow_credentials=True` with `allow_origins=["*"]` is rejected by browsers. The backend already lists specific allowed origins in `main.py` — add any new frontend domain there and redeploy.
