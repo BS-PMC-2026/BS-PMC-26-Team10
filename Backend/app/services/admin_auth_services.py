@@ -8,7 +8,6 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from app.db2 import supabase
-from app.db2 import supabase
 
 load_dotenv()
 
@@ -56,21 +55,7 @@ def login_admin(email: str, password: str) -> dict:
         row = result.data[0]
         if not _verify(password, row["password_hash"]):
             return {"error": "invalid_credentials", "message": "Invalid email or password."}
-    try:
-        result = supabase.table("admin_users").select("id, first_name, last_name, email, password_hash").eq("email", email).execute()
-        if not result.data:
-            return {"error": "invalid_credentials", "message": "Invalid email or password."}
 
-        row = result.data[0]
-        if not _verify(password, row["password_hash"]):
-            return {"error": "invalid_credentials", "message": "Invalid email or password."}
-
-        token = _make_token(row["id"], row["email"])
-        return {
-            "token": token,
-            "expires_in": JWT_EXPIRE_MINUTES * 60,
-            "admin": {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"]},
-        }
         token = _make_token(row["id"], row["email"])
         return {
             "token": token,
@@ -93,12 +78,6 @@ def get_admin_from_token(token: str) -> Optional[dict]:
             return None
         row = result.data[0]
         return {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"]}
-    try:
-        result = supabase.table("admin_users").select("id, first_name, last_name, email").eq("id", int(payload["sub"])).execute()
-        if not result.data:
-            return None
-        row = result.data[0]
-        return {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"]}
     except Exception as e:
         print("get_admin_from_token error:", e)
         return None
@@ -110,29 +89,13 @@ def create_password_reset_token(email: str) -> Optional[tuple]:
         result = supabase.table("admin_users").select("id, first_name").eq("email", email).execute()
         if not result.data:
             return None
-    try:
-        result = supabase.table("admin_users").select("id, first_name").eq("email", email).execute()
-        if not result.data:
-            return None
 
         row = result.data[0]
         admin_id = row["id"]
         first_name = row["first_name"]
         token = secrets.token_urlsafe(32)
         expires_at = (datetime.now(timezone.utc) + timedelta(hours=RESET_TOKEN_EXPIRE_HOURS)).isoformat()
-        row = result.data[0]
-        admin_id = row["id"]
-        first_name = row["first_name"]
-        token = secrets.token_urlsafe(32)
-        expires_at = (datetime.now(timezone.utc) + timedelta(hours=RESET_TOKEN_EXPIRE_HOURS)).isoformat()
 
-        supabase.table("password_reset_token").delete().eq("admin_id", admin_id).execute()
-        supabase.table("password_reset_token").insert({
-            "admin_id": admin_id,
-            "token": token,
-            "expires_at": expires_at,
-        }).execute()
-        return (token, first_name)
         supabase.table("password_reset_token").delete().eq("admin_id", admin_id).execute()
         supabase.table("password_reset_token").insert({
             "admin_id": admin_id,
@@ -150,15 +113,7 @@ def reset_password_with_token(token: str, new_password: str) -> dict:
         result = supabase.table("password_reset_token").select("id, admin_id, expires_at, used_at").eq("token", token).execute()
         if not result.data:
             return {"error": "invalid_token", "message": "Invalid or expired reset link."}
-    try:
-        result = supabase.table("password_reset_token").select("id, admin_id, expires_at, used_at").eq("token", token).execute()
-        if not result.data:
-            return {"error": "invalid_token", "message": "Invalid or expired reset link."}
 
-        row = result.data[0]
-        token_id = row["id"]
-        admin_id = row["admin_id"]
-        used_at = row["used_at"]
         row = result.data[0]
         token_id = row["id"]
         admin_id = row["admin_id"]
@@ -166,26 +121,11 @@ def reset_password_with_token(token: str, new_password: str) -> dict:
 
         if used_at is not None:
             return {"error": "token_used", "message": "This reset link has already been used."}
-        if used_at is not None:
-            return {"error": "token_used", "message": "This reset link has already been used."}
 
         expires_at = datetime.fromisoformat(row["expires_at"].replace("Z", "+00:00"))
         if datetime.now(timezone.utc) > expires_at:
             return {"error": "token_expired", "message": "This reset link has expired. Please request a new one."}
-        expires_at = datetime.fromisoformat(row["expires_at"].replace("Z", "+00:00"))
-        if datetime.now(timezone.utc) > expires_at:
-            return {"error": "token_expired", "message": "This reset link has expired. Please request a new one."}
 
-        supabase.table("admin_users").update({
-            "password_hash": _hash(new_password),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-        }).eq("id", admin_id).execute()
-
-        supabase.table("password_reset_token").update({
-            "used_at": datetime.now(timezone.utc).isoformat(),
-        }).eq("id", token_id).execute()
-
-        return {"success": True, "message": "Password reset successfully."}
         supabase.table("admin_users").update({
             "password_hash": _hash(new_password),
             "updated_at": datetime.now(timezone.utc).isoformat(),
