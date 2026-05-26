@@ -14,8 +14,8 @@ app = FastAPI()
 # Check later to remove.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BACKEND_DIR = Path(__file__).resolve().parent
-CHILLI_IMAGES_DIR = PROJECT_ROOT / "chilli_images"
-PRODUCT_IMAGES_DIR = PROJECT_ROOT / "product_images"
+CHILLI_IMAGES_DIR = BACKEND_DIR / "chilli_images"
+PRODUCT_IMAGES_DIR = BACKEND_DIR / "product_images"
 SEED_SQL_PATH = BACKEND_DIR / "seed_descriptions.sql"
 
 
@@ -41,7 +41,11 @@ SEED_SQL_PATH = BACKEND_DIR / "seed_descriptions.sql"
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://chilliland-d6dsaxcha2bgc4fc.southeastasia-01.azurewebsites.net",
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
