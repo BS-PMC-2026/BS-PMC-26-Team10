@@ -4,12 +4,11 @@ from typing import Optional
 from dotenv import load_dotenv
 from fastapi import APIRouter, Header, HTTPException
 
-from app.models import AdminLogin, AdminRegister, ForgotPasswordRequest, ResetPasswordRequest
+from app.models import AdminLogin, ForgotPasswordRequest, ResetPasswordRequest
 from app.services.admin_auth_services import (
     create_password_reset_token,
     get_admin_from_token,
     login_admin,
-    register_admin,
     reset_password_with_token,
 )
 from app.services.email_service import send_password_reset_email
@@ -29,22 +28,6 @@ _HTTP_STATUS = {
     "server_error": 500,
 }
 
-
-@router.post("/register")
-def admin_register(data: AdminRegister):
-    if len(data.first_name.strip()) < 2:
-        raise HTTPException(422, "First name must be at least 2 characters.")
-    if len(data.last_name.strip()) < 2:
-        raise HTTPException(422, "Last name must be at least 2 characters.")
-    if len(data.password) < 8:
-        raise HTTPException(422, "Password must be at least 8 characters.")
-
-    result = register_admin(
-        data.first_name.strip(), data.last_name.strip(), data.email, data.password
-    )
-    if "error" in result:
-        raise HTTPException(_HTTP_STATUS.get(result["error"], 400), result["message"])
-    return result
 
 
 @router.post("/login")
