@@ -53,8 +53,7 @@ function App() {
             element={<ProtectedRoute><OwnerMain /></ProtectedRoute>}
           />
           <Route path="/tourguide" element={<TourguideMain />} />
-          <Route path="/staffLogin" element={<Auth />} />
-        </Routes>
+          <Route path="/staffLogin" element={<Auth />} />        </Routes>
       </AuthProvider>
     </BrowserRouter>
   );
