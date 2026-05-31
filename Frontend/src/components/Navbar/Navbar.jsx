@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X } from "lucide-react";
+import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon } from "lucide-react";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
+import { useTheme } from "../../context/ThemeContext";
 import "./Navbar.css";
 
 const NAV_LINKS = [
@@ -14,6 +15,7 @@ const NAV_LINKS = [
 
 function Navbar() {
   const { pathname } = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const isHome = pathname === "/";
 
@@ -101,6 +103,21 @@ function Navbar() {
           <LogIn size="1em" strokeWidth={1.6} />
           <span className="navbar-staff-label">Staff</span>
         </Link>
+
+        <button
+          className="navbar-theme-btn"
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          tabIndex={visible ? undefined : -1}
+        >
+          {theme === "dark"
+            ? <Sun size="1em" strokeWidth={1.6} />
+            : <Moon size="1em" strokeWidth={1.6} />
+          }
+          <span className="navbar-staff-label">
+            {theme === "dark" ? "Light" : "Dark"}
+          </span>
+        </button>
       </nav>
 
       <button

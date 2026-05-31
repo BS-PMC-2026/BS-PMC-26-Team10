@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -33,6 +34,10 @@ function toLocalDatetimeInput(isoString) {
 }
 
 function OwnerPromoCodes() {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const labelStyle = { display: "block", fontSize: "0.82rem", color: dark ? "#c8a090" : "#555", marginBottom: "0.25rem", fontWeight: 500 };
+  const inputStyle = { width: "100%", border: `1px solid ${dark ? "#5c2b2b" : "#ddd"}`, borderRadius: 6, padding: "0.45rem 0.7rem", fontSize: "0.9rem", boxSizing: "border-box", background: dark ? "#1a0d0d" : "#fff", color: dark ? "#e8c8b8" : "inherit" };
   const [codes, setCodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -165,8 +170,8 @@ function OwnerPromoCodes() {
         <div
           ref={formRef}
           style={{
-            background: editingId ? "#fffbf0" : "#fff",
-            border: `1px solid ${editingId ? "#f0c060" : "#eee"}`,
+            background: theme === "dark" ? "#261414" : (editingId ? "#fffbf0" : "#fff"),
+            border: `1px solid ${theme === "dark" ? "#5c2b2b" : (editingId ? "#f0c060" : "#eee")}`,
             borderRadius: 8, padding: "1.5rem", marginBottom: "2rem", maxWidth: 640,
           }}
         >
@@ -326,9 +331,7 @@ function OwnerPromoCodes() {
   );
 }
 
-const labelStyle = { display: "block", fontSize: "0.82rem", color: "#555", marginBottom: "0.25rem", fontWeight: 500 };
 const reqStyle = { color: "#c0392b" };
-const inputStyle = { width: "100%", border: "1px solid #ddd", borderRadius: 6, padding: "0.45rem 0.7rem", fontSize: "0.9rem", boxSizing: "border-box" };
 const thStyle = { padding: "0.5rem 1rem" };
 const tdStyle = { padding: "0.5rem 1rem" };
 

@@ -12,10 +12,12 @@
 .inventory-modal {
   width: 100%;
   max-width: 42vw;
+  max-height: 88vh;
   background: #fffaf6;
   border-radius: 1.6vw;
   box-shadow: 0 1.2vw 3vw rgba(53, 31, 21, 0.2);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   animation: modalFadeIn 0.2s ease;
 }
 
