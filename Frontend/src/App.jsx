@@ -12,6 +12,7 @@ import AboutPage from "./pages/AboutPage";
 import FarmLocation from "./pages/FarmLocation";
 import VisitorProducts from "./pages/VisitorProducts";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function ScrollToTop() {
@@ -32,6 +33,7 @@ function VisitorLayout() {
 function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <AuthProvider>
         <ScrollToTop />
         <Routes>
@@ -55,6 +57,7 @@ function App() {
           <Route path="/tourguide" element={<TourguideMain />} />
           <Route path="/staffLogin" element={<Auth />} />        </Routes>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

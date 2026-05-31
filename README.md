@@ -201,6 +201,58 @@ Static files served from:
 
 ---
 
+## Dark / Light Mode
+
+The app supports a persistent dark/light mode toggle.
+
+- **Toggle location:** bottom of the left navbar on visitor pages; top of the sidebar bottom section in the Owner Panel
+- **Persistence:** stored in `localStorage` under the key `cl_theme`. On first load, falls back to the OS `prefers-color-scheme` setting.
+- **How it works:** `ThemeContext` (`Frontend/src/context/ThemeContext.jsx`) sets a `data-theme="dark|light"` attribute on `<html>`. Global CSS overrides keyed on that attribute live in `Frontend/src/index.css`.
+
+### Adding dark mode support to a new component
+
+Add a `[data-theme="dark"]` block to `Frontend/src/index.css`:
+
+```css
+[data-theme="dark"] .your-class {
+  background: #261414;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+```
+
+For components that use **inline styles**, import `useTheme` and compute colors inside the component:
+
+```jsx
+import { useTheme } from "../context/ThemeContext";
+
+function MyComponent() {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const cardStyle = {
+    background: dark ? "#261414" : "#fff",
+    color: dark ? "#e8c8b8" : "#333",
+  };
+  return <div style={cardStyle}>...</div>;
+}
+```
+
+### Dark mode colour palette
+
+| Token | Light | Dark |
+|-------|-------|------|
+| Page background | `#fff8f8` | `#1a0d0d` |
+| Section background | `#f8f1e7` | `#1e1010` |
+| Card / surface | `#ffffff` | `#261414` |
+| Card surface-2 | — | `#301818` |
+| Input background | `#ffffff` | `#1a0d0d` |
+| Border | `#d94a4a` | `#5c2b2b` |
+| Body text | `#7a1111` | `#e8c8b8` |
+| Muted text | — | `#c8a090` |
+| Accent / kicker | `#a14d2a` | `#d06040` |
+
+---
+
 ## Known Issues
 
 - **Admin login** uses a direct `psycopg2` PostgreSQL connection that currently tries to connect to `localhost:5432`. On Azure this fails. Fix: set `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` as App Settings pointing to the Supabase PostgreSQL connection string (found in Supabase Dashboard → Project Settings → Database → Connection string).

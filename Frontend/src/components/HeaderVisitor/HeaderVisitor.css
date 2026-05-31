@@ -66,6 +66,7 @@
   line-height: 1.02;
   font-weight: 700;
   max-width: 38vw;
+  color: inherit;
 }
 
 .farm-subtitle {

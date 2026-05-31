@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe, LogOut } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe, LogOut, Sun, Moon } from "lucide-react";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import "./OwnerSidebar.css";
 
 const navItems = [
@@ -19,6 +20,7 @@ const navItems = [
 function OwnerSidebar({ activeSection }) {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   function handleLogout() {
     logout();
@@ -54,6 +56,10 @@ function OwnerSidebar({ activeSection }) {
       </nav>
 
       <div className="owner-sidebar-bottom">
+        <button className="owner-sidebar-theme-btn" onClick={toggleTheme}>
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+        </button>
         <button className="owner-sidebar-view-site" onClick={() => navigate("/")}>
           <Globe size={16} />
           <span>View Site</span>
