@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ReviewsSection from "../components/ReviewsSection/ReviewsSection";
 import "../styles/ToursPage.css";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -320,6 +321,10 @@ function ToursPage() {
               onSelectDate={setSelectedDate}
             />
           </div>
+        )}
+
+        {!loading && !error && (
+          <ReviewsSection tours={tours} />
         )}
 
         {!loading && !error && (
