@@ -1,17 +1,25 @@
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Header, HTTPException, UploadFile, File, Form
+from pydantic import BaseModel
 
 from app.db2 import upload_image
+from app.services.admin_auth_services import get_admin_from_token
 from app.services.review_services import (
     create_review,
     get_reviews,
+    reply_to_review,
     verify_booking_for_review,
 )
 
 router = APIRouter()
 
+class ReplyBody(BaseModel):
+    reply: str
+
+
 _ERROR_STATUS = {
+    "not_found": 404,
     "booking_not_found": 404,
     "booking_cancelled": 400,
     "tour_not_found": 404,
@@ -82,3 +90,27 @@ async def submit_review(
 @router.get("/reviews")
 def list_reviews(tour_id: Optional[int] = None):
     return get_reviews(tour_id)
+
+
+@router.patch("/reviews/{review_id}/reply")
+def owner_reply(
+    review_id: int,
+    body: ReplyBody,
+    authorization: Optional[str] = Header(None),
+):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Not authenticated.")
+    token = authorization.split(" ", 1)[1]
+    if not get_admin_from_token(token):
+        raise HTTPException(status_code=401, detail="Invalid or expired session.")
+
+    if not body.reply.strip():
+        raise HTTPException(status_code=422, detail="Reply text cannot be empty.")
+
+    result = reply_to_review(review_id, body.reply)
+    if "error" in result:
+        raise HTTPException(
+            status_code=_ERROR_STATUS.get(result["error"], 400),
+            detail=result["message"],
+        )
+    return result

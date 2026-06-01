@@ -65,6 +65,13 @@ function ReviewCard({ review }) {
         </blockquote>
       )}
 
+      {review.owner_reply && (
+        <div className="rev-card-reply">
+          <span className="rev-card-reply-label">🌶️ ChiliLand</span>
+          <p className="rev-card-reply-text">{review.owner_reply}</p>
+        </div>
+      )}
+
       <div className="rev-card-bottom">
         <div className="rev-card-avatar">
           {review.photo_url ? (
