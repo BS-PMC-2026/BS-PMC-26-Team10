@@ -1,6 +1,6 @@
 """
 Unit tests for admin authentication service layer (BSPMT10-131-usn34).
-No database connection required — psycopg2 is fully mocked.
+No database connection required — the Supabase client is fully mocked.
 """
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -22,30 +22,20 @@ from app.services.admin_auth_services import (
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
-def _mock_conn(fetchone_value=None, fetchone_side_effect=None):
-    """Return (mock_conn, mock_cur) with a configurable cursor."""
-    cur = MagicMock()
-    cur.__enter__ = MagicMock(return_value=cur)
-    cur.__exit__ = MagicMock(return_value=False)
-    if fetchone_side_effect is not None:
-        cur.fetchone.side_effect = fetchone_side_effect
-    else:
-        cur.fetchone.return_value = fetchone_value
-
-    conn = MagicMock()
-    conn.__enter__ = MagicMock(return_value=conn)
-    conn.__exit__ = MagicMock(return_value=False)
-    conn.cursor.return_value = cur
-    return conn, cur
+def _supabase_mock(select_data=None):
+    """Return a Supabase client mock whose select(...).eq(...).execute() yields
+    a result with `.data == select_data`. delete / insert / update chains return
+    harmless auto-mocks."""
+    sb = MagicMock()
+    sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = select_data
+    return sb
 
 
-def _broken_conn():
-    """Return a connection whose cursor() raises immediately."""
-    conn = MagicMock()
-    conn.__enter__ = MagicMock(return_value=conn)
-    conn.__exit__ = MagicMock(return_value=False)
-    conn.cursor.side_effect = Exception("DB down")
-    return conn
+def _broken_supabase():
+    """Return a Supabase client mock whose table() raises immediately."""
+    sb = MagicMock()
+    sb.table.side_effect = Exception("DB down")
+    return sb
 
 
 # ── Password hashing ───────────────────────────────────────────────────────────
@@ -115,29 +105,35 @@ class JwtTokenTests(unittest.TestCase):
 
 class LoginAdminTests(unittest.TestCase):
     def test_returns_error_for_nonexistent_email(self):
-        conn, _ = _mock_conn(fetchone_value=None)
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        sb = _supabase_mock(select_data=[])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = login_admin("nobody@example.com", "password")
         self.assertEqual(result["error"], "invalid_credentials")
 
     def test_returns_error_for_wrong_password(self):
-        hashed = _hash("correctpassword")
-        conn, _ = _mock_conn(fetchone_value=(1, "Jane", "Doe", "jane@example.com", hashed))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        row = {
+            "id": 1, "first_name": "Jane", "last_name": "Doe",
+            "email": "jane@example.com", "password_hash": _hash("correctpassword"),
+        }
+        sb = _supabase_mock(select_data=[row])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = login_admin("jane@example.com", "wrongpassword")
         self.assertEqual(result["error"], "invalid_credentials")
 
     def test_returns_token_on_correct_credentials(self):
-        hashed = _hash("correctpassword")
-        conn, _ = _mock_conn(fetchone_value=(1, "Jane", "Doe", "jane@example.com", hashed))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        row = {
+            "id": 1, "first_name": "Jane", "last_name": "Doe",
+            "email": "jane@example.com", "password_hash": _hash("correctpassword"),
+        }
+        sb = _supabase_mock(select_data=[row])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = login_admin("jane@example.com", "correctpassword")
         self.assertIn("token", result)
         self.assertEqual(result["admin"]["first_name"], "Jane")
         self.assertEqual(result["expires_in"], 600)
 
     def test_returns_server_error_on_db_exception(self):
-        with patch("app.services.admin_auth_services.get_connection", return_value=_broken_conn()):
+        with patch("app.services.admin_auth_services.supabase", _broken_supabase()):
             result = login_admin("jane@example.com", "password")
         self.assertEqual(result["error"], "server_error")
 
@@ -150,8 +146,9 @@ class GetAdminFromTokenTests(unittest.TestCase):
 
     def test_returns_admin_data_for_valid_token(self):
         token = _make_token(7, "admin@example.com")
-        conn, _ = _mock_conn(fetchone_value=(7, "Jane", "Doe", "admin@example.com"))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        row = {"id": 7, "first_name": "Jane", "last_name": "Doe", "email": "admin@example.com"}
+        sb = _supabase_mock(select_data=[row])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = get_admin_from_token(token)
         self.assertIsNotNone(result)
         self.assertEqual(result["id"], 7)
@@ -159,13 +156,13 @@ class GetAdminFromTokenTests(unittest.TestCase):
 
     def test_returns_none_when_admin_not_in_db(self):
         token = _make_token(99, "ghost@example.com")
-        conn, _ = _mock_conn(fetchone_value=None)
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        sb = _supabase_mock(select_data=[])
+        with patch("app.services.admin_auth_services.supabase", sb):
             self.assertIsNone(get_admin_from_token(token))
 
     def test_returns_none_on_db_exception(self):
         token = _make_token(1, "admin@example.com")
-        with patch("app.services.admin_auth_services.get_connection", return_value=_broken_conn()):
+        with patch("app.services.admin_auth_services.supabase", _broken_supabase()):
             self.assertIsNone(get_admin_from_token(token))
 
 
@@ -173,13 +170,13 @@ class GetAdminFromTokenTests(unittest.TestCase):
 
 class CreatePasswordResetTokenTests(unittest.TestCase):
     def test_returns_none_for_nonexistent_email(self):
-        conn, _ = _mock_conn(fetchone_value=None)
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        sb = _supabase_mock(select_data=[])
+        with patch("app.services.admin_auth_services.supabase", sb):
             self.assertIsNone(create_password_reset_token("nobody@example.com"))
 
     def test_returns_token_and_name_for_existing_admin(self):
-        conn, _ = _mock_conn(fetchone_value=(1, "Jane"))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        sb = _supabase_mock(select_data=[{"id": 1, "first_name": "Jane"}])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = create_password_reset_token("jane@example.com")
         self.assertIsNotNone(result)
         token, first_name = result
@@ -187,18 +184,17 @@ class CreatePasswordResetTokenTests(unittest.TestCase):
         self.assertEqual(first_name, "Jane")
 
     def test_generated_token_is_url_safe(self):
-        import re
-        conn, _ = _mock_conn(fetchone_value=(1, "Jane"))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        sb = _supabase_mock(select_data=[{"id": 1, "first_name": "Jane"}])
+        with patch("app.services.admin_auth_services.supabase", sb):
             token, _ = create_password_reset_token("jane@example.com")
         self.assertRegex(token, r'^[A-Za-z0-9_\-]+$')
 
     def test_each_call_generates_unique_token(self):
-        conn1, _ = _mock_conn(fetchone_value=(1, "Jane"))
-        conn2, _ = _mock_conn(fetchone_value=(1, "Jane"))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn1):
+        sb1 = _supabase_mock(select_data=[{"id": 1, "first_name": "Jane"}])
+        sb2 = _supabase_mock(select_data=[{"id": 1, "first_name": "Jane"}])
+        with patch("app.services.admin_auth_services.supabase", sb1):
             token1, _ = create_password_reset_token("jane@example.com")
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn2):
+        with patch("app.services.admin_auth_services.supabase", sb2):
             token2, _ = create_password_reset_token("jane@example.com")
         self.assertNotEqual(token1, token2)
 
@@ -206,47 +202,47 @@ class CreatePasswordResetTokenTests(unittest.TestCase):
 # ── reset_password_with_token ──────────────────────────────────────────────────
 
 class ResetPasswordWithTokenTests(unittest.TestCase):
-    def _conn_for_token(self, token_row):
-        cur = MagicMock()
-        cur.__enter__ = MagicMock(return_value=cur)
-        cur.__exit__ = MagicMock(return_value=False)
-        cur.fetchone.return_value = token_row
-        conn = MagicMock()
-        conn.__enter__ = MagicMock(return_value=conn)
-        conn.__exit__ = MagicMock(return_value=False)
-        conn.cursor.return_value = cur
-        return conn
-
     def test_returns_invalid_token_error_when_not_found(self):
-        conn = self._conn_for_token(None)
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        sb = _supabase_mock(select_data=[])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = reset_password_with_token("bad-token", "newpass123")
         self.assertEqual(result["error"], "invalid_token")
 
     def test_returns_token_used_error_for_already_used_token(self):
-        used_at = datetime.now(timezone.utc)
-        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
-        conn = self._conn_for_token((1, 5, expires_at, used_at))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        row = {
+            "id": 1, "admin_id": 5,
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+            "used_at": datetime.now(timezone.utc).isoformat(),
+        }
+        sb = _supabase_mock(select_data=[row])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = reset_password_with_token("used-token", "newpass123")
         self.assertEqual(result["error"], "token_used")
 
     def test_returns_token_expired_error_for_past_expiry(self):
-        expires_at = datetime.now(timezone.utc) - timedelta(hours=2)
-        conn = self._conn_for_token((1, 5, expires_at, None))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        row = {
+            "id": 1, "admin_id": 5,
+            "expires_at": (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat(),
+            "used_at": None,
+        }
+        sb = _supabase_mock(select_data=[row])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = reset_password_with_token("expired-token", "newpass123")
         self.assertEqual(result["error"], "token_expired")
 
     def test_returns_success_for_valid_unused_unexpired_token(self):
-        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
-        conn = self._conn_for_token((1, 5, expires_at, None))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
+        row = {
+            "id": 1, "admin_id": 5,
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+            "used_at": None,
+        }
+        sb = _supabase_mock(select_data=[row])
+        with patch("app.services.admin_auth_services.supabase", sb):
             result = reset_password_with_token("valid-token", "newpass123")
         self.assertTrue(result.get("success"))
 
     def test_returns_server_error_on_db_exception(self):
-        with patch("app.services.admin_auth_services.get_connection", return_value=_broken_conn()):
+        with patch("app.services.admin_auth_services.supabase", _broken_supabase()):
             result = reset_password_with_token("any-token", "newpass123")
         self.assertEqual(result["error"], "server_error")
 

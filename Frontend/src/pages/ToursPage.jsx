@@ -193,7 +193,7 @@ function ToursPage() {
       const items = Array.isArray(staticFaq)
         ? staticFaq.map((item, idx) => ({ id: idx, question: item.question, answer: item.answer }))
         : [];
-      setFaqItems(items);
+      setFaqItems(items); // eslint-disable-line react-hooks/set-state-in-effect
       setFaqLoading(false);
       return;
     }

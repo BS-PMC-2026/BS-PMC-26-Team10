@@ -8,7 +8,12 @@
       "Bash(sed -n '672,688p' /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend/src/locales/en.json)",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); console.log\\('en.json valid'\\)\")",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('he.json valid'\\)\")",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('both valid'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('both valid'\\)\")",
+      "Bash(python -m unittest tests.test_admin_auth_services -v)",
+      "Bash(python3 -m unittest tests.test_admin_auth_services -v)",
+      "Bash(python3 -m unittest discover -s tests)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"EXIT CODE: $?\")"
     ]
   }
 }

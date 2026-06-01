@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
 
     if (!token || !expiry || Date.now() >= Number(expiry)) {
       _clear();
-      setLoading(false);
+      setLoading(false); // eslint-disable-line react-hooks/set-state-in-effect
       return;
     }
 
