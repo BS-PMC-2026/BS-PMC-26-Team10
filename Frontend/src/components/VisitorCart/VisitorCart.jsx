@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { ShoppingCart, ShoppingBag, Flame, X, AlertTriangle, Tag } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import "./VisitorCart.css";
 import CheckoutModel from "../CheckoutModel/CheckoutModel";
 
 export default function VisitorCart({ isOpen, onClose, cart }) {
+  const { t } = useTranslation();
+
   const {
     cartItems,
     totalItems,
@@ -72,15 +75,15 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
           <div className="vc-header-left">
             <ShoppingCart size={22} className="vc-header-icon" />
             <div>
-              <h2 className="vc-header-title">Your Cart</h2>
+              <h2 className="vc-header-title">{t("cart.title")}</h2>
               <p className="vc-header-count">
                 {totalItems === 0
-                  ? "No items yet"
-                  : `${totalItems} item${totalItems > 1 ? "s" : ""}`}
+                  ? t("cart.empty")
+                  : t("cart.items", { count: totalItems })}
               </p>
             </div>
           </div>
-          <button className="vc-close-btn" onClick={onClose} aria-label="Close cart">
+          <button className="vc-close-btn" onClick={onClose} aria-label={t("cart.close")}>
             <X size={18} />
           </button>
         </div>
@@ -90,12 +93,12 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
           {isEmpty ? (
             <div className="vc-empty">
               <ShoppingBag size={48} className="vc-empty-icon" />
-              <p className="vc-empty-title">Your cart is empty</p>
+              <p className="vc-empty-title">{t("cart.emptyTitle")}</p>
               <p className="vc-empty-sub">
-                Add some fiery products and come back!
+                {t("cart.emptyDesc")}
               </p>
               <button className="vc-empty-btn" onClick={onClose}>
-                Browse Products
+                {t("cart.browse")}
               </button>
             </div>
           ) : (
@@ -123,7 +126,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                       <button
                         className="vc-item-remove"
                         onClick={() => removeFromCart(item.id)}
-                        aria-label="Remove item"
+                        aria-label={t("cart.removeItem")}
                       >
                         <X size={14} />
                       </button>
@@ -132,12 +135,12 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                     <p className="vc-item-price">
                       ₪{parseFloat(item.price).toFixed(2)}
                       {item.quantity > 1 && (
-                        <span className="vc-item-price-each"> each</span>
+                        <span className="vc-item-price-each"> {t("cart.each")}</span>
                       )}
                     </p>
 
                     {stockErrors[item.id] && (
-                      <p className="vc-item-error">{stockErrors[item.id]}</p>
+                      <p className="vc-item-error">{t("cart.stockIssue")}</p>
                     )}
 
                     <div className="vc-item-footer">
@@ -146,7 +149,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                           className="vc-qty-btn"
                           onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                           disabled={isValidating || updatingItems.has(item.id)}
-                          aria-label="Decrease quantity"
+                          aria-label={t("cart.decrease")}
                         >
                           −
                         </button>
@@ -160,7 +163,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                             item.outOfStock ||
                             (typeof item.maxQuantity === "number" && item.quantity >= item.maxQuantity)
                           }
-                          aria-label="Increase quantity"
+                          aria-label={t("cart.increase")}
                         >
                           +
                         </button>
@@ -182,7 +185,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
           <div className="vc-footer">
             {Object.keys(stockErrors).length > 0 && (
               <div className="vc-footer-errors">
-                <p><AlertTriangle size={14} style={{display:"inline",marginRight:4}} /> Some items have stock issues — please review above.</p>
+                <p><AlertTriangle size={14} style={{display:"inline",marginRight:4}} /> {t("cart.stockIssue")}</p>
               </div>
             )}
 
@@ -192,7 +195,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                 <span className="vc-promo-applied-text">
                   <Tag size={14} style={{display:"inline",marginRight:4}} /><strong>{promoCode}</strong> — {promoMessage}
                 </span>
-                <button className="vc-promo-remove" onClick={removePromoCode} aria-label="Remove promo">
+                <button className="vc-promo-remove" onClick={removePromoCode} aria-label={t("cart.removePromo")}>
                   <X size={14} />
                 </button>
               </div>
@@ -200,7 +203,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
               <div className="vc-promo-row">
                 <input
                   className="vc-promo-input"
-                  placeholder="Promo code"
+                  placeholder={t("cart.promoCode")}
                   value={promoInput}
                   onChange={(e) => setPromoInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && applyPromoCode(promoInput, totalPrice)}
@@ -210,7 +213,7 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
                   onClick={() => applyPromoCode(promoInput, totalPrice)}
                   disabled={promoLoading || !promoInput.trim()}
                 >
-                  {promoLoading ? <span className="vc-btn-spinner" /> : "Apply"}
+                  {promoLoading ? <span className="vc-btn-spinner" /> : t("cart.apply")}
                 </button>
               </div>
             )}
@@ -218,18 +221,18 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
 
             <div className="vc-totals">
               <div className="vc-totals-row">
-                <span>Subtotal</span>
+                <span>{t("cart.subtotal")}</span>
                 <span>₪{totalPrice.toFixed(2)}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="vc-totals-row vc-totals-row--discount">
-                  <span>Discount</span>
+                  <span>{t("cart.discount")}</span>
                   <span className="vc-discount-value">−₪{discountAmount.toFixed(2)}</span>
                 </div>
               )}
               <div className="vc-totals-row vc-totals-row--shipping">
-                <span>Shipping</span>
-                <span className="vc-shipping-note">calculated at checkout</span>
+                <span>{t("cart.shipping")}</span>
+                <span className="vc-shipping-note">{t("cart.atCheckout")}</span>
               </div>
               <div className="vc-totals-row vc-totals-row--total">
                 <span>Total</span>
@@ -245,12 +248,12 @@ export default function VisitorCart({ isOpen, onClose, cart }) {
               {isValidating ? (
                 <span className="vc-btn-spinner" />
               ) : (
-                "Proceed to Checkout →"
+                t("cart.checkout")
               )}
             </button>
 
             <button className="vc-clear-btn" onClick={clearCart}>
-              Clear cart
+              {t("cart.clearCart")}
             </button>
           </div>
         )}

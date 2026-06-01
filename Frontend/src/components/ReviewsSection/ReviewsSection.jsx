@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./ReviewsSection.css";
 
 /* ── Star display (read-only) ── */
 function StarDisplay({ rating, size = "md" }) {
+  const { t } = useTranslation();
   return (
-    <div className={`rev-stars rev-stars--${size}`} aria-label={`${rating} out of 5 stars`}>
+    <div
+      className={`rev-stars rev-stars--${size}`}
+      aria-label={t("reviews.ratingAlt", { rating, count: 5 })}
+    >
       {[1, 2, 3, 4, 5].map((n) => (
         <span key={n} className={`rev-star${n <= rating ? " rev-star--on" : ""}`}>★</span>
       ))}
@@ -14,6 +19,7 @@ function StarDisplay({ rating, size = "md" }) {
 
 /* ── Star picker (interactive) ── */
 function StarPicker({ value, onChange }) {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(0);
   const active = hovered || value;
   return (
@@ -26,7 +32,7 @@ function StarPicker({ value, onChange }) {
           onClick={() => onChange(n)}
           onMouseEnter={() => setHovered(n)}
           onMouseLeave={() => setHovered(0)}
-          aria-label={`${n} star${n !== 1 ? "s" : ""}`}
+          aria-label={t("reviews.starLabel", { n })}
         >
           ★
         </button>
@@ -37,6 +43,8 @@ function StarPicker({ value, onChange }) {
 
 /* ── Single review card ── */
 function ReviewCard({ review }) {
+  const { t } = useTranslation();
+
   const initials = review.reviewer_name
     .trim()
     .split(/\s+/)
@@ -68,7 +76,11 @@ function ReviewCard({ review }) {
       <div className="rev-card-bottom">
         <div className="rev-card-avatar">
           {review.photo_url ? (
-            <img src={review.photo_url} alt={review.reviewer_name} className="rev-card-photo" />
+            <img
+              src={review.photo_url}
+              alt={t("reviews.reviewAlt", { n: review.reviewer_name })}
+              className="rev-card-photo"
+            />
           ) : (
             <span className="rev-card-initials">{initials}</span>
           )}
@@ -84,6 +96,8 @@ function ReviewCard({ review }) {
 
 /* ── Leave-a-review modal ── */
 function ReviewModal({ onClose, onSuccess }) {
+  const { t } = useTranslation();
+
   const [step, setStep] = useState("verify");
   const [bookingRef, setBookingRef] = useState("");
   const [email, setEmail] = useState("");
@@ -131,7 +145,7 @@ function ReviewModal({ onClose, onSuccess }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!rating) { setSubmitErr("Please select a star rating."); return; }
+    if (!rating) { setSubmitErr(t("reviews.errorRating")); return; }
     setSubmitErr("");
     setSubmitting(true);
     try {
@@ -162,7 +176,7 @@ function ReviewModal({ onClose, onSuccess }) {
       role="presentation"
     >
       <div className="rev-modal" role="dialog" aria-modal="true" aria-label="Leave a review">
-        <button className="rev-modal-close" onClick={onClose} aria-label="Close">✕</button>
+        <button className="rev-modal-close" onClick={onClose} aria-label={t("reviews.close")}>✕</button>
 
         {/* ── Step 1: verify ── */}
         {step === "verify" && (
@@ -170,19 +184,16 @@ function ReviewModal({ onClose, onSuccess }) {
             <div className="rev-modal-icon-wrap">
               <span className="rev-modal-icon">🌶️</span>
             </div>
-            <p className="rev-modal-kicker">Share Your Experience</p>
-            <h2 className="rev-modal-title">Leave a Review</h2>
-            <p className="rev-modal-desc">
-              Enter your <strong>booking reference</strong> (from your confirmation email) and the email
-              address you used when booking.
-            </p>
+            <p className="rev-modal-kicker">{t("reviews.formTitle")}</p>
+            <h2 className="rev-modal-title">{t("reviews.formSubtitle")}</h2>
+            <p className="rev-modal-desc">{t("reviews.formDesc")}</p>
             <form onSubmit={handleVerify} className="rev-modal-form">
               <div className="rev-modal-field">
-                <label htmlFor="rev-ref-inp">Booking Reference</label>
+                <label htmlFor="rev-ref-inp">{t("reviews.bookingRef")}</label>
                 <input
                   id="rev-ref-inp"
                   type="text"
-                  placeholder="e.g. A3F9B2C1"
+                  placeholder={t("reviews.refPlaceholder")}
                   value={bookingRef}
                   onChange={(e) => setBookingRef(e.target.value.toUpperCase())}
                   required
@@ -192,11 +203,11 @@ function ReviewModal({ onClose, onSuccess }) {
                 />
               </div>
               <div className="rev-modal-field">
-                <label htmlFor="rev-email-inp">Email Address</label>
+                <label htmlFor="rev-email-inp">{t("reviews.emailAddress")}</label>
                 <input
                   id="rev-email-inp"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t("reviews.emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -209,7 +220,7 @@ function ReviewModal({ onClose, onSuccess }) {
                 className="rev-modal-btn rev-modal-btn--primary"
                 disabled={verifying}
               >
-                {verifying ? "Verifying…" : "Verify Booking →"}
+                {verifying ? t("reviews.verifying") : t("reviews.verify")}
               </button>
             </form>
           </div>
@@ -221,22 +232,21 @@ function ReviewModal({ onClose, onSuccess }) {
             <div className="rev-modal-icon-wrap rev-modal-icon-wrap--verified">
               <span className="rev-modal-verified-badge">✓</span>
             </div>
-            <p className="rev-modal-kicker rev-modal-kicker--green">Booking Verified</p>
-            <h2 className="rev-modal-title">Rate Your Experience</h2>
+            <p className="rev-modal-kicker rev-modal-kicker--green">{t("reviews.verified")}</p>
+            <h2 className="rev-modal-title">{t("reviews.rateTitle")}</h2>
             <p className="rev-modal-desc">
-              Hi <strong>{verifyData.reviewer_name}</strong>! You attended{" "}
-              <strong>{verifyData.tour_title}</strong>. We'd love to hear what you thought.
+              {t("reviews.rateGreeting", { name: verifyData.reviewer_name, tour: verifyData.tour_title })}
             </p>
             <form onSubmit={handleSubmit} className="rev-modal-form">
               <div className="rev-modal-field rev-modal-field--stars">
-                <label>Your Rating <span className="rev-modal-req">*</span></label>
+                <label>{t("reviews.yourRating")} <span className="rev-modal-req">*</span></label>
                 <StarPicker value={rating} onChange={setRating} />
               </div>
               <div className="rev-modal-field">
-                <label htmlFor="rev-comment-inp">Your Review</label>
+                <label htmlFor="rev-comment-inp">{t("reviews.yourReview")}</label>
                 <textarea
                   id="rev-comment-inp"
-                  placeholder="Tell us about your ChiliLand experience…"
+                  placeholder={t("reviews.reviewPlaceholder")}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   className="rev-modal-textarea"
@@ -246,8 +256,7 @@ function ReviewModal({ onClose, onSuccess }) {
               </div>
               <div className="rev-modal-field">
                 <label>
-                  Photo{" "}
-                  <span className="rev-modal-optional">(optional)</span>
+                  {t("reviews.photoLabel")}
                 </label>
                 <label htmlFor="rev-photo-inp" className="rev-modal-photo-label">
                   {photoPreview ? (
@@ -259,7 +268,7 @@ function ReviewModal({ onClose, onSuccess }) {
                   ) : (
                     <div className="rev-modal-photo-placeholder">
                       <span className="rev-modal-photo-icon">📷</span>
-                      <span>Click to upload a photo</span>
+                      <span>{t("reviews.photoPrompt")}</span>
                     </div>
                   )}
                 </label>
@@ -278,14 +287,14 @@ function ReviewModal({ onClose, onSuccess }) {
                   className="rev-modal-btn rev-modal-btn--ghost"
                   onClick={() => setStep("verify")}
                 >
-                  ← Back
+                  {t("reviews.back")}
                 </button>
                 <button
                   type="submit"
                   className="rev-modal-btn rev-modal-btn--primary"
                   disabled={submitting || !rating}
                 >
-                  {submitting ? "Submitting…" : "Submit Review"}
+                  {submitting ? t("reviews.submitting") : t("reviews.submit")}
                 </button>
               </div>
             </form>
@@ -296,15 +305,13 @@ function ReviewModal({ onClose, onSuccess }) {
         {step === "done" && (
           <div className="rev-modal-body rev-modal-body--success">
             <div className="rev-success-icon">🌶️</div>
-            <h2 className="rev-modal-title">Thank You!</h2>
-            <p className="rev-modal-desc">
-              Your review has been submitted. We appreciate you sharing your ChiliLand experience!
-            </p>
+            <h2 className="rev-modal-title">{t("reviews.thankYouTitle")}</h2>
+            <p className="rev-modal-desc">{t("reviews.thankYouDesc")}</p>
             <button
               className="rev-modal-btn rev-modal-btn--primary"
               onClick={() => { onClose(); onSuccess(); }}
             >
-              Close
+              {t("reviews.close")}
             </button>
           </div>
         )}
@@ -315,6 +322,8 @@ function ReviewModal({ onClose, onSuccess }) {
 
 /* ── Main exported section ── */
 export default function ReviewsSection({ tours }) {
+  const { t } = useTranslation();
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tourFilter, setTourFilter] = useState("all");
@@ -427,20 +436,18 @@ export default function ReviewsSection({ tours }) {
         {/* ── Section header ── */}
         <div className="rev-section-top">
           <div className="rev-heading">
-            <p className="rev-kicker">Guest Reviews</p>
-            <h2 className="rev-title">What Visitors Say</h2>
+            <p className="rev-kicker">{t("reviews.sectionTitle")}</p>
+            <h2 className="rev-title">{t("reviews.sectionSubtitle")}</h2>
             {avgRating && (
               <div className="rev-avg-row">
                 <StarDisplay rating={Math.round(Number(avgRating))} size="sm" />
                 <span className="rev-avg-score">{avgRating}</span>
                 <span className="rev-avg-count">
-                  ({reviews.length} review{reviews.length !== 1 ? "s" : ""})
+                  ({t("reviews.reviewCount", { count: reviews.length })})
                 </span>
               </div>
             )}
-            <p className="rev-subtitle">
-              Authentic reviews from verified visitors who have experienced our farm tours.
-            </p>
+            <p className="rev-subtitle">{t("reviews.authentic")}</p>
           </div>
 
           <div className="rev-controls">
@@ -450,24 +457,24 @@ export default function ReviewsSection({ tours }) {
               onChange={handleTourFilter}
               aria-label="Filter reviews by tour"
             >
-              <option value="all">All Tours</option>
-              {pastTours.map((t) => (
-                <option key={t.id} value={t.id}>{t.title}</option>
+              <option value="all">{t("reviews.allTours")}</option>
+              {pastTours.map((tour) => (
+                <option key={tour.id} value={tour.id}>{tour.title}</option>
               ))}
             </select>
             <button className="rev-leave-btn" onClick={() => setShowModal(true)}>
-              ✍ Leave a Review
+              {t("reviews.leaveReview")}
             </button>
           </div>
         </div>
 
         {/* ── Body ── */}
-        {loading && <p className="rev-status">Loading reviews…</p>}
+        {loading && <p className="rev-status">{t("reviews.loading")}</p>}
 
         {!loading && reviews.length === 0 && (
           <div className="rev-empty">
             <span className="rev-empty-icon">🌶️</span>
-            <p>No reviews yet. Be the first to share your experience!</p>
+            <p>{t("reviews.noReviews")}</p>
           </div>
         )}
 
@@ -480,7 +487,7 @@ export default function ReviewsSection({ tours }) {
             <button
               className="rev-nav-btn rev-nav-btn--prev"
               onClick={() => navigate(-1)}
-              aria-label="Previous reviews"
+              aria-label={t("reviews.prev")}
             >
               &#8592;
             </button>
@@ -496,7 +503,7 @@ export default function ReviewsSection({ tours }) {
             <button
               className="rev-nav-btn rev-nav-btn--next"
               onClick={() => navigate(1)}
-              aria-label="Next reviews"
+              aria-label={t("reviews.next")}
             >
               &#8594;
             </button>

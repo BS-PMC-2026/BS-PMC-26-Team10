@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CLMonogram } from "../components/ChiliMark/ChiliMark";
 import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
@@ -8,6 +9,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Auth() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { admin, login } = useAuth();
@@ -40,11 +42,11 @@ function Auth() {
   async function handleLogin(e) {
     e.preventDefault();
     if (!loginData.email || !EMAIL_RE.test(loginData.email)) {
-      setError("Please enter a valid email address.");
+      setError(t('auth.errEmail'));
       return;
     }
     if (!loginData.password) {
-      setError("Password is required.");
+      setError(t('auth.errPassword'));
       return;
     }
 
@@ -60,14 +62,14 @@ function Auth() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.detail || "Login failed. Please try again.");
+        setError(data.detail || t('auth.errLogin'));
         return;
       }
 
       login(data.token, data.admin, data.expires_in);
       navigate("/owner", { replace: true });
     } catch {
-      setError("Network error. Please check your connection.");
+      setError(t('auth.errNetwork'));
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,7 @@ function Auth() {
   async function handleForgot(e) {
     e.preventDefault();
     if (!forgotEmail || !EMAIL_RE.test(forgotEmail)) {
-      setError("Please enter a valid email address.");
+      setError(t('auth.errEmail'));
       return;
     }
 
@@ -92,15 +94,13 @@ function Auth() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.detail || "Request failed. Please try again.");
+        setError(data.detail || t('auth.resetFail'));
         return;
       }
 
-      setSuccess(
-        "If an admin account with this email exists, a reset link has been sent. Check your inbox."
-      );
+      setSuccess(t('auth.resetSent'));
     } catch {
-      setError("Network error. Please check your connection.");
+      setError(t('auth.errNetwork'));
     } finally {
       setLoading(false);
     }
@@ -109,11 +109,11 @@ function Auth() {
   async function handleReset(e) {
     e.preventDefault();
     if (resetData.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      setError(t('auth.errPasswordLength'));
       return;
     }
     if (resetData.password !== resetData.confirm) {
-      setError("Passwords do not match.");
+      setError(t('auth.errPasswordMatch'));
       return;
     }
 
@@ -129,17 +129,17 @@ function Auth() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.detail || "Password reset failed. Please try again.");
+        setError(data.detail || t('auth.errResetFail'));
         return;
       }
 
-      setSuccess("Password reset successfully! Redirecting to login...");
+      setSuccess(t('auth.resetSuccess'));
       setTimeout(() => {
         setView("login");
         navigate("/staffLogin", { replace: true });
       }, 2000);
     } catch {
-      setError("Network error. Please check your connection.");
+      setError(t('auth.errNetwork'));
     } finally {
       setLoading(false);
     }
@@ -156,14 +156,14 @@ function Auth() {
               size={52}
               color="#ffffff"
               stemColor="rgba(255, 220, 180, 0.9)"
-              title="ChilliLand"
+              title={t('auth.brand')}
             />
-            <h1 className="auth-brand-title">ChilliLand</h1>
-            <p className="auth-brand-badge">Admin Portal</p>
+            <h1 className="auth-brand-title">{t('auth.brand')}</h1>
+            <p className="auth-brand-badge">{t('auth.portal')}</p>
           </div>
-          <p className="auth-brand-note">Secure staff access only</p>
+          <p className="auth-brand-note">{t('auth.portalSub')}</p>
           <button className="auth-back-to-site" onClick={() => navigate("/")}>
-            ← Back to site
+            {t('auth.backSite')}
           </button>
         </div>
 
@@ -175,16 +175,16 @@ function Auth() {
           {/* Login */}
           {view === "login" && (
             <form className="auth-form" onSubmit={handleLogin} noValidate>
-              <h2 className="auth-form-title">Welcome back</h2>
-              <p className="auth-form-sub">Sign in to your admin account</p>
+              <h2 className="auth-form-title">{t('auth.loginTitle')}</h2>
+              <p className="auth-form-sub">{t('auth.loginSub')}</p>
 
               <div className="auth-field">
-                <label htmlFor="l-email">Email</label>
+                <label htmlFor="l-email">{t('auth.emailLabel')}</label>
                 <input
                   id="l-email"
                   name="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={loginData.email}
                   onChange={setL(setLoginData)}
                   autoComplete="email"
@@ -192,12 +192,12 @@ function Auth() {
               </div>
 
               <div className="auth-field">
-                <label htmlFor="l-password">Password</label>
+                <label htmlFor="l-password">{t('auth.passwordLabel')}</label>
                 <input
                   id="l-password"
                   name="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t('auth.passwordPlaceholder')}
                   value={loginData.password}
                   onChange={setL(setLoginData)}
                   autoComplete="current-password"
@@ -205,11 +205,11 @@ function Auth() {
               </div>
 
               <div className="auth-forgot-row">
-                <span onClick={() => switchView("forgot")}>Forgot password?</span>
+                <span onClick={() => switchView("forgot")}>{t('auth.forgotPassword')}</span>
               </div>
 
               <button type="submit" className="auth-submit" disabled={loading}>
-                {loading ? <span className="auth-spinner" /> : "Sign In"}
+                {loading ? <span className="auth-spinner" /> : t('auth.signIn')}
               </button>
             </form>
           )}
@@ -218,20 +218,20 @@ function Auth() {
           {view === "forgot" && (
             <form className="auth-form" onSubmit={handleForgot} noValidate>
               <button type="button" className="auth-back" onClick={() => switchView("login")}>
-                ← Back to login
+                {t('auth.backSite')}
               </button>
 
-              <h2 className="auth-form-title">Reset password</h2>
+              <h2 className="auth-form-title">{t('auth.resetTitle')}</h2>
               <p className="auth-form-sub">
-                Enter your admin email and we'll send you a secure reset link.
+                {t('auth.resetSub')}
               </p>
 
               <div className="auth-field">
-                <label htmlFor="f-email">Email</label>
+                <label htmlFor="f-email">{t('auth.emailLabel')}</label>
                 <input
                   id="f-email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
                   autoComplete="email"
@@ -239,7 +239,7 @@ function Auth() {
               </div>
 
               <button type="submit" className="auth-submit" disabled={loading || !!success}>
-                {loading ? <span className="auth-spinner" /> : "Send Reset Link"}
+                {loading ? <span className="auth-spinner" /> : t('auth.sendReset')}
               </button>
             </form>
           )}
@@ -247,16 +247,16 @@ function Auth() {
           {/* Reset Password */}
           {view === "reset" && (
             <form className="auth-form" onSubmit={handleReset} noValidate>
-              <h2 className="auth-form-title">Create new password</h2>
-              <p className="auth-form-sub">Enter and confirm your new admin password.</p>
+              <h2 className="auth-form-title">{t('auth.newPasswordTitle')}</h2>
+              <p className="auth-form-sub">{t('auth.newPasswordSub')}</p>
 
               <div className="auth-field">
-                <label htmlFor="rp-pass">New Password</label>
+                <label htmlFor="rp-pass">{t('auth.newPasswordLabel')}</label>
                 <input
                   id="rp-pass"
                   name="password"
                   type="password"
-                  placeholder="Min. 8 characters"
+                  placeholder={t('auth.newPasswordPlaceholder')}
                   value={resetData.password}
                   onChange={setL(setResetData)}
                   autoComplete="new-password"
@@ -264,12 +264,12 @@ function Auth() {
               </div>
 
               <div className="auth-field">
-                <label htmlFor="rp-confirm">Confirm Password</label>
+                <label htmlFor="rp-confirm">{t('auth.confirmPasswordLabel')}</label>
                 <input
                   id="rp-confirm"
                   name="confirm"
                   type="password"
-                  placeholder="Re-enter password"
+                  placeholder={t('auth.confirmPasswordPlaceholder')}
                   value={resetData.confirm}
                   onChange={setL(setResetData)}
                   autoComplete="new-password"
@@ -277,7 +277,7 @@ function Auth() {
               </div>
 
               <button type="submit" className="auth-submit" disabled={loading || !!success}>
-                {loading ? <span className="auth-spinner" /> : "Reset Password"}
+                {loading ? <span className="auth-spinner" /> : t('auth.resetPassword')}
               </button>
             </form>
           )}

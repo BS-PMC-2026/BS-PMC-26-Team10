@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useCart } from "../hooks/useCart";
 import "../styles/pepperDetailsPage.css";
 
@@ -25,6 +26,7 @@ function deriveBestUse(pepper) {
 }
 
 function PepperDetailsPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -74,7 +76,7 @@ function PepperDetailsPage() {
   if (isLoading) {
     return (
       <div className="pdp-page">
-        <div className="pdp-state-card">Loading pepper details...</div>
+        <div className="pdp-state-card">{t("pepperDetail.loading")}</div>
       </div>
     );
   }
@@ -82,7 +84,7 @@ function PepperDetailsPage() {
   if (isError || !pepper) {
     return (
       <div className="pdp-page">
-        <div className="pdp-state-card">Pepper not found.</div>
+        <div className="pdp-state-card">{t("pepperDetail.notFound")}</div>
       </div>
     );
   }
@@ -97,10 +99,10 @@ function PepperDetailsPage() {
   const uniqueSeasons = [...new Set(allPeppers.map((p) => p.season).filter(Boolean))].sort();
 
   const heatOptions = [
-    { label: "Mild (0 – 1,000 SHU)", min: 0, max: 1000 },
-    { label: "Medium (1,000 – 25,000 SHU)", min: 1000, max: 25000 },
-    { label: "Hot (25,000 – 100,000 SHU)", min: 25000, max: 100000 },
-    { label: "Very Hot (100,000+ SHU)", min: 100000, max: 9999999 },
+    { label: t("pepperDetail.heatMild"), min: 0, max: 1000 },
+    { label: t("pepperDetail.heatMedium"), min: 1000, max: 25000 },
+    { label: t("pepperDetail.heatHot"), min: 25000, max: 100000 },
+    { label: t("pepperDetail.heatVeryHot"), min: 100000, max: 9999999 },
   ];
 
   async function handleAddToCart() {
@@ -112,9 +114,9 @@ function PepperDetailsPage() {
     const result = await addToCart(matchedProduct);
     setIsAddingToCart(false);
     if (result?.error === "out_of_stock") {
-      setCartFeedback("Out of stock!");
+      setCartFeedback(t("pepperDetail.outOfStock"));
     } else {
-      setCartFeedback("Added to cart!");
+      setCartFeedback(t("pepperDetail.addedToCart"));
     }
     setTimeout(() => setCartFeedback(""), 2500);
   }
@@ -144,17 +146,20 @@ function PepperDetailsPage() {
   }
 
   const specs = [
-    { label: "Origin",     value: pepper.origin  || "Unknown"    },
-    { label: "Heat Level", value: formatHeatRange(pepper)        },
-    { label: "Color",      value: pepper.color   || "Unknown"    },
-    { label: "Season",     value: pepper.season  || "Year-round" },
-    { label: "Size",       value: "Varies by variety"            },
-    { label: "Best Use",   value: deriveBestUse(pepper)          },
+    { label: t("pepperDetail.origin"),     value: pepper.origin  || t("pepperDetail.unknown")    },
+    { label: t("pepperDetail.heatLevel"),  value: formatHeatRange(pepper)                        },
+    { label: t("pepperDetail.color"),      value: pepper.color   || t("pepperDetail.unknown")    },
+    { label: t("pepperDetail.season"),     value: pepper.season  || t("pepperDetail.yearRound")  },
+    { label: t("pepperDetail.size"),       value: t("pepperDetail.varies")                       },
+    { label: t("pepperDetail.bestUse"),    value: deriveBestUse(pepper)                          },
   ];
 
   const priceDisplay = matchedProduct
     ? `₪${parseFloat(matchedProduct.price).toFixed(2)}`
     : null;
+
+  const culinaryUses = t("pepperDetail.culinaryUses", { returnObjects: true });
+  const growingTips = t("pepperDetail.growingTips", { returnObjects: true });
 
   return (
     <div className="pdp-page">
@@ -166,9 +171,9 @@ function PepperDetailsPage() {
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12.5 15L7.5 10L12.5 5" stroke="#364153" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            Back to catalogue
+            {t("pepperDetail.backCatalogue")}
           </Link>
-          <button className="pdp-close-btn" onClick={() => navigate(-1)} aria-label="Close">
+          <button className="pdp-close-btn" onClick={() => navigate(-1)} aria-label={t("pepperDetail.close")}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M18 6L6 18M6 6l12 12" stroke="#6A7282" strokeWidth="2" strokeLinecap="round"/>
             </svg>
@@ -191,7 +196,7 @@ function PepperDetailsPage() {
 
             {/* Right: details */}
             <div className="pdp-detail-col">
-              <span className="pdp-spotlight-label">Pepper Spotlight</span>
+              <span className="pdp-spotlight-label">{t("pepperDetail.spotlight")}</span>
               <h1 className="pdp-title">{pepper.name}</h1>
               <p className="pdp-description">{description}</p>
 
@@ -207,7 +212,7 @@ function PepperDetailsPage() {
               {priceDisplay && (
                 <div className="pdp-price-row">
                   <span className="pdp-price">{priceDisplay}</span>
-                  <span className="pdp-price-unit">/ pack</span>
+                  <span className="pdp-price-unit">{t("pepperDetail.perPack")}</span>
                 </div>
               )}
 
@@ -220,12 +225,16 @@ function PepperDetailsPage() {
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M10 4v12M4 10h12" stroke="white" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
-                  {isAddingToCart ? "Adding…" : matchedProduct ? "Add to Cart" : "View in Shop"}
+                  {isAddingToCart
+                    ? t("pepperDetail.adding")
+                    : matchedProduct
+                    ? t("pepperDetail.addToCart")
+                    : t("pepperDetail.viewShop")}
                 </button>
               </div>
 
               {cartFeedback && (
-                <div className={`pdp-cart-feedback${cartFeedback.includes("stock") ? " pdp-cart-feedback--error" : ""}`}>
+                <div className={`pdp-cart-feedback${cartFeedback === t("pepperDetail.outOfStock") ? " pdp-cart-feedback--error" : ""}`}>
                   {cartFeedback}
                 </div>
               )}
@@ -238,32 +247,32 @@ function PepperDetailsPage() {
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="pdp-filter-icon">
                 <path d="M2.5 3.75h15l-6 7.5v4.375l-3-1.25V11.25l-6-7.5Z" stroke="#F54900" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              Filter Similar Peppers
+              {t("pepperDetail.filterTitle")}
             </h2>
             <div className="pdp-filter-row">
               <div className="pdp-filter-group">
-                <label htmlFor="pdp-color-filter">Color</label>
+                <label htmlFor="pdp-color-filter">{t("pepperDetail.filterColor")}</label>
                 <select id="pdp-color-filter" value={colorFilter} onChange={(e) => setColorFilter(e.target.value)}>
                   <option value=""></option>
                   {uniqueColors.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div className="pdp-filter-group">
-                <label htmlFor="pdp-heat-filter">Heat Level</label>
+                <label htmlFor="pdp-heat-filter">{t("pepperDetail.filterHeatLevel")}</label>
                 <select id="pdp-heat-filter" value={heatFilter} onChange={(e) => setHeatFilter(e.target.value)}>
                   <option value=""></option>
                   {heatOptions.map((o) => <option key={o.label} value={o.label}>{o.label}</option>)}
                 </select>
               </div>
               <div className="pdp-filter-group">
-                <label htmlFor="pdp-season-filter">Season</label>
+                <label htmlFor="pdp-season-filter">{t("pepperDetail.filterSeason")}</label>
                 <select id="pdp-season-filter" value={seasonFilter} onChange={(e) => setSeasonFilter(e.target.value)}>
                   <option value=""></option>
                   {uniqueSeasons.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
             </div>
-            <button className="pdp-apply-btn" onClick={handleApplyFilters}>Apply Filters</button>
+            <button className="pdp-apply-btn" onClick={handleApplyFilters}>{t("pepperDetail.applyFilters")}</button>
           </div>
 
           {/* ── Filter results ── */}
@@ -271,8 +280,8 @@ function PepperDetailsPage() {
             <div className="pdp-results-section">
               <p className="pdp-results-count">
                 {filteredPeppers.length === 0
-                  ? "No peppers match your filters."
-                  : `${filteredPeppers.length} pepper${filteredPeppers.length !== 1 ? "s" : ""} found`}
+                  ? t("pepperDetail.noMatch")
+                  : t("pepperDetail.resultsCount", { count: filteredPeppers.length })}
               </p>
               {filteredPeppers.length > 0 && (
                 <div className="pdp-results-grid">
@@ -283,12 +292,12 @@ function PepperDetailsPage() {
                         <span className="pdp-result-shu-badge">{formatHeatRange(p)}</span>
                       </div>
                       <div className="pdp-result-body">
-                        <p className="pdp-result-origin">{p.origin || "Unknown origin"}</p>
+                        <p className="pdp-result-origin">{p.origin || t("pepperDetail.unknownOrigin")}</p>
                         <h4 className="pdp-result-name">{p.name}</h4>
                         {p.color && (
                           <p className="pdp-result-meta">{p.color}{p.season ? ` · ${p.season}` : ""}</p>
                         )}
-                        <span className="pdp-result-link">Learn More →</span>
+                        <span className="pdp-result-link">{t("pepperDetail.learnMore")}</span>
                       </div>
                     </Link>
                   ))}
@@ -300,24 +309,39 @@ function PepperDetailsPage() {
           {/* ── Info cards ── */}
           <div className="pdp-info-cards">
             <div className="pdp-info-card pdp-info-card--culinary">
-              <h3>Culinary Uses</h3>
+              <h3>{t("pepperDetail.culinaryTitle")}</h3>
               <ul>
-                <li>Perfect for stir-fries and Asian cuisine</li>
-                <li>Can be used fresh or dried</li>
-                <li>Great for pickling and preserving</li>
-                <li>Adds sweet heat to sauces</li>
+                {Array.isArray(culinaryUses)
+                  ? culinaryUses.map((item, i) => <li key={i}>{item}</li>)
+                  : (
+                    <>
+                      <li>Perfect for stir-fries and Asian cuisine</li>
+                      <li>Can be used fresh or dried</li>
+                      <li>Great for pickling and preserving</li>
+                      <li>Adds sweet heat to sauces</li>
+                    </>
+                  )}
               </ul>
             </div>
             <div className="pdp-info-card pdp-info-card--growing">
-              <h3>Growing Tips</h3>
+              <h3>{t("pepperDetail.growingTitle")}</h3>
               <ul>
-                <li>Requires full sun and warm temperatures</li>
-                <li>Plant spacing: 18-24 inches apart</li>
-                <li>Harvest when peppers reach desired color</li>
-                <li>Regular watering for best production</li>
+                {Array.isArray(growingTips)
+                  ? growingTips.map((item, i) => <li key={i}>{item}</li>)
+                  : (
+                    <>
+                      <li>Requires full sun and warm temperatures</li>
+                      <li>Plant spacing: 18-24 inches apart</li>
+                      <li>Harvest when peppers reach desired color</li>
+                      <li>Regular watering for best production</li>
+                    </>
+                  )}
               </ul>
             </div>
           </div>
+
+          {/* ── Disclaimer ── */}
+          <p className="pdp-disclaimer">{t("pepperDetail.disclaimer")}</p>
 
         </div>
       </div>

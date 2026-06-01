@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import GuideSidebar from "../components/GuideSidebar/GuideSidebar";
 import TourGrid from "../components/TourGrid/TourGrid";
 import TourFormModal from "../components/TourFormModal/TourFormModal";
@@ -6,6 +7,7 @@ import CreateTourPage from "../components/CreateTourPage/CreateTourPage";
 import "../styles/TourguideMain.css";
 
 export function MyToursView({ onCreateNew }) {
+  const { t } = useTranslation();
   const [tours, setTours] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ export function MyToursView({ onCreateNew }) {
       const data = await res.json();
       setTours(Array.isArray(data) ? data : []);
     } catch {
-      setError("Could not load tours from the server.");
+      setError(t("owner.tours.loadError"));
     } finally {
       setLoading(false);
     }
@@ -31,18 +33,18 @@ export function MyToursView({ onCreateNew }) {
   useEffect(() => { fetchTours(); }, []);
 
   const filtered = useMemo(
-    () => tours.filter((t) => t.title.toLowerCase().includes(searchTerm.toLowerCase())),
+    () => tours.filter((tour) => tour.title.toLowerCase().includes(searchTerm.toLowerCase())),
     [tours, searchTerm]
   );
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this tour?")) return;
+    if (!window.confirm(t("owner.tours.confirmDelete"))) return;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/tours/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       fetchTours();
     } catch {
-      alert("Could not delete tour.");
+      alert(t("owner.tours.deleteFail"));
     }
   };
 
@@ -52,32 +54,30 @@ export function MyToursView({ onCreateNew }) {
       <div className="tourguide-bg-shape tourguide-bg-shape-2" />
 
       <div className="tourguide-header">
-        <p className="tourguide-overline">Tour guide · My tours</p>
-        <h1>My tours</h1>
-        <p className="tourguide-subtitle">
-          Your scheduled tours. Edit, delete, or create a new one.
-        </p>
+        <p className="tourguide-overline">{t("owner.tours.overline")}</p>
+        <h1>{t("owner.tours.title")}</h1>
+        <p className="tourguide-subtitle">{t("owner.tours.subtitle")}</p>
       </div>
 
       <div className="tourguide-toolbar">
         <input
           type="text"
-          placeholder="Search tours..."
+          placeholder={t("owner.tours.searchPlaceholder")}
           className="tourguide-search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button className="tourguide-add-btn" onClick={onCreateNew}>
-          + New tour
+          {t("owner.tours.newTour")}
         </button>
       </div>
 
-      {loading && <div className="tourguide-message">Loading tours…</div>}
+      {loading && <div className="tourguide-message">{t("owner.tours.loading")}</div>}
       {!loading && error && <div className="tourguide-message error">{error}</div>}
       {!loading && !error && filtered.length === 0 && (
         <div className="tourguide-empty">
-          <h2>No tours yet</h2>
-          <p>Create your first tour using the button above.</p>
+          <h2>{t("owner.tours.emptyTitle")}</h2>
+          <p>{t("owner.tours.emptyDesc")}</p>
         </div>
       )}
       {!loading && !error && filtered.length > 0 && (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./WelcomeStrip.css";
 
 import img1 from "../../assets/imgae1.jpeg";
@@ -13,6 +14,7 @@ import img7 from "../../assets/image7.jpeg";
 const images = [img1, img2, img3, img4, img5, img6, img7];
 
 function WelcomeStrip() {
+  const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -27,12 +29,11 @@ function WelcomeStrip() {
       <div className="welcome-strip-inner">
         <div className="welcome-strip-heading">
           <p className="welcome-strip-kicker">
-            A place to taste, explore, and enjoy
+            {t('welcome.kicker')}
           </p>
-          <h2 className="welcome-strip-title">More than a farm visit</h2>
+          <h2 className="welcome-strip-title">{t('welcome.title')}</h2>
           <p className="welcome-strip-subtitle">
-            ChiliLand brings together local flavors, beautiful scenery, and
-            experiences you will want to come back to.
+            {t('welcome.subtitle')}
           </p>
         </div>
 
@@ -41,7 +42,7 @@ function WelcomeStrip() {
             <img
               key={i}
               src={src}
-              alt={`Farm image ${i + 1}`}
+              alt={t('welcome.imgAlt', { n: i + 1 })}
               className={`swiper-slide${i === current ? " swiper-slide--active" : ""}`}
             />
           ))}
@@ -51,7 +52,7 @@ function WelcomeStrip() {
                 key={i}
                 className={`swiper-dot${i === current ? " swiper-dot--active" : ""}`}
                 onClick={() => setCurrent(i)}
-                aria-label={`Go to image ${i + 1}`}
+                aria-label={t('welcome.imgAlt', { n: i + 1 })}
               />
             ))}
           </div>
@@ -59,21 +60,21 @@ function WelcomeStrip() {
 
         <div className="welcome-strip-cta">
           <Link to="/tours" className="welcome-strip-cta-btn">
-            View Tours &amp; Book a Spot
+            {t('welcome.btnTours')}
           </Link>
 
           <Link
             to="/about"
             className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary"
           >
-            About the Farm
+            {t('welcome.btnAbout')}
           </Link>
 
           <Link
             to="/farm-location"
             className="welcome-strip-cta-btn welcome-strip-cta-btn--secondary"
           >
-            Farm Location
+            {t('welcome.btnLocation')}
           </Link>
         </div>
       </div>

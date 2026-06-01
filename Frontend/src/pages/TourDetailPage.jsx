@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { useTranslation } from "react-i18next";
 import "../styles/TourDetailPage.css";
 
 function formatDate(dateStr) {
@@ -32,18 +33,19 @@ function isPast(dateStr) {
 const INITIAL_FORM = { email: "", full_name: "", phone: "", participants_count: 1 };
 const INITIAL_CANCEL_FORM = { booking_reference: "", email: "" };
 
-function getFormErrors(form) {
+function getFormErrors(form, t) {
   const errors = {};
-  if (!form.email.trim()) errors.email = "Email is required.";
-  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) errors.email = "Invalid email format.";
-  if (!form.full_name.trim()) errors.full_name = "Full name is required.";
-  if (!form.phone.trim()) errors.phone = "Phone is required.";
-  else if (!/^\d{10}$/.test(form.phone.trim())) errors.phone = "Phone must be exactly 10 digits.";
-  if (parseInt(form.participants_count, 10) < 1) errors.participants_count = "At least 1 participant.";
+  if (!form.email.trim()) errors.email = t("tourDetail.errEmailRequired");
+  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) errors.email = t("tourDetail.errEmailInvalid");
+  if (!form.full_name.trim()) errors.full_name = t("tourDetail.errNameRequired");
+  if (!form.phone.trim()) errors.phone = t("tourDetail.errPhoneRequired");
+  else if (!/^\d{10}$/.test(form.phone.trim())) errors.phone = t("tourDetail.errPhoneInvalid");
+  if (parseInt(form.participants_count, 10) < 1) errors.participants_count = t("tourDetail.errParticipants");
   return errors;
 }
 
 function TourDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,12 +64,12 @@ function TourDetailPage() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/tours`)
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to load tour.");
+        if (!res.ok) throw new Error(t("tourDetail.loadError"));
         return res.json();
       })
       .then((data) => {
-        const found = data.find((t) => String(t.id) === String(id));
-        if (!found) throw new Error("Tour not found.");
+        const found = data.find((tour) => String(tour.id) === String(id));
+        if (!found) throw new Error(t("tourDetail.loadError"));
         setTour(found);
         setLoading(false);
       })
@@ -139,7 +141,7 @@ function TourDetailPage() {
     const email = cancelForm.email.trim();
 
     if (!reference || !email) {
-      setCancelResult({ success: false, message: "Please enter your booking reference and email." });
+      setCancelResult({ success: false, message: t("tourDetail.cancelFillFields") });
       return;
     }
 
@@ -163,8 +165,8 @@ function TourDetailPage() {
         setCancelResult({
           success: true,
           message: data.email_sent
-            ? "Booking cancelled successfully. A cancellation confirmation email was sent to your email address."
-            : "Booking cancelled successfully. Your spots are now available again, but the confirmation email could not be sent right now.",
+            ? t("tourDetail.cancelSuccess")
+            : t("tourDetail.cancelSuccessNoEmail"),
         });
         setCancelForm(INITIAL_CANCEL_FORM);
         setTour((prev) => ({
@@ -182,16 +184,16 @@ function TourDetailPage() {
 
   async function handleFreeSubmit(e) {
     e.preventDefault();
-    const errors = getFormErrors(form);
+    const errors = getFormErrors(form, t);
     if (Object.keys(errors).length > 0) { setFieldErrors(errors); return; }
     await submitBooking(null);
   }
 
   function createPayPalOrder(data, actions) {
-    const errors = getFormErrors(form);
+    const errors = getFormErrors(form, t);
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
-      setPaypalError("Please fill in all fields correctly before paying.");
+      setPaypalError(t("tourDetail.fillFields"));
       return Promise.reject(new Error("Form invalid"));
     }
     setPaypalError("");
@@ -215,8 +217,8 @@ function TourDetailPage() {
     }
   }
 
-  function onPayPalError() {
-    setPaypalError("PayPal encountered an error. Please try again.");
+  function onPayPalError(error) {
+    setPaypalError(t("tourDetail.paypalError", { error }));
   }
 
   if (loading) return <div className="tdp-status">Loading tour…</div>;
@@ -233,9 +235,9 @@ function TourDetailPage() {
     <div className="tdp">
       <div className="tdp-inner">
         <nav className="tdp-breadcrumb">
-          <Link to="/">Home</Link>
+          <Link to="/">{t("tourDetail.breadcrumbHome")}</Link>
           <span> / </span>
-          <Link to="/tours">Tours</Link>
+          <Link to="/tours">{t("tourDetail.breadcrumbTours")}</Link>
           <span> / </span>
           <span>{tour.title}</span>
         </nav>
@@ -245,8 +247,8 @@ function TourDetailPage() {
           <aside className="tdp-info">
             <div className="tdp-info-badges">
               <span className="tdp-badge tdp-badge--kind">{tour.kind.replace(/-/g, " ")}</span>
-              {full && <span className="tdp-badge tdp-badge--full">Full</span>}
-              {past && <span className="tdp-badge tdp-badge--past">Past tour</span>}
+              {full && <span className="tdp-badge tdp-badge--full">{t("tourDetail.full")}</span>}
+              {past && <span className="tdp-badge tdp-badge--past">{t("tourDetail.past")}</span>}
             </div>
 
             <h1 className="tdp-title">{tour.title}</h1>
@@ -254,46 +256,48 @@ function TourDetailPage() {
 
             <dl className="tdp-details">
               <div className="tdp-detail-row">
-                <dt>Date</dt>
+                <dt>{t("tourDetail.date")}</dt>
                 <dd>{formatDate(tour.date)}</dd>
               </div>
               <div className="tdp-detail-row">
-                <dt>Time</dt>
+                <dt>{t("tourDetail.time")}</dt>
                 <dd>{formatTime(tour.time)}</dd>
               </div>
               <div className="tdp-detail-row">
-                <dt>Duration</dt>
+                <dt>{t("tourDetail.duration")}</dt>
                 <dd>{tour.duration}</dd>
               </div>
               <div className="tdp-detail-row">
-                <dt>Price</dt>
+                <dt>{t("tourDetail.price")}</dt>
                 <dd>{tour.price > 0 ? `₪${Number(tour.price).toFixed(2)} per person` : "Free"}</dd>
               </div>
               <div className="tdp-detail-row">
-                <dt>Capacity</dt>
-                <dd>{tour.capacity} total spots</dd>
+                <dt>{t("tourDetail.capacity")}</dt>
+                <dd>{t("tourDetail.totalSpots", { count: tour.capacity })}</dd>
               </div>
               <div className="tdp-detail-row">
-                <dt>Available</dt>
+                <dt>{t("tourDetail.available")}</dt>
                 <dd className={full ? "tdp-spots--none" : "tdp-spots--ok"}>
-                  {full ? "0 — Fully booked" : `${tour.remaining_spots} spot${tour.remaining_spots !== 1 ? "s" : ""} left`}
+                  {full
+                    ? t("tourDetail.fullyBooked")
+                    : t("tourDetail.spotsLeft", { count: tour.remaining_spots })}
                 </dd>
               </div>
               {tour.meeting_point && (
                 <div className="tdp-detail-row">
-                  <dt>Meeting point</dt>
+                  <dt>{t("tourDetail.meetingPoint")}</dt>
                   <dd>{tour.meeting_point}</dd>
                 </div>
               )}
               {tour.includes && (
                 <div className="tdp-detail-row">
-                  <dt>Includes</dt>
+                  <dt>{t("tourDetail.includes")}</dt>
                   <dd>{tour.includes}</dd>
                 </div>
               )}
               {tour.accessibility && (
                 <div className="tdp-detail-row">
-                  <dt>Accessibility</dt>
+                  <dt>{t("tourDetail.accessibility")}</dt>
                   <dd>{tour.accessibility.replace(/-/g, " ")}</dd>
                 </div>
               )}
@@ -305,37 +309,41 @@ function TourDetailPage() {
             {result?.success ? (
               <div className="tdp-result tdp-result--success">
                 <div className="tdp-result-icon">&#10003;</div>
-                <h2 className="tdp-result-title">Booking Confirmed!</h2>
+                <h2 className="tdp-result-title">{t("tourDetail.confirmedTitle")}</h2>
                 {result.paid && (
-                  <p className="tdp-result-paid-badge">✓ Payment received</p>
+                  <p className="tdp-result-paid-badge">{t("tourDetail.confirmedPayment")}</p>
                 )}
-                <p className="tdp-result-text">Your booking reference is:</p>
+                <p className="tdp-result-text">{t("tourDetail.confirmedRef")}</p>
                 <p className="tdp-result-reference">{result.reference}</p>
-                <p className="tdp-result-text">Save this reference for future use.</p>
+                <p className="tdp-result-text">{t("tourDetail.confirmedSave")}</p>
                 <p className="tdp-result-text">
                   {result.emailSent
-                    ? "A confirmation email was sent to your email address."
-                    : "Your booking is saved, but the confirmation email could not be sent right now."}
+                    ? t("tourDetail.confirmedEmail")
+                    : t("tourDetail.confirmedEmailFail")}
                 </p>
                 {result.confirmationMessage && (
                   <p className="tdp-result-text">{result.confirmationMessage}</p>
                 )}
                 <div className="tdp-result-actions">
-                  <Link to="/tours" className="tdp-result-btn">View More Tours</Link>
-                  <Link to="/" className="tdp-result-btn tdp-result-btn--secondary">Back to Home</Link>
+                  <Link to="/tours" className="tdp-result-btn">{t("tourDetail.moreTours")}</Link>
+                  <Link to="/" className="tdp-result-btn tdp-result-btn--secondary">{t("tourDetail.backHome")}</Link>
                 </div>
               </div>
             ) : (
               <>
                 <h2 className="tdp-form-heading">
-                  {past ? "Tour has passed" : full ? "Tour is fully booked" : isPaid ? "Book & Pay" : "Book this tour"}
+                  {past
+                    ? t("tourDetail.btnPast")
+                    : full
+                    ? t("tourDetail.btnFull")
+                    : isPaid
+                    ? t("tourDetail.btnPay")
+                    : t("tourDetail.btnBook")}
                 </h2>
 
                 {!canBook && !result && (
                   <p className="tdp-unavailable">
-                    {past
-                      ? "This tour has already taken place and is no longer available for booking."
-                      : "All spots for this tour have been filled."}
+                    {past ? t("tourDetail.pastDesc") : t("tourDetail.fullDesc")}
                   </p>
                 )}
 
@@ -352,31 +360,31 @@ function TourDetailPage() {
                     noValidate
                   >
                     <div className="tdp-field">
-                      <label htmlFor="email" className="tdp-label">Email address</label>
+                      <label htmlFor="email" className="tdp-label">{t("tourDetail.emailLabel")}</label>
                       <input
                         id="email" name="email" type="email" className={`tdp-input${fieldErrors.email ? " tdp-input--error" : ""}`}
                         value={form.email} onChange={handleChange}
-                        placeholder="you@example.com" required autoComplete="email"
+                        placeholder={t("tourDetail.emailPlaceholder")} required autoComplete="email"
                       />
                       {fieldErrors.email && <span className="tdp-field-error">{fieldErrors.email}</span>}
                     </div>
 
                     <div className="tdp-field">
-                      <label htmlFor="full_name" className="tdp-label">Full name</label>
+                      <label htmlFor="full_name" className="tdp-label">{t("tourDetail.nameLabel")}</label>
                       <input
                         id="full_name" name="full_name" type="text" className={`tdp-input${fieldErrors.full_name ? " tdp-input--error" : ""}`}
                         value={form.full_name} onChange={handleChange}
-                        placeholder="Jane Smith" required autoComplete="name"
+                        placeholder={t("tourDetail.namePlaceholder")} required autoComplete="name"
                       />
                       {fieldErrors.full_name && <span className="tdp-field-error">{fieldErrors.full_name}</span>}
                     </div>
 
                     <div className="tdp-field">
-                      <label htmlFor="phone" className="tdp-label">Phone number</label>
+                      <label htmlFor="phone" className="tdp-label">{t("tourDetail.phoneLabel")}</label>
                       <input
                         id="phone" name="phone" type="tel" className={`tdp-input${fieldErrors.phone ? " tdp-input--error" : ""}`}
                         value={form.phone} onChange={handleChange}
-                        placeholder="0549164691" pattern="\d{10}" maxLength={10}
+                        placeholder={t("tourDetail.phonePlaceholder")} pattern="\d{10}" maxLength={10}
                         title="Phone must be exactly 10 digits" required autoComplete="tel"
                       />
                       {fieldErrors.phone && <span className="tdp-field-error">{fieldErrors.phone}</span>}
@@ -384,7 +392,7 @@ function TourDetailPage() {
 
                     <div className="tdp-field">
                       <label htmlFor="participants_count" className="tdp-label">
-                        Number of participants
+                        {t("tourDetail.participantsLabel")}
                         <span className="tdp-label-hint"> (max {tour.remaining_spots})</span>
                       </label>
                       <input
@@ -402,15 +410,15 @@ function TourDetailPage() {
 
                         <div className="tdp-price-summary">
                           <div className="tdp-price-row">
-                            <span>Price per person</span>
+                            <span>{t("tourDetail.pricePerPerson")}</span>
                             <span>₪{Number(tour.price).toFixed(2)}</span>
                           </div>
                           <div className="tdp-price-row">
-                            <span>Participants</span>
+                            <span>{t("tourDetail.participants")}</span>
                             <span>× {participants}</span>
                           </div>
                           <div className="tdp-price-total">
-                            <span>Total</span>
+                            <span>{t("tourDetail.total")}</span>
                             <span>₪{total}</span>
                           </div>
                         </div>
@@ -420,7 +428,7 @@ function TourDetailPage() {
                         )}
 
                         <div className="tdp-paypal-wrap">
-                          <p className="tdp-paypal-label">Pay securely with PayPal</p>
+                          <p className="tdp-paypal-label">{t("tourDetail.paypalLabel")}</p>
                           <PayPalButtons
                             style={{ layout: "vertical", color: "gold", shape: "pill", label: "pay" }}
                             disabled={submitting}
@@ -430,16 +438,14 @@ function TourDetailPage() {
                           />
                         </div>
 
-                        <p className="tdp-form-note">
-                          Your spot is reserved only after payment is complete.
-                        </p>
+                        <p className="tdp-form-note">{t("tourDetail.paymentNote")}</p>
                       </>
                     ) : (
                       <>
                         <button type="submit" className="tdp-submit" disabled={submitting}>
-                          {submitting ? "Confirming…" : "Confirm Booking"}
+                          {submitting ? t("tourDetail.confirming") : t("tourDetail.confirm")}
                         </button>
-                        <p className="tdp-form-note">No account required. Booking is instant.</p>
+                        <p className="tdp-form-note">{t("tourDetail.noAccount")}</p>
                       </>
                     )}
                   </form>
@@ -453,14 +459,14 @@ function TourDetailPage() {
                         className="tdp-cancel-toggle"
                         onClick={() => setShowCancelForm(true)}
                       >
-                        Cancel a booking
+                        {t("tourDetail.cancelTitle")}
                       </button>
                     ) : (
                       <>
-                        <h3 className="tdp-cancel-title">Cancel a booking</h3>
+                        <h3 className="tdp-cancel-title">{t("tourDetail.cancelTitle")}</h3>
                         <form className="tdp-form" onSubmit={handleCancelBooking} noValidate>
                           <div className="tdp-field">
-                            <label htmlFor="booking_reference" className="tdp-label">Booking reference</label>
+                            <label htmlFor="booking_reference" className="tdp-label">{t("tourDetail.cancelRefLabel")}</label>
                             <input
                               id="booking_reference"
                               name="booking_reference"
@@ -468,13 +474,13 @@ function TourDetailPage() {
                               className="tdp-input"
                               value={cancelForm.booking_reference}
                               onChange={handleCancelChange}
-                              placeholder="ABC12345"
+                              placeholder={t("tourDetail.cancelRefPlaceholder")}
                               autoComplete="off"
                             />
                           </div>
 
                           <div className="tdp-field">
-                            <label htmlFor="cancel_email" className="tdp-label">Booking email address</label>
+                            <label htmlFor="cancel_email" className="tdp-label">{t("tourDetail.cancelEmailLabel")}</label>
                             <input
                               id="cancel_email"
                               name="email"
@@ -482,7 +488,7 @@ function TourDetailPage() {
                               className="tdp-input"
                               value={cancelForm.email}
                               onChange={handleCancelChange}
-                              placeholder="you@example.com"
+                              placeholder={t("tourDetail.cancelEmailPlaceholder")}
                               autoComplete="email"
                             />
                           </div>
@@ -494,7 +500,7 @@ function TourDetailPage() {
                           )}
 
                           <button type="submit" className="tdp-cancel-submit" disabled={cancelling}>
-                            {cancelling ? "Cancelling..." : "Cancel Booking"}
+                            {cancelling ? t("tourDetail.cancellingBtn") : t("tourDetail.cancelBtn")}
                           </button>
                         </form>
                       </>
