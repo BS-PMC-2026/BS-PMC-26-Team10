@@ -95,6 +95,9 @@ jobs:
         run: npm ci
       - name: Build frontend
         working-directory: Frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_PAYPAL_CLIENT_ID: ${{ secrets.VITE_PAYPAL_CLIENT_ID }}
         run: npm run build
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
