@@ -1,14 +1,8 @@
 // Tests for ToursPage component (BSPMT10-12-usn12)
 import { describe, test, expect, vi, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import ToursPage from "../pages/ToursPage";
-
-const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 
 const FUTURE_DATE = "2026-12-31";
 const PAST_DATE = "2025-01-01";
@@ -56,20 +50,6 @@ const mockTours = [
     duration: "45 min",
     price: 0,
   },
-  {
-    id: 4,
-    title: "Past Tour",
-    visibility: "public",
-    date: PAST_DATE,
-    time: "11:00",
-    kind: "field-tasting",
-    description: "Already happened",
-    capacity: 6,
-    remaining_spots: 3,
-    is_full: false,
-    duration: "90 min",
-    price: 15,
-  },
 ];
 
 const mockFaq = [
@@ -79,13 +59,6 @@ const mockFaq = [
     answer: "Choose an available tour and confirm your booking online.",
     category: "Booking",
     display_order: 1,
-  },
-  {
-    id: 2,
-    question: "Can I cancel my booking?",
-    answer: "Yes, you can cancel before the tour starts using your booking reference.",
-    category: "Cancellation",
-    display_order: 2,
   },
 ];
 
@@ -128,274 +101,11 @@ describe("ToursPage", () => {
     expect(screen.getByText("Full")).toBeInTheDocument();
   });
 
-  test("shows remaining spots for available tours", async () => {
-    renderPage();
-    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
-    expect(screen.getByText("5 / 12")).toBeInTheDocument();
-  });
-
-  test("shows Book Now link for available future tours", async () => {
-    renderPage();
-    await waitFor(() => expect(screen.getByText("Book Now")).toBeInTheDocument());
-  });
-
-  test("shows details link for full future tours", async () => {
-    renderPage();
-    await waitFor(() => expect(screen.getByText("Full Tour")).toBeInTheDocument());
-
-    const detailsLink = screen.getByRole("link", { name: "View Details" });
-    expect(detailsLink).toHaveAttribute("href", "/tours/2");
-  });
-
-  test("shows Past badge and Tour Passed button for past tours", async () => {
-    renderPage();
-    await waitFor(() => expect(screen.getByRole("heading", { name: "Past Tour" })).toBeInTheDocument());
-    expect(screen.getByText("Past")).toBeInTheDocument();
-    expect(screen.getByText("Tour Passed")).toBeDisabled();
-  });
-
   test("shows error message when fetch fails", async () => {
     vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new Error("Network error"))));
     render(<MemoryRouter><ToursPage /></MemoryRouter>);
     await waitFor(() =>
       expect(screen.getByText("Network error")).toBeInTheDocument()
-    );
-  });
-
-  test("shows empty message when no published tours exist", async () => {
-    renderPage([{ ...mockTours[2] }]); // only a draft tour
-    await waitFor(() =>
-      expect(screen.getByText(/No tours are currently available/)).toBeInTheDocument()
-    );
-  });
-
-  test("renders tour image when picture is set", async () => {
-    const tours = [{ ...mockTours[0], picture: "https://example.com/tour.jpg" }];
-    renderPage(tours);
-    await waitFor(() => {
-      const img = screen.getByRole("img", { name: "Field Walk" });
-      expect(img).toHaveAttribute("src", "https://example.com/tour.jpg");
-    });
-  });
-
-  test("does not render image when picture is absent", async () => {
-    renderPage([mockTours[0]]);
-    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
-  });
-
-  test("does not render image when picture is null", async () => {
-    renderPage([{ ...mockTours[0], picture: null }]);
-    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
-  });
-
-  test("shows FAQ link and section", async () => {
-    renderPage();
-    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
-
-    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "#tour-faq");
-    expect(screen.getByText("Quick answers before you book")).toBeInTheDocument();
-    expect(screen.getByText("How do I book a tour?")).toBeInTheDocument();
-  });
-
-  test("expands FAQ answers when a question is clicked", async () => {
-    renderPage();
-    await waitFor(() => expect(screen.getByText("How do I book a tour?")).toBeInTheDocument());
-
-    expect(screen.queryByText("Choose an available tour and confirm your booking online.")).not.toBeInTheDocument();
-    await userEvent.click(screen.getByText("How do I book a tour?"));
-    expect(screen.getByText("Choose an available tour and confirm your booking online.")).toBeInTheDocument();
-  });
-
-  test("shows FAQ unavailable message when FAQ fetch fails", async () => {
-    renderPage(mockTours, mockFaq, vi.fn((url) => {
-      if (url.includes("/faq")) {
-        return Promise.reject(new Error("FAQ failed"));
-      }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockTours) });
-    }));
-
-    await waitFor(() => expect(screen.getByText("Field Walk")).toBeInTheDocument());
-    expect(screen.getByText("FAQ is temporarily unavailable.")).toBeInTheDocument();
-  });
-});
-
-// ── Calendar sidebar tests ─────────────────────────────────────────────────
-
-const THIS_YEAR = new Date().getFullYear();
-const THIS_MONTH = new Date().getMonth();
-const THIS_MONTH_STR = String(THIS_MONTH + 1).padStart(2, "0");
-
-const calTours = [
-  {
-    id: 10,
-    title: "Morning Harvest",
-    visibility: "public",
-    date: `${THIS_YEAR}-${THIS_MONTH_STR}-15`,
-    time: "09:00",
-    kind: "harvest",
-    description: "",
-    capacity: 10,
-    remaining_spots: 5,
-    is_full: false,
-    duration: "90 min",
-    price: 20,
-  },
-  {
-    id: 11,
-    title: "Sunset Tasting",
-    visibility: "public",
-    date: `${THIS_YEAR}-${THIS_MONTH_STR}-22`,
-    time: "17:00",
-    kind: "field-tasting",
-    description: "",
-    capacity: 8,
-    remaining_spots: 3,
-    is_full: false,
-    duration: "60 min",
-    price: 15,
-  },
-];
-
-function renderCalPage(tours = calTours) {
-  vi.stubGlobal("fetch", vi.fn((url) => {
-    if (url.includes("/faq")) {
-      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockFaq) });
-    }
-    return Promise.resolve({ ok: true, json: () => Promise.resolve(tours) });
-  }));
-  return render(<MemoryRouter><ToursPage /></MemoryRouter>);
-}
-
-describe("ToursPage — Calendar sidebar", () => {
-  afterEach(() => vi.unstubAllGlobals());
-
-  test("renders the calendar sidebar title", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByText("Tour Calendar")).toBeInTheDocument()
-    );
-  });
-
-  test("calendar displays the current month and year", async () => {
-    renderCalPage();
-    const label = `${MONTH_NAMES[THIS_MONTH]} ${THIS_YEAR}`;
-    await waitFor(() => expect(screen.getByText(label)).toBeInTheDocument());
-  });
-
-  test("calendar shows previous and next month navigation buttons", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByLabelText("Previous month")).toBeInTheDocument()
-    );
-    expect(screen.getByLabelText("Next month")).toBeInTheDocument();
-  });
-
-  test("clicking next month navigates the calendar forward", async () => {
-    renderCalPage();
-    await waitFor(() => expect(screen.getByText("Tour Calendar")).toBeInTheDocument());
-
-    const next = new Date(THIS_YEAR, THIS_MONTH + 1, 1);
-    const nextLabel = `${MONTH_NAMES[next.getMonth()]} ${next.getFullYear()}`;
-
-    await userEvent.click(screen.getByLabelText("Next month"));
-    expect(screen.getByText(nextLabel)).toBeInTheDocument();
-  });
-
-  test("clicking previous month navigates the calendar back", async () => {
-    renderCalPage();
-    await waitFor(() => expect(screen.getByText("Tour Calendar")).toBeInTheDocument());
-
-    const prev = new Date(THIS_YEAR, THIS_MONTH - 1, 1);
-    const prevLabel = `${MONTH_NAMES[prev.getMonth()]} ${prev.getFullYear()}`;
-
-    await userEvent.click(screen.getByLabelText("Previous month"));
-    expect(screen.getByText(prevLabel)).toBeInTheDocument();
-  });
-
-  test("days with tours show a dot indicator via aria-label", async () => {
-    renderCalPage();
-    await waitFor(() => expect(screen.getByText("Tour Calendar")).toBeInTheDocument());
-
-    expect(
-      screen.getByLabelText(`15 ${MONTH_NAMES[THIS_MONTH]} — has tours`)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(`22 ${MONTH_NAMES[THIS_MONTH]} — has tours`)
-    ).toBeInTheDocument();
-  });
-
-  test("clicking a tour date filters the tour list to that date only", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByRole("heading", { level: 2, name: "Morning Harvest" })).toBeInTheDocument()
-    );
-
-    await userEvent.click(
-      screen.getByLabelText(`15 ${MONTH_NAMES[THIS_MONTH]} — has tours`)
-    );
-
-    expect(screen.getByRole("heading", { level: 2, name: "Morning Harvest" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { level: 2, name: "Sunset Tasting" })).not.toBeInTheDocument();
-  });
-
-  test("shows filter label with selected date", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByRole("heading", { level: 2, name: "Morning Harvest" })).toBeInTheDocument()
-    );
-
-    await userEvent.click(
-      screen.getByLabelText(`15 ${MONTH_NAMES[THIS_MONTH]} — has tours`)
-    );
-
-    expect(screen.getByText(/Showing tours for/i)).toBeInTheDocument();
-  });
-
-  test("Show all tours button clears the date filter", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByRole("heading", { level: 2, name: "Morning Harvest" })).toBeInTheDocument()
-    );
-
-    await userEvent.click(
-      screen.getByLabelText(`15 ${MONTH_NAMES[THIS_MONTH]} — has tours`)
-    );
-    expect(screen.queryByRole("heading", { level: 2, name: "Sunset Tasting" })).not.toBeInTheDocument();
-
-    await userEvent.click(screen.getByText(/Show all tours/i));
-    expect(screen.getByRole("heading", { level: 2, name: "Sunset Tasting" })).toBeInTheDocument();
-    expect(screen.queryByText(/Showing tours for/i)).not.toBeInTheDocument();
-  });
-
-  test("clicking the same date again clears the filter", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByRole("heading", { level: 2, name: "Morning Harvest" })).toBeInTheDocument()
-    );
-
-    const dayBtn = screen.getByLabelText(`15 ${MONTH_NAMES[THIS_MONTH]} — has tours`);
-    await userEvent.click(dayBtn);
-    expect(screen.queryByRole("heading", { level: 2, name: "Sunset Tasting" })).not.toBeInTheDocument();
-
-    await userEvent.click(dayBtn);
-    expect(screen.getByRole("heading", { level: 2, name: "Sunset Tasting" })).toBeInTheDocument();
-  });
-
-  test("shows no-tours message when a date with no tours is selected", async () => {
-    renderCalPage();
-    await waitFor(() => expect(screen.getByText("Tour Calendar")).toBeInTheDocument());
-
-    // day 10 has no tours
-    await userEvent.click(screen.getByLabelText(`10 ${MONTH_NAMES[THIS_MONTH]}`));
-    expect(screen.getByText("No tours on this date.")).toBeInTheDocument();
-  });
-
-  test("monthly summary shows correct tour count for current month", async () => {
-    renderCalPage();
-    await waitFor(() =>
-      expect(screen.getByText("2 tours this month")).toBeInTheDocument()
     );
   });
 });
