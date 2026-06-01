@@ -16,9 +16,15 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(EXPIRY_KEY);
   }
 
+  function logout() {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    _clear();
+    setAdmin(null);
+  }
+
   function _scheduleLogout(expiryMs) {
     if (timerRef.current) clearTimeout(timerRef.current);
-    const remaining = expiryMs - Date.now(); // eslint-disable-line react-hooks/purity
+    const remaining = expiryMs - Date.now();
     if (remaining <= 0) {
       logout();
       return;
@@ -58,12 +64,6 @@ export function AuthProvider({ children }) {
     localStorage.setItem(EXPIRY_KEY, String(expiry));
     setAdmin(adminData);
     _scheduleLogout(expiry);
-  }
-
-  function logout() {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    _clear();
-    setAdmin(null);
   }
 
   function getToken() {

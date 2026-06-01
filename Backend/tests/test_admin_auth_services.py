@@ -16,7 +16,6 @@ from app.services.admin_auth_services import (
     create_password_reset_token,
     get_admin_from_token,
     login_admin,
-    register_admin,
     reset_password_with_token,
 )
 
@@ -110,45 +109,6 @@ class JwtTokenTests(unittest.TestCase):
         }
         expired = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
         self.assertIsNone(_decode_token(expired))
-
-
-# ── register_admin ─────────────────────────────────────────────────────────────
-
-class RegisterAdminTests(unittest.TestCase):
-    def test_returns_email_taken_when_email_exists(self):
-        conn, _ = _mock_conn(fetchone_value=(99,))
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
-            result = register_admin("Jane", "Doe", "jane@example.com", "pass1234")
-        self.assertEqual(result["error"], "email_taken")
-
-    def test_returns_token_and_admin_on_success(self):
-        conn, cur = _mock_conn()
-        cur.fetchone.side_effect = [
-            None,
-            (1, "Jane", "Doe", "jane@example.com"),
-        ]
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
-            result = register_admin("Jane", "Doe", "jane@example.com", "pass1234")
-        self.assertIn("token", result)
-        self.assertEqual(result["admin"]["email"], "jane@example.com")
-        self.assertEqual(result["expires_in"], 600)
-
-    def test_returned_token_is_decodable(self):
-        conn, cur = _mock_conn()
-        cur.fetchone.side_effect = [
-            None,
-            (7, "Jane", "Doe", "jane@example.com"),
-        ]
-        with patch("app.services.admin_auth_services.get_connection", return_value=conn):
-            result = register_admin("Jane", "Doe", "jane@example.com", "pass1234")
-        payload = _decode_token(result["token"])
-        self.assertIsNotNone(payload)
-        self.assertEqual(payload["sub"], "7")
-
-    def test_returns_server_error_on_db_exception(self):
-        with patch("app.services.admin_auth_services.get_connection", return_value=_broken_conn()):
-            result = register_admin("Jane", "Doe", "jane@example.com", "pass1234")
-        self.assertEqual(result["error"], "server_error")
 
 
 # ── login_admin ────────────────────────────────────────────────────────────────
