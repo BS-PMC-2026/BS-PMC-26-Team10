@@ -370,7 +370,7 @@ export default function ReviewsSection({ tours }) {
       });
   }
 
-  useEffect(() => { fetchReviews("all"); }, []);
+  useEffect(() => { fetchReviews("all"); }, []); // eslint-disable-line react-hooks/set-state-in-effect
 
   /* Auto-rotation — restarts whenever reviews change */
   function startAutoplay() {

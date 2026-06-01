@@ -108,7 +108,7 @@ export default function OwnerDashboard() {
 
   // ── Spice level donut ─────────────────────────
   const spiceMap = {};
-  heatCategories.forEach((name, i) => { spiceMap[name] = 0; });
+  heatCategories.forEach((name) => { spiceMap[name] = 0; });
   chillies.forEach((c) => {
     const idx = classifySpiceIndex(c);
     const name = heatCategories[idx];

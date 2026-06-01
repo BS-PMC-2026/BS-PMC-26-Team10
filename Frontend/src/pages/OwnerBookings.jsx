@@ -35,7 +35,7 @@ function OwnerBookings() {
         )
       );
       setBookings(perTour.flat());
-    } catch (err) {
+    } catch (_err) {
       setError(t('owner.bookings.loadError'));
     } finally {
       setLoading(false);

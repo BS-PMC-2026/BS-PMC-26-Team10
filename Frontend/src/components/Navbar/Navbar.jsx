@@ -24,7 +24,7 @@ function Navbar() {
   const [visible, setVisible] = useState(!isHome);
 
   useEffect(() => {
-    setOpen(false);
+    setOpen(false); // eslint-disable-line react-hooks/set-state-in-effect
 
     if (!isHome) {
       setVisible(true);
@@ -78,7 +78,7 @@ function Navbar() {
         </div>
 
         <ul className="navbar-links" role="list">
-          {NAV_LINKS.map(({ to, label, Icon }) => (
+          {NAV_LINKS.map(({ to, label, Icon }) => ( // eslint-disable-line no-unused-vars
             <li key={to}>
               <Link
                 to={to}
