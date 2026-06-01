@@ -45,7 +45,7 @@ function StarPicker({ value, onChange }) {
 function ReviewCard({ review }) {
   const { t } = useTranslation();
 
-  const initials = review.reviewer_name
+  const initials = (review.reviewer_name || "")
     .trim()
     .split(/\s+/)
     .map((w) => w[0] || "")

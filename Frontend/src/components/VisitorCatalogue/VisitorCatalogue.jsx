@@ -479,11 +479,12 @@ function VisitorCatalogue() {
 
                       {inventoryByName.get(chilli.name?.toLowerCase().trim())?.price != null && (
                         <p className="visitor-chilli-price">
-                          {t("catalogue.price", {
-                            price: parseFloat(
+                          <span className="visitor-chilli-price-amount">
+                            ₪{parseFloat(
                               inventoryByName.get(chilli.name?.toLowerCase().trim()).price
-                            ).toFixed(2),
-                          })}
+                            ).toFixed(2)}
+                          </span>
+                          <span className="visitor-chilli-price-unit">{t("catalogue.perPack")}</span>
                         </p>
                       )}
 

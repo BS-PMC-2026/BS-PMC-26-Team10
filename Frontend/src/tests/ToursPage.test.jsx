@@ -149,7 +149,7 @@ describe("ToursPage", () => {
 
   test("shows Past badge and Tour Passed button for past tours", async () => {
     renderPage();
-    await waitFor(() => expect(screen.getByText("Past Tour")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Past Tour" })).toBeInTheDocument());
     expect(screen.getByText("Past")).toBeInTheDocument();
     expect(screen.getByText("Tour Passed")).toBeDisabled();
   });

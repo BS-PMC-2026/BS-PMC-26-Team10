@@ -54,9 +54,6 @@ jobs:
     name: Build & Upload Artifact
     needs: [frontend, backend]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: Frontend
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,15 +64,17 @@ jobs:
           cache: npm
           cache-dependency-path: Frontend/package-lock.json
       - name: Install frontend dependencies
+        working-directory: Frontend
         run: npm ci
       - name: Build frontend
+        working-directory: Frontend
         run: npm run build
       - name: Zip bundle
-        run: zip -r dist/chilliland-${{ github.sha }}.zip dist/ Backend/
+        run: zip -r chilliland-${{ github.sha }}.zip Frontend/dist/ Backend/
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: chilliland-${{ github.run_number }}-${{ github.sha }}
-          path: dist/chilliland-${{ github.sha }}.zip
+          path: chilliland-${{ github.sha }}.zip
           if-no-files-found: error
           retention-days: 14
