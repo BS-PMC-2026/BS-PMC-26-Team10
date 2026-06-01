@@ -1,0 +1,471 @@
+/* ══════════════════════════════════════════════════════════════
+   OwnerReviews  —  matches ChiliLand owner panel design
+   ══════════════════════════════════════════════════════════════ */
+
+.or-content {
+  flex: 1;
+  padding: 3vw;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.or-header {
+  margin-bottom: 2vw;
+}
+
+.or-overline {
+  font-size: 0.95vw;
+  font-weight: 700;
+  letter-spacing: 0.08vw;
+  text-transform: uppercase;
+  color: #b6462f;
+  margin-bottom: 0.5vw;
+}
+
+.or-header h1 {
+  margin: 0 0 0.8vw;
+  font-size: 2.6vw;
+  color: #3a2a20;
+}
+
+.or-subtitle {
+  margin: 0;
+  max-width: 45vw;
+  font-size: 1vw;
+  line-height: 1.6;
+  color: #6f5a4d;
+}
+
+/* ── Stat cards ──────────────────────────────────────────────── */
+.or-stats {
+  display: flex;
+  gap: 1.2vw;
+  flex-wrap: wrap;
+  margin: 2vw 0;
+}
+
+.or-stat-card {
+  min-width: 13vw;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.08vw solid #efdfd2;
+  border-radius: 1.2vw;
+  padding: 1.4vw;
+  box-shadow: 0 0.4vw 1.2vw rgba(96, 52, 32, 0.06);
+}
+
+.or-stat-card p {
+  margin: 0 0 0.5vw;
+  font-size: 0.95vw;
+  color: #7a6253;
+}
+
+.or-stat-card h2 {
+  margin: 0;
+  font-size: 1.9vw;
+  color: #3a2a20;
+}
+
+.or-stat-star {
+  color: #e4a97a;
+  font-size: 1.4vw;
+}
+
+.or-stat--green { color: #2e7d32; }
+.or-stat--orange { color: #e07b30; }
+
+/* ── Toolbar ─────────────────────────────────────────────────── */
+.or-toolbar {
+  display: flex;
+  gap: 1vw;
+  align-items: center;
+  margin: 2vw 0;
+  flex-wrap: wrap;
+}
+
+.or-search {
+  flex: 1;
+  min-width: 18vw;
+  padding: 0.75vw 1vw;
+  border: 0.08vw solid #e0cfc4;
+  border-radius: 0.8vw;
+  font-size: 0.9vw;
+  color: #3a2a20;
+  background: rgba(255, 255, 255, 0.9);
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.or-search:focus {
+  outline: none;
+  border-color: #a14d2a;
+  box-shadow: 0 0 0 0.2vw rgba(161, 77, 42, 0.1);
+}
+
+.or-filter {
+  appearance: none;
+  background: rgba(255,255,255,0.9) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a07060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 0.75vw center;
+  background-size: 0.65vw;
+  border: 0.08vw solid #e0cfc4;
+  border-radius: 0.8vw;
+  padding: 0.75vw 2.2vw 0.75vw 0.9vw;
+  font-size: 0.9vw;
+  color: #3a2a20;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.or-filter:focus {
+  outline: none;
+  border-color: #a14d2a;
+}
+
+/* ── Messages / empty ────────────────────────────────────────── */
+.or-message {
+  text-align: center;
+  padding: 4vw 0;
+  font-size: 1vw;
+  color: #7a6253;
+}
+
+.or-message--error { color: #c62828; }
+
+.or-empty {
+  text-align: center;
+  padding: 4vw 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vw;
+  color: #7a6253;
+}
+
+.or-empty-icon { font-size: 3vw; }
+.or-empty h2 { margin: 0; font-size: 1.5vw; color: #3a2a20; }
+.or-empty p  { margin: 0; font-size: 0.95vw; }
+
+/* ── Review list ─────────────────────────────────────────────── */
+.or-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vw;
+}
+
+/* ── Review card ─────────────────────────────────────────────── */
+.or-review-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 0.08vw solid #efdfd2;
+  border-radius: 1.2vw;
+  padding: 1.4vw 1.6vw;
+  box-shadow: 0 0.3vw 1vw rgba(96, 52, 32, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.or-review-card:hover {
+  box-shadow: 0 0.5vw 1.8vw rgba(96, 52, 32, 0.1);
+}
+
+.or-review-card--expanded {
+  border-color: #e4a97a;
+  box-shadow: 0 0.5vw 1.8vw rgba(96, 52, 32, 0.1);
+}
+
+/* top row: stars + tour + date + badge */
+.or-review-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1vw;
+  gap: 1vw;
+  flex-wrap: wrap;
+}
+
+.or-review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  flex-wrap: wrap;
+}
+
+/* stars */
+.or-stars { display: flex; gap: 0.1vw; }
+.or-star { font-size: 1.05vw; color: #d8ccc7; }
+.or-star--on { color: #e4a97a; }
+
+.or-review-tour {
+  font-size: 0.82vw;
+  font-weight: 600;
+  color: #7a4020;
+  background: #f3dfcc;
+  border-radius: 999vw;
+  padding: 0.18vw 0.65vw;
+}
+
+.or-review-date {
+  font-size: 0.8vw;
+  color: #a07060;
+}
+
+/* reply badge */
+.or-reply-badge {
+  font-size: 0.78vw;
+  font-weight: 700;
+  border-radius: 999vw;
+  padding: 0.22vw 0.8vw;
+  flex-shrink: 0;
+}
+
+.or-reply-badge--replied {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 0.06vw solid #a5d6a7;
+}
+
+.or-reply-badge--pending {
+  background: #fff3e0;
+  color: #e07b30;
+  border: 0.06vw solid #ffcc80;
+}
+
+/* body: reviewer info + comment + optional photo */
+.or-review-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5vw;
+  justify-content: space-between;
+  margin-bottom: 1vw;
+}
+
+.or-review-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vw;
+}
+
+.or-reviewer-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+}
+
+.or-reviewer-avatar {
+  width: 2.2vw;
+  height: 2.2vw;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e4a97a, #a14d2a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.82vw;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.or-reviewer-name {
+  display: block;
+  font-size: 0.88vw;
+  font-weight: 700;
+  color: #3a2a20;
+}
+
+.or-verified-tag {
+  display: block;
+  font-size: 0.72vw;
+  color: #7a6253;
+}
+
+.or-review-comment {
+  margin: 0;
+  font-size: 0.9vw;
+  color: #5a4134;
+  line-height: 1.65;
+  font-style: italic;
+}
+
+.or-review-photo {
+  width: 4.5vw;
+  height: 4.5vw;
+  object-fit: cover;
+  border-radius: 0.8vw;
+  border: 0.07vw solid #efdfd2;
+  flex-shrink: 0;
+}
+
+/* existing reply preview */
+.or-existing-reply {
+  background: #fdf7f0;
+  border-left: 0.2vw solid #e4a97a;
+  border-radius: 0 0.6vw 0.6vw 0;
+  padding: 0.7vw 1vw;
+  margin-bottom: 0.9vw;
+}
+
+.or-existing-reply-label {
+  display: block;
+  font-size: 0.72vw;
+  font-weight: 700;
+  color: #a14d2a;
+  text-transform: uppercase;
+  letter-spacing: 0.06vw;
+  margin-bottom: 0.3vw;
+}
+
+.or-existing-reply-text {
+  margin: 0;
+  font-size: 0.87vw;
+  color: #5a4134;
+  line-height: 1.6;
+}
+
+/* reply toggle button */
+.or-reply-toggle {
+  display: inline-block;
+  font-size: 0.82vw;
+  font-weight: 700;
+  color: #a14d2a;
+  background: none;
+  border: 0.07vw solid #e4a97a;
+  border-radius: 0.6vw;
+  padding: 0.42vw 1vw;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.or-reply-toggle:hover {
+  background: #fdf0e6;
+  color: #7a3018;
+}
+
+/* reply expand form */
+.or-reply-form {
+  margin-top: 0.6vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vw;
+  animation: or-expand 0.2s ease;
+}
+
+@keyframes or-expand {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.or-reply-label {
+  font-size: 0.82vw;
+  font-weight: 700;
+  color: #3a2a20;
+}
+
+.or-reply-textarea {
+  border: 0.08vw solid #e0cfc4;
+  border-radius: 0.7vw;
+  padding: 0.75vw 0.9vw;
+  font-size: 0.88vw;
+  color: #3a2a20;
+  font-family: inherit;
+  background: #fdf7f0;
+  resize: vertical;
+  min-height: 70px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  line-height: 1.6;
+}
+
+.or-reply-textarea:focus {
+  outline: none;
+  border-color: #a14d2a;
+  box-shadow: 0 0 0 0.2vw rgba(161, 77, 42, 0.1);
+  background: #fff;
+}
+
+.or-reply-error {
+  margin: 0;
+  font-size: 0.8vw;
+  color: #c62828;
+  background: #fdecea;
+  border-radius: 0.4vw;
+  padding: 0.4vw 0.7vw;
+}
+
+.or-reply-actions {
+  display: flex;
+  gap: 0.7vw;
+  justify-content: flex-end;
+}
+
+/* Buttons */
+.or-btn {
+  padding: 0.6vw 1.3vw;
+  border-radius: 0.6vw;
+  font-size: 0.85vw;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.or-btn--primary {
+  background: #a14d2a;
+  color: #fff;
+}
+
+.or-btn--primary:hover:not(:disabled) { background: #8a3d1e; }
+.or-btn--primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.or-btn--ghost {
+  background: #f3dfcc;
+  color: #7a4020;
+}
+
+.or-btn--ghost:hover:not(:disabled) { background: #e4cbbf; }
+
+/* ══════════════════════════════════════════════════════════════
+   Mobile  (≤ 768px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .or-content { padding: 6vw 5vw; }
+  .or-overline { font-size: 3.2vw; }
+  .or-header h1 { font-size: 7vw; }
+  .or-subtitle { font-size: 3.5vw; max-width: 100%; }
+
+  .or-stats { gap: 3vw; margin: 5vw 0; }
+  .or-stat-card { min-width: 40vw; border-radius: 4vw; padding: 4vw; }
+  .or-stat-card p { font-size: 3.2vw; }
+  .or-stat-card h2 { font-size: 6vw; }
+
+  .or-toolbar { gap: 3vw; margin: 4vw 0; }
+  .or-search, .or-filter { font-size: 3.5vw; padding: 2.5vw 3vw; border-radius: 2.5vw; }
+  .or-filter { background-size: 2.5vw; padding-right: 7vw; }
+
+  .or-reviews-list { gap: 4vw; }
+  .or-review-card { border-radius: 4vw; padding: 4.5vw; }
+  .or-review-top { margin-bottom: 3vw; }
+  .or-star { font-size: 4vw; }
+  .or-review-tour { font-size: 3vw; padding: 0.8vw 2.5vw; }
+  .or-review-date { font-size: 3vw; }
+  .or-reply-badge { font-size: 3vw; padding: 0.8vw 2.5vw; }
+
+  .or-reviewer-avatar { width: 8vw; height: 8vw; font-size: 3.2vw; }
+  .or-reviewer-name { font-size: 3.5vw; }
+  .or-verified-tag { font-size: 2.8vw; }
+  .or-review-comment { font-size: 3.4vw; }
+  .or-review-photo { width: 14vw; height: 14vw; border-radius: 2.5vw; }
+
+  .or-existing-reply { padding: 2.5vw 3vw; border-left-width: 0.8vw; border-radius: 0 2vw 2vw 0; }
+  .or-existing-reply-label { font-size: 2.8vw; }
+  .or-existing-reply-text { font-size: 3.3vw; }
+
+  .or-reply-toggle { font-size: 3.2vw; padding: 1.8vw 3.5vw; border-radius: 2vw; }
+  .or-reply-label { font-size: 3.2vw; }
+  .or-reply-textarea { font-size: 3.5vw; padding: 2.5vw 3vw; border-radius: 2.5vw; }
+  .or-btn { font-size: 3.5vw; padding: 2.2vw 4vw; border-radius: 2vw; }
+
+  .or-empty-icon { font-size: 10vw; }
+  .or-empty h2 { font-size: 5.5vw; }
+  .or-empty p  { font-size: 3.5vw; }
+}

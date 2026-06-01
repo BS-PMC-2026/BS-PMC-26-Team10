@@ -329,6 +329,32 @@
   text-overflow: ellipsis;
 }
 
+/* ── Owner reply (visitor view) ─────────────────────────────── */
+.rev-card-reply {
+  background: #fdf7f0;
+  border-left: 0.18vw solid #e4a97a;
+  border-radius: 0 0.6vw 0.6vw 0;
+  padding: 0.6vw 0.9vw;
+  margin-top: -0.2vw;
+}
+
+.rev-card-reply-label {
+  display: block;
+  font-size: 0.68vw;
+  font-weight: 800;
+  color: #a14d2a;
+  text-transform: uppercase;
+  letter-spacing: 0.06vw;
+  margin-bottom: 0.25vw;
+}
+
+.rev-card-reply-text {
+  margin: 0;
+  font-size: 0.82vw;
+  color: #5a4134;
+  line-height: 1.55;
+}
+
 /* ── Dots ────────────────────────────────────────────────────── */
 .rev-dots {
   display: flex;
@@ -711,6 +737,10 @@
   .rev-card-initials { font-size: 3vw; }
   .rev-card-name { font-size: 3.5vw; }
   .rev-card-tour-label { font-size: 2.8vw; }
+
+  .rev-card-reply { border-left-width: 0.6vw; padding: 2.5vw 3vw; border-radius: 0 2vw 2vw 0; }
+  .rev-card-reply-label { font-size: 2.6vw; }
+  .rev-card-reply-text  { font-size: 3.2vw; }
 
   .rev-dots { gap: 2vw; margin-top: 5vw; }
   .rev-dot { width: 2vw; height: 2vw; }

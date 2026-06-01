@@ -82,7 +82,7 @@ def create_review(
 def get_reviews(tour_id: int = None):
     try:
         query = supabase.table("tour_reviews").select(
-            "id, tour_id, tour_title, reviewer_name, rating, comment, photo_url, created_at"
+            "id, tour_id, tour_title, reviewer_name, rating, comment, photo_url, created_at, owner_reply, replied_at"
         ).order("created_at", desc=True)
         if tour_id is not None:
             query = query.eq("tour_id", tour_id)
@@ -91,3 +91,19 @@ def get_reviews(tour_id: int = None):
     except Exception as e:
         print("Error fetching reviews:", repr(e))
         return []
+
+
+def reply_to_review(review_id: int, reply_text: str):
+    try:
+        from datetime import datetime, timezone
+        resp = supabase.table("tour_reviews").select("id").eq("id", review_id).limit(1).execute()
+        if not resp.data:
+            return {"error": "not_found", "message": "Review not found."}
+        supabase.table("tour_reviews").update({
+            "owner_reply": reply_text.strip(),
+            "replied_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("id", review_id).execute()
+        return {"success": True, "message": "Reply saved."}
+    except Exception as e:
+        print("Error saving reply:", repr(e))
+        return {"error": "server_error", "message": "An unexpected error occurred."}
