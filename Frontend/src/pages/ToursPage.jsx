@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import ReviewsSection from "../components/ReviewsSection/ReviewsSection";
 import "../styles/ToursPage.css";
 
-const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -39,11 +40,13 @@ function toYMD(year, month, day) {
 }
 
 function TourCalendar({ tours, selectedDate, onSelectDate }) {
+  const { t } = useTranslation();
   const today = new Date();
   const [calYear, setCalYear] = useState(today.getFullYear());
   const [calMonth, setCalMonth] = useState(today.getMonth());
 
-  const tourDates = new Set(tours.map((t) => t.date));
+  const dayNames = t("tours.dayNames", { returnObjects: true });
+  const tourDates = new Set(tours.map((tour) => tour.date));
 
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
@@ -62,9 +65,9 @@ function TourCalendar({ tours, selectedDate, onSelectDate }) {
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
-  const toursThisMonth = tours.filter((t) => {
-    if (!t.date) return false;
-    const [y, mo] = t.date.split("-");
+  const toursThisMonth = tours.filter((tour) => {
+    if (!tour.date) return false;
+    const [y, mo] = tour.date.split("-");
     return parseInt(y) === calYear && parseInt(mo) - 1 === calMonth;
   });
 
@@ -72,17 +75,17 @@ function TourCalendar({ tours, selectedDate, onSelectDate }) {
     <aside className="tours-calendar">
       <div className="tours-cal-title">
         <span className="tours-cal-title-icon">📅</span>
-        Tour Calendar
+        {t("tours.calTitle")}
       </div>
 
       <div className="tours-cal-header">
-        <button className="tours-cal-nav" onClick={prevMonth} aria-label="Previous month">&#8592;</button>
+        <button className="tours-cal-nav" onClick={prevMonth} aria-label={t("tours.prevMonth")}>&#8592;</button>
         <span className="tours-cal-month">{MONTH_NAMES[calMonth]} {calYear}</span>
-        <button className="tours-cal-nav" onClick={nextMonth} aria-label="Next month">&#8594;</button>
+        <button className="tours-cal-nav" onClick={nextMonth} aria-label={t("tours.nextMonth")}>&#8594;</button>
       </div>
 
       <div className="tours-cal-grid">
-        {DAY_NAMES.map((d) => (
+        {Array.isArray(dayNames) && dayNames.map((d) => (
           <div key={d} className="tours-cal-dayname">{d}</div>
         ))}
         {cells.map((day, idx) => {
@@ -116,30 +119,32 @@ function TourCalendar({ tours, selectedDate, onSelectDate }) {
 
       {selectedDate && (
         <button className="tours-cal-clear" onClick={() => onSelectDate(null)}>
-          ✕ Show all tours
+          {t("tours.showAll")}
         </button>
       )}
 
       <div className="tours-cal-summary">
         {toursThisMonth.length === 0 ? (
-          <p className="tours-cal-summary-empty">No tours this month</p>
+          <p className="tours-cal-summary-empty">{t("tours.noToursMonth")}</p>
         ) : (
           <>
             <p className="tours-cal-summary-label">
-              {toursThisMonth.length} tour{toursThisMonth.length > 1 ? "s" : ""} this month
+              {t("tours.toursMonth", { count: toursThisMonth.length })}
             </p>
             <ul className="tours-cal-summary-list">
-              {toursThisMonth.slice(0, 4).map((t) => (
-                <li key={t.id} className="tours-cal-summary-item">
+              {toursThisMonth.slice(0, 4).map((tour) => (
+                <li key={tour.id} className="tours-cal-summary-item">
                   <span className="tours-cal-summary-dot" />
                   <span className="tours-cal-summary-day">
-                    {new Date(t.date + "T00:00:00").getDate()}
+                    {new Date(tour.date + "T00:00:00").getDate()}
                   </span>
-                  <span className="tours-cal-summary-name">{t.title}</span>
+                  <span className="tours-cal-summary-name">{tour.title}</span>
                 </li>
               ))}
               {toursThisMonth.length > 4 && (
-                <li className="tours-cal-summary-more">+{toursThisMonth.length - 4} more</li>
+                <li className="tours-cal-summary-more">
+                  {t("tours.more", { count: toursThisMonth.length - 4 })}
+                </li>
               )}
             </ul>
           </>
@@ -148,13 +153,14 @@ function TourCalendar({ tours, selectedDate, onSelectDate }) {
 
       <div className="tours-cal-legend">
         <span className="tours-cal-legend-dot" />
-        <span>Tour scheduled</span>
+        <span>{t("tours.tourScheduled")}</span>
       </div>
     </aside>
   );
 }
 
 function ToursPage() {
+  const { t, i18n } = useTranslation();
   const [tours, setTours] = useState([]);
   const [faqItems, setFaqItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -167,11 +173,11 @@ function ToursPage() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/tours`)
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to load tours.");
+        if (!res.ok) throw new Error(t("tours.loading"));
         return res.json();
       })
       .then((data) => {
-        setTours(data.filter((t) => t.visibility === "public" || t.visibility === "published"));
+        setTours(data.filter((tour) => tour.visibility === "public" || tour.visibility === "published"));
         setLoading(false);
       })
       .catch((err) => {
@@ -180,10 +186,20 @@ function ToursPage() {
       });
   }, []);
 
+  // In Hebrew, use static translated FAQ from i18n; in English, fetch from API.
   useEffect(() => {
+    if (i18n.language === "he") {
+      const staticFaq = t("tours.faqStatic", { returnObjects: true });
+      const items = Array.isArray(staticFaq)
+        ? staticFaq.map((item, idx) => ({ id: idx, question: item.question, answer: item.answer }))
+        : [];
+      setFaqItems(items); // eslint-disable-line react-hooks/set-state-in-effect
+      setFaqLoading(false);
+      return;
+    }
     fetch(`${import.meta.env.VITE_API_URL}/faq`)
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to load FAQ.");
+        if (!res.ok) throw new Error(t("tours.faqError"));
         return res.json();
       })
       .then((data) => {
@@ -194,7 +210,7 @@ function ToursPage() {
         setFaqError(err.message);
         setFaqLoading(false);
       });
-  }, []);
+  }, [i18n.language]);
 
   function toggleFaq(id) {
     setOpenFaqIds((prev) => (
@@ -203,25 +219,23 @@ function ToursPage() {
   }
 
   const visibleTours = selectedDate
-    ? tours.filter((t) => t.date === selectedDate)
+    ? tours.filter((tour) => tour.date === selectedDate)
     : tours;
 
   return (
     <div className="tours-page">
       <header className="tours-page-header">
-        <Link to="/" className="tours-page-back">&#8592; Back to home</Link>
+        <Link to="/" className="tours-page-back">&#8592; {t("tours.backHome")}</Link>
         <div className="tours-page-header-text">
-          <p className="tours-page-kicker">ChiliLand Farm Experiences</p>
-          <h1 className="tours-page-title">Available Tours</h1>
-          <a href="#tour-faq" className="tours-page-faq-link">FAQ</a>
-          <p className="tours-page-subtitle">
-            Choose a tour, pick your date, and secure your spot — no account needed.
-          </p>
+          <p className="tours-page-kicker">{t("tours.kicker")}</p>
+          <h1 className="tours-page-title">{t("tours.title")}</h1>
+          <a href="#tour-faq" className="tours-page-faq-link">{t("tours.faqBtn")}</a>
+          <p className="tours-page-subtitle">{t("tours.subtitle")}</p>
         </div>
       </header>
 
       <main className="tours-page-main">
-        {loading && <p className="tours-page-status">Loading tours…</p>}
+        {loading && <p className="tours-page-status">{t("tours.loading")}</p>}
         {error && <p className="tours-page-status tours-page-error">{error}</p>}
 
         {!loading && !error && (
@@ -229,15 +243,13 @@ function ToursPage() {
             <div className="tours-page-left">
               {selectedDate && (
                 <p className="tours-filter-label">
-                  Showing tours for <strong>{formatDate(selectedDate)}</strong>
+                  {t("tours.showingDate", { date: formatDate(selectedDate) })}
                 </p>
               )}
 
               {visibleTours.length === 0 ? (
                 <p className="tours-page-status">
-                  {selectedDate
-                    ? "No tours on this date."
-                    : "No tours are currently available. Check back soon!"}
+                  {selectedDate ? t("tours.noToursDate") : t("tours.noTours")}
                 </p>
               ) : (
                 <div className="tours-grid">
@@ -262,8 +274,8 @@ function ToursPage() {
                             <span className="tours-grid-badge tours-grid-badge--kind">
                               {tour.kind.replace(/-/g, " ")}
                             </span>
-                            {full && <span className="tours-grid-badge tours-grid-badge--full">Full</span>}
-                            {past && <span className="tours-grid-badge tours-grid-badge--past">Past</span>}
+                            {full && <span className="tours-grid-badge tours-grid-badge--full">{t("tours.full")}</span>}
+                            {past && <span className="tours-grid-badge tours-grid-badge--past">{t("tours.past")}</span>}
                           </div>
                           <h2 className="tours-grid-card-title">{tour.title}</h2>
                           {tour.description && (
@@ -273,25 +285,25 @@ function ToursPage() {
 
                         <div className="tours-grid-card-meta">
                           <div className="tours-grid-meta-row">
-                            <span className="tours-grid-meta-label">Date</span>
+                            <span className="tours-grid-meta-label">{t("tours.date")}</span>
                             <span>{formatDate(tour.date)}</span>
                           </div>
                           <div className="tours-grid-meta-row">
-                            <span className="tours-grid-meta-label">Time</span>
+                            <span className="tours-grid-meta-label">{t("tours.time")}</span>
                             <span>{formatTime(tour.time)}</span>
                           </div>
                           <div className="tours-grid-meta-row">
-                            <span className="tours-grid-meta-label">Duration</span>
+                            <span className="tours-grid-meta-label">{t("tours.duration")}</span>
                             <span>{tour.duration}</span>
                           </div>
                           <div className="tours-grid-meta-row">
-                            <span className="tours-grid-meta-label">Price</span>
-                            <span>{tour.price > 0 ? `$${Number(tour.price).toFixed(2)}` : "Free"}</span>
+                            <span className="tours-grid-meta-label">{t("tours.price")}</span>
+                            <span>{tour.price > 0 ? `$${Number(tour.price).toFixed(2)}` : t("tours.free")}</span>
                           </div>
                           <div className="tours-grid-meta-row">
-                            <span className="tours-grid-meta-label">Spots left</span>
+                            <span className="tours-grid-meta-label">{t("tours.spots")}</span>
                             <span className={full ? "tours-grid-spots--none" : "tours-grid-spots--ok"}>
-                              {full ? "0 — Full" : `${tour.remaining_spots} / ${tour.capacity}`}
+                              {full ? t("tours.fullyBooked") : `${tour.remaining_spots} / ${tour.capacity}`}
                             </span>
                           </div>
                         </div>
@@ -299,11 +311,11 @@ function ToursPage() {
                         <div className="tours-grid-card-footer">
                           {past ? (
                             <button className="tours-grid-btn tours-grid-btn--disabled" disabled>
-                              Tour Passed
+                              {t("tours.tourPassed")}
                             </button>
                           ) : (
                             <Link to={`/tours/${tour.id}`} className="tours-grid-btn">
-                              {full ? "View Details" : "Book Now"}
+                              {full ? t("tours.viewDetails") : t("tours.bookNow")}
                             </Link>
                           )}
                         </div>
@@ -323,23 +335,25 @@ function ToursPage() {
         )}
 
         {!loading && !error && (
+          <ReviewsSection tours={tours} />
+        )}
+
+        {!loading && (
           <section id="tour-faq" className="tours-faq" aria-labelledby="tour-faq-title">
             <div className="tours-faq-heading">
-              <p className="tours-faq-kicker">Tour FAQ</p>
-              <h2 id="tour-faq-title">Quick answers before you book</h2>
-              <p>
-                Helpful details about booking, cancellations, greenhouse visits, and spicy tastings.
-              </p>
+              <p className="tours-faq-kicker">{t("tours.faqTitle")}</p>
+              <h2 id="tour-faq-title">{t("tours.faqSubtitle")}</h2>
+              <p>{t("tours.faqDesc")}</p>
             </div>
 
-            {faqLoading && <p className="tours-faq-status">Loading FAQ...</p>}
+            {faqLoading && <p className="tours-faq-status">{t("tours.faqLoading")}</p>}
             {faqError && (
               <p className="tours-faq-status tours-faq-status--error">
-                FAQ is temporarily unavailable.
+                {t("tours.faqError")}
               </p>
             )}
             {!faqLoading && !faqError && faqItems.length === 0 && (
-              <p className="tours-faq-status">No FAQ items are available yet.</p>
+              <p className="tours-faq-status">{t("tours.faqEmpty")}</p>
             )}
             {!faqLoading && !faqError && faqItems.length > 0 && (
               <div className="tours-faq-list">

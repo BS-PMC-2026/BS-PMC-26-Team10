@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ResponsiveContainer,
   PieChart,
@@ -18,28 +19,27 @@ import "./OwnerDashboard.css";
 
 const API = import.meta.env.VITE_API_URL;
 
-const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-const SPICE_LEVELS = [
-  { name: "Mild",    color: "#e8a838", max: 2500 },
-  { name: "Medium",  color: "#e07b30", max: 30000 },
-  { name: "Hot",     color: "#cc4d1f", max: 100000 },
-  { name: "Fierce",  color: "#b52a10", max: 500000 },
-  { name: "Inferno", color: "#7a0a0a", max: Infinity },
+const SPICE_LEVEL_DEFS = [
+  { color: "#e8a838", max: 2500 },
+  { color: "#e07b30", max: 30000 },
+  { color: "#cc4d1f", max: 100000 },
+  { color: "#b52a10", max: 500000 },
+  { color: "#7a0a0a", max: Infinity },
 ];
 
-function classifySpice(chilli) {
+function classifySpiceIndex(chilli) {
   const shu = chilli.shu_max ?? chilli.shu_min ?? 0;
-  return SPICE_LEVELS.find((l) => shu <= l.max)?.name ?? "Inferno";
+  const idx = SPICE_LEVEL_DEFS.findIndex((l) => shu <= l.max);
+  return idx === -1 ? SPICE_LEVEL_DEFS.length - 1 : idx;
 }
 
-function buildMonthlyRevenue(orders) {
+function buildMonthlyRevenue(orders, monthNames) {
   const map = {};
   orders.forEach((o) => {
     if (!o.order_date) return;
     const d = new Date(o.order_date);
     const key = `${d.getFullYear()}-${d.getMonth()}`;
-    if (!map[key]) map[key] = { month: MONTH_NAMES[d.getMonth()], revenue: 0, _sort: d.getFullYear() * 12 + d.getMonth() };
+    if (!map[key]) map[key] = { month: monthNames[d.getMonth()], revenue: 0, _sort: d.getFullYear() * 12 + d.getMonth() };
     map[key].revenue += parseFloat(o.total_amount ?? 0);
   });
   return Object.values(map)
@@ -66,15 +66,19 @@ const STATUS_COLORS = {
 };
 
 function StatusBadge({ status }) {
+  const { t } = useTranslation();
   const s = STATUS_COLORS[status?.toLowerCase()] ?? { bg: "#f0f0f0", text: "#666" };
+  const key = status?.toLowerCase().replace(/\s+/g, "_");
+  const label = key ? t(`owner.status.${key}`, status) : "—";
   return (
     <span className="od-badge" style={{ background: s.bg, color: s.text }}>
-      {status ?? "—"}
+      {label}
     </span>
   );
 }
 
 export default function OwnerDashboard() {
+  const { t } = useTranslation();
   const [orders, setOrders]     = useState([]);
   const [chillies, setChillies] = useState([]);
   const [inventory, setInventory] = useState([]);
@@ -93,6 +97,9 @@ export default function OwnerDashboard() {
     });
   }, []);
 
+  const monthNames = t('owner.dashboard.months', { returnObjects: true });
+  const heatCategories = t('owner.dashboard.heatCategories', { returnObjects: true });
+
   // ── KPIs ────────────────────────────────────────
   const totalOrders   = orders.length;
   const totalRevenue  = orders.reduce((s, o) => s + parseFloat(o.total_amount ?? 0), 0);
@@ -101,12 +108,18 @@ export default function OwnerDashboard() {
 
   // ── Spice level donut ─────────────────────────
   const spiceMap = {};
-  SPICE_LEVELS.forEach((l) => { spiceMap[l.name] = 0; });
-  chillies.forEach((c) => { spiceMap[classifySpice(c)] = (spiceMap[classifySpice(c)] ?? 0) + 1; });
-  const spiceData = SPICE_LEVELS.map((l) => ({ name: l.name, value: spiceMap[l.name], color: l.color })).filter((d) => d.value > 0);
+  heatCategories.forEach((name) => { spiceMap[name] = 0; });
+  chillies.forEach((c) => {
+    const idx = classifySpiceIndex(c);
+    const name = heatCategories[idx];
+    if (name !== undefined) spiceMap[name] = (spiceMap[name] ?? 0) + 1;
+  });
+  const spiceData = heatCategories
+    .map((name, i) => ({ name, value: spiceMap[name] ?? 0, color: SPICE_LEVEL_DEFS[i]?.color ?? "#ccc" }))
+    .filter((d) => d.value > 0);
 
   // ── Monthly revenue line ──────────────────────
-  const revenueData = buildMonthlyRevenue(orders);
+  const revenueData = buildMonthlyRevenue(orders, Array.isArray(monthNames) ? monthNames : []);
 
   // ── Top inventory bar ─────────────────────────
   const topProducts = [...inventory]
@@ -123,7 +136,7 @@ export default function OwnerDashboard() {
     return (
       <div className="od-loading">
         <div className="od-spinner" />
-        <p>Loading dashboard…</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -131,17 +144,17 @@ export default function OwnerDashboard() {
   return (
     <div className="od-root">
       <div className="od-header">
-        <p className="od-overline">Owner Control Center</p>
-        <h1>Dashboard</h1>
-        <p className="od-subtitle">Your farm's performance at a glance.</p>
+        <p className="od-overline">{t('owner.controlCenter')}</p>
+        <h1>{t('owner.dashboard.title')}</h1>
+        <p className="od-subtitle">{t('owner.dashboard.subtitle')}</p>
       </div>
 
       {/* ── KPI row ─────────────────────────────── */}
       <div className="od-stats-row">
-        <StatCard label="Total Orders"   value={totalOrders}                         accent="#bb3e22" />
-        <StatCard label="Total Revenue"  value={`₪${totalRevenue.toFixed(0)}`}       accent="#a14d2a" sub="all time" />
-        <StatCard label="Products Listed" value={totalProducts}                      accent="#4a2a1f" />
-        <StatCard label="Pending Orders" value={pendingOrders}                       accent="#e07b30" sub="need action" />
+        <StatCard label={t('owner.dashboard.totalOrders')}   value={totalOrders}                         accent="#bb3e22" />
+        <StatCard label={t('owner.dashboard.totalRevenue')}  value={`₪${totalRevenue.toFixed(0)}`}       accent="#a14d2a" sub={t('owner.dashboard.allTime')} />
+        <StatCard label={t('owner.dashboard.productsListed')} value={totalProducts}                      accent="#4a2a1f" />
+        <StatCard label={t('owner.dashboard.pendingOrders')} value={pendingOrders}                       accent="#e07b30" sub={t('owner.dashboard.needAction')} />
       </div>
 
       {/* ── Charts row 1 ──────────────────────── */}
@@ -149,10 +162,10 @@ export default function OwnerDashboard() {
 
         {/* Spice-level donut */}
         <div className="od-card od-card--donut">
-          <h3 className="od-card-title">Spice Level Distribution</h3>
-          <p className="od-card-sub">Pepper varieties by heat category</p>
+          <h3 className="od-card-title">{t('owner.dashboard.spiceTitle')}</h3>
+          <p className="od-card-sub">{t('owner.dashboard.spiceSub')}</p>
           {spiceData.length === 0 ? (
-            <p className="od-empty">No chilli data yet.</p>
+            <p className="od-empty">{t('owner.dashboard.noChilli')}</p>
           ) : (
             <div className="od-donut-wrap">
               <ResponsiveContainer width="100%" height={220}>
@@ -188,19 +201,19 @@ export default function OwnerDashboard() {
 
         {/* Recent orders table */}
         <div className="od-card od-card--table">
-          <h3 className="od-card-title">Recent Orders</h3>
-          <p className="od-card-sub">Latest 5 customer orders</p>
+          <h3 className="od-card-title">{t('owner.dashboard.recentTitle')}</h3>
+          <p className="od-card-sub">{t('owner.dashboard.recentSub')}</p>
           {recentOrders.length === 0 ? (
-            <p className="od-empty">No orders yet.</p>
+            <p className="od-empty">{t('owner.dashboard.noOrders')}</p>
           ) : (
             <table className="od-table">
               <thead>
                 <tr>
-                  <th>Order</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Status</th>
+                  <th>{t('owner.dashboard.colOrder')}</th>
+                  <th>{t('owner.dashboard.colCustomer')}</th>
+                  <th>{t('owner.dashboard.colDate')}</th>
+                  <th>{t('owner.dashboard.colTotal')}</th>
+                  <th>{t('owner.dashboard.colStatus')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -224,10 +237,10 @@ export default function OwnerDashboard() {
 
         {/* Monthly revenue line */}
         <div className="od-card od-card--line">
-          <h3 className="od-card-title">Revenue Trends</h3>
-          <p className="od-card-sub">Monthly revenue (₪)</p>
+          <h3 className="od-card-title">{t('owner.dashboard.revenueTitle')}</h3>
+          <p className="od-card-sub">{t('owner.dashboard.revenueSub')}</p>
           {revenueData.length === 0 ? (
-            <p className="od-empty">Not enough order data for trends.</p>
+            <p className="od-empty">{t('owner.dashboard.noRevenue')}</p>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={revenueData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
@@ -250,10 +263,10 @@ export default function OwnerDashboard() {
 
         {/* Top products horizontal bar */}
         <div className="od-card od-card--bar">
-          <h3 className="od-card-title">Top Products by Stock</h3>
-          <p className="od-card-sub">Items with the most units available</p>
+          <h3 className="od-card-title">{t('owner.dashboard.topTitle')}</h3>
+          <p className="od-card-sub">{t('owner.dashboard.topSub')}</p>
           {topProducts.length === 0 ? (
-            <p className="od-empty">No inventory data yet.</p>
+            <p className="od-empty">{t('owner.dashboard.noInventory')}</p>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart
@@ -269,7 +282,7 @@ export default function OwnerDashboard() {
                   width={90}
                   tick={{ fontSize: "0.8vw", fill: "#4a2a1f" }}
                 />
-                <Tooltip formatter={(v) => [v, "Units in stock"]} />
+                <Tooltip formatter={(v) => [v, t('owner.dashboard.units')]} />
                 <Bar dataKey="stock" fill="#a14d2a" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>

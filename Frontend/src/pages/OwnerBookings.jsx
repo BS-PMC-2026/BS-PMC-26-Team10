@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "../styles/OwnerBookings.css";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 function OwnerBookings() {
+  const { t } = useTranslation();
   const [bookings, setBookings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -33,8 +35,8 @@ function OwnerBookings() {
         )
       );
       setBookings(perTour.flat());
-    } catch (err) {
-      setError("Could not load bookings from the server.");
+    } catch {
+      setError(t('owner.bookings.loadError'));
     } finally {
       setLoading(false);
     }
@@ -66,28 +68,28 @@ function OwnerBookings() {
   return (
     <div className="ob-content">
       <div className="ob-header">
-        <p className="ob-overline">Owner Control Center</p>
-        <h1>Booking Requests</h1>
+        <p className="ob-overline">{t('owner.controlCenter')}</p>
+        <h1>{t('owner.bookings.title')}</h1>
         <p className="ob-subtitle">
-          View and track all tour reservations, payment status, and visitor details.
+          {t('owner.bookings.subtitle')}
         </p>
       </div>
 
       <div className="ob-stats">
         <div className="ob-stat-card">
-          <p>Total Bookings</p>
+          <p>{t('owner.bookings.totalBookings')}</p>
           <h2>{totalBookings}</h2>
         </div>
         <div className="ob-stat-card">
-          <p>Paid</p>
+          <p>{t('owner.bookings.paid')}</p>
           <h2>{paidBookings}</h2>
         </div>
         <div className="ob-stat-card">
-          <p>Free / Pending</p>
+          <p>{t('owner.bookings.free')}</p>
           <h2>{freeBookings}</h2>
         </div>
         <div className="ob-stat-card">
-          <p>Total Participants</p>
+          <p>{t('owner.bookings.totalParticipants')}</p>
           <h2>{totalParticipants}</h2>
         </div>
       </div>
@@ -96,7 +98,7 @@ function OwnerBookings() {
         <input
           type="text"
           className="ob-search"
-          placeholder="Search by name, email, reference or tour…"
+          placeholder={t('owner.bookings.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -105,19 +107,19 @@ function OwnerBookings() {
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
-          <option value="all">All statuses</option>
-          <option value="paid">Paid</option>
-          <option value="free">Free</option>
+          <option value="all">{t('owner.bookings.allStatuses')}</option>
+          <option value="paid">{t('owner.bookings.paidLabel')}</option>
+          <option value="free">{t('owner.bookings.freeLabel')}</option>
         </select>
       </div>
 
-      {loading && <div className="ob-message">Loading bookings…</div>}
+      {loading && <div className="ob-message">{t('owner.bookings.loading')}</div>}
       {!loading && error && <div className="ob-message ob-message--error">{error}</div>}
 
       {!loading && !error && filtered.length === 0 && (
         <div className="ob-empty">
-          <h2>No bookings found</h2>
-          <p>Bookings will appear here once visitors start reserving tours.</p>
+          <h2>{t('owner.bookings.emptyTitle')}</h2>
+          <p>{t('owner.bookings.emptyDesc')}</p>
         </div>
       )}
 
@@ -126,11 +128,11 @@ function OwnerBookings() {
           <table className="ob-table">
             <thead>
               <tr>
-                <th>Reference</th>
-                <th>Visitor</th>
-                <th>Tour</th>
-                <th>Participants</th>
-                <th>Payment</th>
+                <th>{t('owner.bookings.colRef')}</th>
+                <th>{t('owner.bookings.colVisitor')}</th>
+                <th>{t('owner.bookings.colTour')}</th>
+                <th>{t('owner.bookings.colParticipants')}</th>
+                <th>{t('owner.bookings.colPayment')}</th>
               </tr>
             </thead>
             <tbody>
@@ -150,7 +152,7 @@ function OwnerBookings() {
                   <td>{b.participants_count ?? "—"}</td>
                   <td>
                     <span className={`ob-badge ob-badge--${b.payment_status === "paid" ? "paid" : "free"}`}>
-                      {b.payment_status === "paid" ? "Paid" : "Free"}
+                      {b.payment_status === "paid" ? t('owner.bookings.paidLabel') : t('owner.bookings.freeLabel')}
                     </span>
                   </td>
                 </tr>

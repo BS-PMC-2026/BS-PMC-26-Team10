@@ -50,6 +50,38 @@
   }
 }
 
+/* Explicit dark theme — overrides OS preference when user has toggled */
+[data-theme="dark"] {
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --border: #2e303a;
+  --code-bg: #1f2028;
+  --accent: #c084fc;
+  --accent-bg: rgba(192, 132, 252, 0.15);
+  --accent-border: rgba(192, 132, 252, 0.5);
+  --social-bg: rgba(47, 48, 58, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  color-scheme: dark;
+}
+
+/* Explicit light theme — overrides OS dark preference when user has toggled */
+[data-theme="light"] {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  color-scheme: light;
+}
+
 body {
   margin: 0;
 }
@@ -64,6 +96,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background: var(--bg);
 }
 
 h1,
@@ -108,4 +141,671 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* ── App dark-mode overrides ─────────────────────────────────────────────
+   These live here so they have higher specificity than the plain class /
+   type selectors in each component's CSS file.                            */
+
+[data-theme="dark"] body {
+  background-color: #1a0d0d;
+  color: #e8c8b8;
+}
+
+/* VisitorProducts custom-property overrides.
+   Must use html[data-theme] (0,1,1) to beat VisitorProducts.css :root (0,1,0). */
+html[data-theme="dark"] {
+  --vp-bg: #1a0d0d;
+  --vp-card-bg: #261414;
+  --vp-card-border: #5c2b2b;
+  --vp-text: #e8c8b8;
+  --vp-muted: #c49888;
+  --vp-light-muted: #a07878;
+}
+
+/* Direct override for .vp-root container (fallback in case variable doesn't cascade) */
+[data-theme="dark"] .vp-root {
+  background: #1a0d0d;
+}
+
+/* Page-level backgrounds */
+[data-theme="dark"] .tours-page,
+[data-theme="dark"] .tdp {
+  background: #1a0d0d;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .about-page {
+  background-color: #1a0d0d;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .farm-location-page {
+  background:
+    radial-gradient(circle at top left, rgba(107, 61, 33, 0.45), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(179, 0, 0, 0.35), transparent 36%),
+    linear-gradient(135deg, #1a0d0d 0%, #1f1010 45%, #1a0d0d 100%);
+}
+
+/* Card / surface backgrounds */
+[data-theme="dark"] .chilli-card,
+[data-theme="dark"] .tours-grid-card {
+  background-color: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .filter-panel {
+  background-color: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .search-panel {
+  background: linear-gradient(135deg, #261414 0%, #301a1a 100%);
+  border-color: #5c2b2b;
+}
+
+/* TourDetailPage alternating rows */
+[data-theme="dark"] .tdp-detail-row:nth-child(even) {
+  background: #261414;
+}
+
+[data-theme="dark"] .tdp-detail-row:nth-child(odd) {
+  background: #1f1010;
+}
+
+/* Form inputs */
+[data-theme="dark"] .search-bar input,
+[data-theme="dark"] .filter-group input,
+[data-theme="dark"] .filter-group select {
+  background-color: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #7a3030;
+}
+
+/* Text colours that would be invisible on dark backgrounds */
+[data-theme="dark"] .search-label,
+[data-theme="dark"] .filter-group label,
+[data-theme="dark"] .search-status,
+[data-theme="dark"] .chilli-info p,
+[data-theme="dark"] .active-filter-placeholder {
+  color: #c8a898;
+}
+
+[data-theme="dark"] .chilli-info h3 {
+  color: #e87060;
+}
+
+[data-theme="dark"] .hero p {
+  color: #e8c8b8;
+}
+
+/* VisitorProducts sticky toolbar (hardcoded rgba overrides the var) */
+[data-theme="dark"] .vp-toolbar {
+  background: rgba(26, 13, 13, 0.94);
+  border-bottom-color: #5c2b2b;
+}
+
+[data-theme="dark"] .vp-search-wrap {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .vp-search {
+  background: #261414;
+  color: #e8c8b8;
+}
+
+/* ── Home page section overrides ─────────────────────────────────────── */
+
+[data-theme="dark"] .welcome-strip {
+  background: #1e1010;
+}
+
+[data-theme="dark"] .welcome-strip-title {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .welcome-strip-subtitle {
+  color: #c8a898;
+}
+
+[data-theme="dark"] .welcome-strip-kicker {
+  color: #d06040;
+}
+
+[data-theme="dark"] .visitor-catalogue {
+  background: #1a0d0d;
+}
+
+[data-theme="dark"] .visitor-catalogue-title {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .visitor-catalogue-kicker {
+  color: #d06040;
+}
+
+[data-theme="dark"] .main-content {
+  background: #1a0d0d;
+}
+
+/* ── VisitorCatalogue pepper cards ───────────────────────────────────── */
+
+[data-theme="dark"] .visitor-catalogue-panel {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .visitor-catalogue-topbar {
+  background: #301818;
+  border-color: #5c2b2b;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .visitor-chilli-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .visitor-meta-pill {
+  background: #3a1e1e;
+  color: #e8a080;
+}
+
+/* ── Tours calendar ──────────────────────────────────────────────────── */
+
+[data-theme="dark"] .tours-calendar {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .tours-cal-title,
+[data-theme="dark"] .tours-cal-month {
+  color: #e8c8b8;
+  border-bottom-color: #5c2b2b;
+}
+
+[data-theme="dark"] .tours-cal-nav {
+  background: #3a1e1e;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .tours-cal-nav:hover {
+  background: #4a2424;
+}
+
+[data-theme="dark"] .tours-cal-day-num {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .tours-cal-dayname {
+  color: #a07060;
+}
+
+[data-theme="dark"] .tours-cal-day:hover {
+  background: #3a1e1e;
+}
+
+[data-theme="dark"] .tours-cal-day--today {
+  box-shadow: inset 0 0 0 0.1vw #c06040;
+}
+
+[data-theme="dark"] .tours-cal-clear:hover {
+  background: #3a1e1e;
+}
+
+/* ── Tour cards ──────────────────────────────────────────────────────── */
+
+[data-theme="dark"] .tour-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .tour-card-title {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .tour-card-edit-btn {
+  background: #3a1e1e;
+  color: #e8c8b8;
+}
+
+/* ── Checkout modal ──────────────────────────────────────────────────── */
+
+[data-theme="dark"] .cm-modal {
+  background: #261414;
+}
+
+[data-theme="dark"] .cm-input {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .cm-label {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .cm-summary-label,
+[data-theme="dark"] .cm-summary-item,
+[data-theme="dark"] .cm-summary-total {
+  color: #e8c8b8;
+}
+
+/* ── About page sections ─────────────────────────────────────────────── */
+
+[data-theme="dark"] .about-story,
+[data-theme="dark"] .about-offers {
+  background-color: #1a0d0d;
+  background-image: none;
+}
+
+[data-theme="dark"] .about-why {
+  background-color: #1e1010;
+  background-image: none;
+}
+
+[data-theme="dark"] .about-story-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .about-story-body,
+[data-theme="dark"] .about-story-highlight {
+  color: #c8a898;
+}
+
+[data-theme="dark"] .about-quote {
+  background: #301818;
+  border-left-color: #a14d2a;
+  color: #c8a898;
+}
+
+[data-theme="dark"] .about-offer-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+/* ── Farm Location info elements ─────────────────────────────────────── */
+
+[data-theme="dark"] .farm-back-btn {
+  background: #261414;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .farm-location-badge,
+[data-theme="dark"] .farm-map-tag {
+  background: #3a1e1e;
+  color: #e8a080;
+}
+
+[data-theme="dark"] .farm-location-hero h1 {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .farm-location-hero p {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .farm-address-box {
+  background: #261414;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .farm-location-btn.secondary {
+  background: #261414;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .farm-location-hero,
+[data-theme="dark"] .farm-gallery-section,
+[data-theme="dark"] .farm-map-section {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .farm-info-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .farm-gallery-header h2,
+[data-theme="dark"] .farm-map-section h2,
+[data-theme="dark"] .farm-info-card h2 {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .farm-gallery-header p,
+[data-theme="dark"] .farm-map-section p {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .farm-info-card ul {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .farm-gallery-card {
+  background: #3a1e1e;
+}
+
+/* ── Owner pages ─────────────────────────────────────────────────────── */
+
+[data-theme="dark"] .owner-layout {
+  background: #1a0d0d;
+}
+
+[data-theme="dark"] .od-stat-card,
+[data-theme="dark"] .od-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .od-stat-value,
+[data-theme="dark"] .od-card-title {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .od-stat-label,
+[data-theme="dark"] .od-stat-sub,
+[data-theme="dark"] .od-card-sub {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .ob-search,
+[data-theme="dark"] .ob-filter {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .ob-message {
+  background: #261414;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .ob-message--error {
+  background: #3a1212;
+  color: #f0a0a0;
+}
+
+/* ── Owner orders ────────────────────────────────────────────────────── */
+
+[data-theme="dark"] .owner-orders-stat-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .owner-orders-stat-card p { color: #c8a090; }
+[data-theme="dark"] .owner-orders-stat-card h2 { color: #e8c8b8; }
+
+[data-theme="dark"] .owner-orders-search {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .owner-orders-table-wrap {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .owner-orders-table th {
+  background: #301818;
+  color: #c8a090;
+  border-bottom-color: #5c2b2b;
+}
+
+[data-theme="dark"] .owner-orders-table th,
+[data-theme="dark"] .owner-orders-table td {
+  color: #e8c8b8;
+  border-bottom-color: #3a1e1e;
+}
+
+[data-theme="dark"] .owner-orders-message {
+  background: #261414;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .owner-orders-message.error {
+  background: #3a1212;
+  color: #f0a0a0;
+}
+
+[data-theme="dark"] .owner-orders-empty {
+  background: #261414;
+  border-color: #5c2b2b;
+  color: #c8a090;
+}
+
+[data-theme="dark"] .owner-orders-empty h2 { color: #e8c8b8; }
+
+/* ── Owner inventory ─────────────────────────────────────────────────── */
+
+[data-theme="dark"] .inventory-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .owner-inventory-search {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .owner-inventory-message {
+  background: #261414;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .owner-inventory-message.error {
+  background: #3a1212;
+  color: #f0a0a0;
+}
+
+/* ── Owner bookings stat cards + table ───────────────────────────────── */
+
+[data-theme="dark"] .ob-stat-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .ob-stat-card p { color: #c8a090; }
+[data-theme="dark"] .ob-stat-card h2 { color: #e8c8b8; }
+
+[data-theme="dark"] .ob-table-wrap {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .ob-table th {
+  background: #301818;
+  color: #c8a090;
+}
+
+[data-theme="dark"] .ob-table th,
+[data-theme="dark"] .ob-table td {
+  color: #e8c8b8;
+  border-bottom-color: #3a1e1e;
+}
+
+[data-theme="dark"] .ob-table tbody tr:hover {
+  background: #301818;
+}
+
+[data-theme="dark"] .ob-empty {
+  background: #261414;
+  border-color: #5c2b2b;
+  color: #c8a090;
+}
+
+[data-theme="dark"] .ob-empty h2 { color: #e8c8b8; }
+
+/* ── Owner tours (TourguideMain) ─────────────────────────────────────── */
+
+[data-theme="dark"] .tourguide-search {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .tourguide-message {
+  background: #261414;
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .tourguide-message.error {
+  background: #3a1212;
+  color: #f0a0a0;
+}
+
+[data-theme="dark"] .tourguide-empty {
+  background: #261414;
+  border-color: #5c2b2b;
+  color: #c8a090;
+}
+
+/* ── Owner tours content container ──────────────────────────────────── */
+
+[data-theme="dark"] .tourguide-content {
+  background: #1a0d0d;
+}
+
+/* ── Generic owner input/select catch-all (promo codes, chillies) ────── */
+
+[data-theme="dark"] .owner-layout input,
+[data-theme="dark"] .owner-layout select,
+[data-theme="dark"] .owner-layout textarea {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+/* ── Pepper details page ─────────────────────────────────────────────── */
+
+[data-theme="dark"] .pdp-page {
+  background: #100808;
+}
+
+[data-theme="dark"] .pdp-card {
+  background: #1e1010;
+}
+
+[data-theme="dark"] .pdp-topnav {
+  background: rgba(30, 16, 16, 0.92);
+  border-bottom-color: #5c2b2b;
+}
+
+[data-theme="dark"] .pdp-back-link {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .pdp-title {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .pdp-description {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .pdp-spotlight-label {
+  color: #d06040;
+}
+
+[data-theme="dark"] .pdp-image-wrap {
+  background: #3a1e1e;
+}
+
+[data-theme="dark"] .pdp-spec-card {
+  background: rgba(38, 20, 20, 0.8);
+}
+
+[data-theme="dark"] .pdp-spec-label {
+  color: #a07060;
+}
+
+[data-theme="dark"] .pdp-spec-value {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .pdp-price {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .pdp-cart-feedback {
+  background: #0e2018;
+  border-color: #1e5030;
+  color: #60d090;
+}
+
+[data-theme="dark"] .pdp-cart-feedback--error {
+  background: #2a0e0e;
+  border-color: #6a2020;
+  color: #f09080;
+}
+
+[data-theme="dark"] .pdp-filter-section {
+  background: rgba(38, 20, 20, 0.9);
+  outline-color: #5c2b2b;
+}
+
+[data-theme="dark"] .pdp-filter-group label {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .pdp-filter-group select {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .pdp-result-image-wrap {
+  background: #261414;
+}
+
+/* ── InventoryFormModal dark mode ────────────────────────────────────── */
+
+[data-theme="dark"] .inventory-modal {
+  background: #261414;
+}
+
+[data-theme="dark"] .inventory-modal-header {
+  background: #301818;
+  border-bottom-color: #5c2b2b;
+}
+
+[data-theme="dark"] .inventory-modal-header h2 {
+  color: #e8c8b8;
+}
+
+[data-theme="dark"] .inventory-modal-close {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .inventory-form-group label {
+  color: #c8a090;
+}
+
+[data-theme="dark"] .inventory-form-group input,
+[data-theme="dark"] .inventory-form-group textarea {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .inv-toggle-btn {
+  background: #1a0d0d;
+  color: #c8a090;
+  border-color: #5c2b2b;
+}
+
+[data-theme="dark"] .inventory-cancel-btn {
+  background: #3a1e1e;
+  color: #c8a090;
+}
+
+[data-theme="dark"] .inventory-form-error {
+  background: #3a1212;
+  color: #f0a0a0;
 }

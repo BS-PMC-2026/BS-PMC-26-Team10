@@ -209,6 +209,75 @@
   transition: opacity 0.26s ease, max-width 0.3s ease;
 }
 
+/* ── Theme toggle button ─────────────────────────────────────────────── */
+
+.navbar-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 0.8vw;
+  font-weight: 600;
+  color: rgba(255, 244, 230, 0.5);
+  border: 0.07vw solid rgba(255, 244, 230, 0.14);
+  border-radius: 999vw;
+  padding: 0.55vw 0.8vw;
+  margin-top: 0.8vw;
+  width: 2.8vw;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: color 0.22s ease, border-color 0.22s ease,
+              background 0.22s ease, width 0.3s ease;
+}
+
+.navbar-theme-btn:hover {
+  color: rgba(255, 244, 230, 0.88);
+  border-color: rgba(255, 244, 230, 0.4);
+  background: rgba(255, 244, 230, 0.07);
+}
+
+.navbar:hover .navbar-theme-btn {
+  width: 10vw;
+  border-color: rgba(255, 244, 230, 0.28);
+}
+
+.navbar:hover .navbar-theme-btn .navbar-staff-label {
+  opacity: 1;
+  max-width: 8vw;
+  margin-left: 0.5vw;
+}
+
+@media (max-width: 1024px) {
+  .navbar-theme-btn {
+    font-size: 1.3vw;
+    width: 3.6vw;
+    padding: 0.9vw 1.1vw;
+  }
+
+  .navbar:hover .navbar-theme-btn {
+    width: 14vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-theme-btn {
+    font-size: 3.5vw;
+    margin-top: 3vw;
+    width: auto;
+    padding: 3vw 5vw;
+    border-color: rgba(255, 244, 230, 0.2);
+    gap: 2vw;
+  }
+
+  .navbar-theme-btn .navbar-staff-label {
+    opacity: 1;
+    max-width: 50vw;
+    margin-left: 2vw;
+  }
+}
+
 /* ── Hamburger toggle — hidden on desktop ────────────────────────────── */
 
 .navbar-toggle {
@@ -430,4 +499,112 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* ── Language button — mirrors theme-btn styles ──────────────────────── */
+
+.navbar-lang-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 0.8vw;
+  font-weight: 700;
+  color: rgba(255, 244, 230, 0.6);
+  border: 0.07vw solid rgba(255, 244, 230, 0.2);
+  border-radius: 999vw;
+  padding: 0.55vw 0.8vw;
+  margin-top: 0.6vw;
+  width: 2.8vw;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: color 0.22s ease, border-color 0.22s ease,
+              background 0.22s ease, width 0.3s ease;
+}
+
+.navbar-lang-btn:hover {
+  color: rgba(255, 244, 230, 0.95);
+  border-color: rgba(255, 244, 230, 0.5);
+  background: rgba(255, 244, 230, 0.1);
+}
+
+.navbar:hover .navbar-lang-btn {
+  width: 10vw;
+  border-color: rgba(255, 244, 230, 0.28);
+}
+
+.navbar:hover .navbar-lang-btn .navbar-staff-label {
+  opacity: 1;
+  max-width: 8vw;
+  margin-left: 0.5vw;
+}
+
+@media (max-width: 1024px) {
+  .navbar-lang-btn {
+    font-size: 1.3vw;
+    width: 3.6vw;
+    padding: 0.9vw 1.1vw;
+  }
+
+  .navbar:hover .navbar-lang-btn {
+    width: 14vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-lang-btn {
+    font-size: 3.5vw;
+    margin-top: 3vw;
+    width: auto;
+    padding: 3vw 5vw;
+    border-color: rgba(255, 244, 230, 0.2);
+    gap: 2vw;
+  }
+
+  .navbar-lang-btn .navbar-staff-label {
+    opacity: 1;
+    max-width: 50vw;
+    margin-left: 2vw;
+  }
+}
+
+/* ── RTL support ─────────────────────────────────────────────────────── */
+
+[dir="rtl"] .navbar {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: 0.05vw solid rgba(187, 62, 34, 0.18);
+}
+
+[dir="rtl"] .navbar-link-indicator {
+  left: auto;
+  right: 0;
+  border-radius: 999vw 0 0 999vw;
+}
+
+[dir="rtl"] .navbar-link:hover {
+  padding-left: 1.1vw;
+  padding-right: 1.4vw;
+}
+
+[dir="rtl"] .navbar-link--active:hover {
+  padding-left: 1.1vw;
+  padding-right: 1.1vw;
+}
+
+@media (max-width: 768px) {
+  [dir="rtl"] .navbar-toggle {
+    left: auto;
+    right: 4.5vw;
+  }
+}
+
+@media (max-width: 480px) {
+  [dir="rtl"] .navbar-toggle {
+    left: auto;
+    right: 5vw;
+  }
 }

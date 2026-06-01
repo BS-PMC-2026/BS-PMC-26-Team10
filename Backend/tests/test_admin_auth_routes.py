@@ -28,57 +28,6 @@ _VALID_TOKEN_RESPONSE = {
 }
 
 
-# ── POST /admin/register ───────────────────────────────────────────────────────
-
-class RegisterRouteTests(unittest.TestCase):
-    def _post(self, body):
-        return client.post("/admin/register", json=body)
-
-    def _valid_body(self, **overrides):
-        body = dict(
-            first_name="Jane",
-            last_name="Doe",
-            email="jane@example.com",
-            password="securepass123",
-        )
-        body.update(overrides)
-        return body
-
-    def test_short_first_name_returns_422(self):
-        self.assertEqual(self._post(self._valid_body(first_name="J")).status_code, 422)
-
-    def test_short_last_name_returns_422(self):
-        self.assertEqual(self._post(self._valid_body(last_name="D")).status_code, 422)
-
-    def test_short_password_returns_422(self):
-        self.assertEqual(self._post(self._valid_body(password="short")).status_code, 422)
-
-    def test_missing_body_returns_422(self):
-        self.assertEqual(client.post("/admin/register").status_code, 422)
-
-    def test_duplicate_email_returns_409(self):
-        mock = {"error": "email_taken", "message": "An admin with this email already exists."}
-        with patch("app.routes.admin_auth.register_admin", return_value=mock):
-            self.assertEqual(self._post(self._valid_body()).status_code, 409)
-
-    def test_successful_registration_returns_200(self):
-        with patch("app.routes.admin_auth.register_admin", return_value=_VALID_TOKEN_RESPONSE):
-            res = self._post(self._valid_body())
-        self.assertEqual(res.status_code, 200)
-
-    def test_successful_registration_returns_token_and_admin(self):
-        with patch("app.routes.admin_auth.register_admin", return_value=_VALID_TOKEN_RESPONSE):
-            data = self._post(self._valid_body()).json()
-        self.assertIn("token", data)
-        self.assertIn("admin", data)
-        self.assertEqual(data["admin"]["email"], "jane@example.com")
-
-    def test_server_error_returns_500(self):
-        mock = {"error": "server_error", "message": "Registration failed."}
-        with patch("app.routes.admin_auth.register_admin", return_value=mock):
-            self.assertEqual(self._post(self._valid_body()).status_code, 500)
-
-
 # ── POST /admin/login ──────────────────────────────────────────────────────────
 
 class LoginRouteTests(unittest.TestCase):

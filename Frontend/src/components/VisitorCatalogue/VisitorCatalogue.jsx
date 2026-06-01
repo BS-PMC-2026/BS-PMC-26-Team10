@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useCart } from "../../hooks/useCart";
 import VisitorCart from "../VisitorCart/VisitorCart";
 import "./VisitorCatalogue.css";
@@ -7,29 +8,31 @@ import "./VisitorCatalogue.css";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const SEARCH_DEBOUNCE_MS = 250;
 
-function formatHeatRange(chilli) {
+function formatHeatRange(chilli, t) {
   if (chilli.shu_min && chilli.shu_max) {
     return `${Number(chilli.shu_min).toLocaleString()} - ${Number(
       chilli.shu_max
     ).toLocaleString()} SHU`;
   }
 
-  return "SHU unavailable";
+  return t("catalogue.shuUnavailable");
 }
 
-function formatAvailability(chilli) {
+function formatAvailability(chilli, t) {
   if (!chilli.is_available) {
-    return "Currently unavailable";
+    return t("catalogue.unavailable");
   }
 
   if (typeof chilli.stock_quantity === "number") {
-    return `Available (${chilli.stock_quantity} in stock)`;
+    return t("catalogue.availableStock", { quantity: chilli.stock_quantity });
   }
 
-  return "Available";
+  return t("catalogue.available");
 }
 
 function VisitorCatalogue() {
+  const { t } = useTranslation();
+
   const [chillies, setChillies] = useState([]);
   const [origins, setOrigins] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -105,23 +108,21 @@ function VisitorCatalogue() {
 
   const searchStatus = useMemo(() => {
     if (isError) {
-      return "Something went wrong while loading peppers.";
+      return t("catalogue.loadError");
     }
 
     if (visibleChillies.length === 0) {
       return hasActiveFilters
-        ? "No peppers matched your filters."
-        : "No peppers are available right now.";
+        ? t("catalogue.noFilters")
+        : t("catalogue.noAvailable");
     }
 
     if (hasActiveFilters) {
-      return `Showing ${visibleChillies.length} pepper${
-        visibleChillies.length > 1 ? "s" : ""
-      }.`;
+      return t("catalogue.showing", { count: visibleChillies.length });
     }
 
-    return "Showing all peppers.";
-  }, [hasActiveFilters, isError, visibleChillies.length]);
+    return t("catalogue.showingAll");
+  }, [hasActiveFilters, isError, visibleChillies.length, t]);
 
   useEffect(() => {
     if (!isCompareOpen) {
@@ -251,13 +252,13 @@ function VisitorCatalogue() {
     const result = await cart.addToCart({ ...chilli, _type: "chilli", price, inventoryId });
 
     if (result.success) {
-      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Added!" }));
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: t("catalogue.added") }));
     } else if (result.error === "out_of_stock") {
-      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Sold out!" }));
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: t("catalogue.soldOut") }));
     } else if (result.error === "max_quantity") {
-      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Max in cart" }));
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: t("catalogue.maxCart") }));
     } else {
-      setCartFeedback((prev) => ({ ...prev, [chilli.id]: "Try again" }));
+      setCartFeedback((prev) => ({ ...prev, [chilli.id]: t("catalogue.tryAgain") }));
     }
 
     setAddingToCart((prev) => ({ ...prev, [chilli.id]: false }));
@@ -268,38 +269,38 @@ function VisitorCatalogue() {
 
   const comparisonRows = [
     {
-      label: "Origin",
-      getValue: (chilli) => chilli.origin || "Unknown",
+      label: t("catalogue.origin"),
+      getValue: (chilli) => chilli.origin || t("catalogue.unknown"),
     },
     {
-      label: "Heat level",
-      getValue: (chilli) => formatHeatRange(chilli),
+      label: t("catalogue.compareHeatLevel"),
+      getValue: (chilli) => formatHeatRange(chilli, t),
     },
     {
-      label: "Color",
-      getValue: (chilli) => chilli.color || "Unknown",
+      label: t("catalogue.compareColor"),
+      getValue: (chilli) => chilli.color || t("catalogue.unknown"),
     },
     {
-      label: "Season",
-      getValue: (chilli) => chilli.season || "Not listed",
+      label: t("catalogue.compareSeason"),
+      getValue: (chilli) => chilli.season || t("catalogue.notListed"),
     },
     {
-      label: "Availability",
-      getValue: (chilli) => formatAvailability(chilli),
+      label: t("catalogue.compareAvailability"),
+      getValue: (chilli) => formatAvailability(chilli, t),
     },
     {
-      label: "Stock quantity",
+      label: t("catalogue.compareStockQty"),
       getValue: (chilli) =>
         typeof chilli.stock_quantity === "number"
           ? chilli.stock_quantity.toLocaleString()
-          : "Not listed",
+          : t("catalogue.notListed"),
     },
     {
-      label: "Description",
+      label: t("catalogue.compareDescription"),
       getValue: (chilli) =>
         chilli.description && chilli.description.trim() !== ""
           ? chilli.description
-          : "A unique chilli with bold flavor and character from our collection.",
+          : t("catalogue.defaultDesc"),
     },
   ];
 
@@ -307,22 +308,18 @@ function VisitorCatalogue() {
     <section className="visitor-catalogue">
       <div className="visitor-catalogue-inner">
         <div className="visitor-catalogue-heading">
-          <p className="visitor-catalogue-kicker">From our farm collection</p>
-          <h2 className="visitor-catalogue-title">Explore our chillies</h2>
+          <p className="visitor-catalogue-kicker">{t("catalogue.kicker")}</p>
+          <h2 className="visitor-catalogue-title">{t("catalogue.title")}</h2>
           <p className="visitor-catalogue-subtitle">
-            Discover peppers from different origins, compare heat levels, and
-            find the flavors that fit your taste.
+            {t("catalogue.subtitle")}
           </p>
         </div>
 
         <div className="visitor-catalogue-panel">
           <div className="visitor-catalogue-topbar">
             <div className="visitor-catalogue-topbar-text">
-              <h3>Find your perfect pepper</h3>
-              <p>
-                Search by name, filter by origin, browse by heat level, then
-                compare selected peppers without leaving the page.
-              </p>
+              <h3>{t("catalogue.helpTitle")}</h3>
+              <p>{t("catalogue.helpText")}</p>
             </div>
 
             <div className="visitor-catalogue-actions">
@@ -331,7 +328,7 @@ function VisitorCatalogue() {
                 className="visitor-catalogue-cart-btn"
                 onClick={() => setIsCartOpen(true)}
               >
-                Cart
+                {t("catalogue.cart")}
                 {cart.totalItems > 0 && (
                   <span className="visitor-catalogue-cart-count">
                     {cart.totalItems}
@@ -345,7 +342,7 @@ function VisitorCatalogue() {
                 onClick={() => setIsCompareOpen(true)}
                 disabled={selectedCompareItems.length === 0}
               >
-                Compare peppers
+                {t("catalogue.comparePeppers")}
                 <span>{selectedCompareItems.length}</span>
               </button>
 
@@ -354,31 +351,31 @@ function VisitorCatalogue() {
                 className="visitor-catalogue-clear-btn"
                 onClick={clearFilters}
               >
-                Clear filters
+                {t("catalogue.clearFilters")}
               </button>
             </div>
           </div>
 
           <div className="visitor-catalogue-filters">
             <div className="visitor-filter-group visitor-filter-search">
-              <label htmlFor="pepper-search">Search</label>
+              <label htmlFor="pepper-search">{t("catalogue.search")}</label>
               <input
                 id="pepper-search"
                 type="text"
-                placeholder="Search peppers..."
+                placeholder={t("catalogue.searchPlaceholder")}
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
               />
             </div>
 
             <div className="visitor-filter-group">
-              <label htmlFor="pepper-origin">Origin</label>
+              <label htmlFor="pepper-origin">{t("catalogue.origin")}</label>
               <select
                 id="pepper-origin"
                 value={originFilter}
                 onChange={(event) => setOriginFilter(event.target.value)}
               >
-                <option value="">All origins</option>
+                <option value="">{t("catalogue.allOrigins")}</option>
                 {origins.map((origin) => (
                   <option key={origin} value={origin}>
                     {origin}
@@ -388,22 +385,22 @@ function VisitorCatalogue() {
             </div>
 
             <div className="visitor-filter-group">
-              <label htmlFor="shu-min">Min SHU</label>
+              <label htmlFor="shu-min">{t("catalogue.minShu")}</label>
               <input
                 id="shu-min"
                 type="number"
-                placeholder="e.g. 1000"
+                placeholder={t("catalogue.shuPlaceholder")}
                 value={shuMinFilter}
                 onChange={(event) => setShuMinFilter(event.target.value)}
               />
             </div>
 
             <div className="visitor-filter-group">
-              <label htmlFor="shu-max">Max SHU</label>
+              <label htmlFor="shu-max">{t("catalogue.maxShu")}</label>
               <input
                 id="shu-max"
                 type="number"
-                placeholder="e.g. 50000"
+                placeholder={t("catalogue.maxShuPlaceholder")}
                 value={shuMaxFilter}
                 onChange={(event) => setShuMaxFilter(event.target.value)}
               />
@@ -411,7 +408,7 @@ function VisitorCatalogue() {
           </div>
 
           <div className={`visitor-catalogue-status ${isError ? "error" : ""}`}>
-            {isLoading ? "Loading peppers..." : searchStatus}
+            {isLoading ? t("catalogue.loading") : searchStatus}
           </div>
 
           {!isLoading && !isError && visibleChillies.length > 0 && (
@@ -436,7 +433,7 @@ function VisitorCatalogue() {
                       />
 
                       <span className="visitor-chilli-badge">
-                        {formatHeatRange(chilli)}
+                        {formatHeatRange(chilli, t)}
                       </span>
                     </div>
 
@@ -450,8 +447,8 @@ function VisitorCatalogue() {
                           onClick={() => toggleCompareItem(chilli)}
                         >
                           {isSelectedForCompare
-                            ? "Selected for compare"
-                            : "Add to compare"}
+                            ? t("catalogue.selectedCompare")
+                            : t("catalogue.addCompare")}
                         </button>
                       </div>
 
@@ -467,9 +464,9 @@ function VisitorCatalogue() {
                       </p>
 
                       <div className="visitor-chilli-meta">
-                        <div className="visitor-meta-pill">{`Heat: ${formatHeatRange(
-                          chilli
-                        )}`}</div>
+                        <div className="visitor-meta-pill">
+                          {t("catalogue.heat", { value: formatHeatRange(chilli, t) })}
+                        </div>
 
                         {chilli.color && (
                           <div className="visitor-meta-pill">{chilli.color}</div>
@@ -482,8 +479,12 @@ function VisitorCatalogue() {
 
                       {inventoryByName.get(chilli.name?.toLowerCase().trim())?.price != null && (
                         <p className="visitor-chilli-price">
-                          ₪{parseFloat(inventoryByName.get(chilli.name?.toLowerCase().trim()).price).toFixed(2)}
-                          <span className="visitor-chilli-price-unit">/pack</span>
+                          <span className="visitor-chilli-price-amount">
+                            ₪{parseFloat(
+                              inventoryByName.get(chilli.name?.toLowerCase().trim()).price
+                            ).toFixed(2)}
+                          </span>
+                          <span className="visitor-chilli-price-unit">{t("catalogue.perPack")}</span>
                         </p>
                       )}
 
@@ -491,9 +492,9 @@ function VisitorCatalogue() {
                         <button
                           type="button"
                           className={`visitor-chilli-btn visitor-cart-btn${
-                            cartFeedback[chilli.id] === "Added!"
+                            cartFeedback[chilli.id] === t("catalogue.added")
                               ? " visitor-cart-btn--added"
-                              : cartFeedback[chilli.id] === "Max in cart"
+                              : cartFeedback[chilli.id] === t("catalogue.maxCart")
                               ? " visitor-cart-btn--max"
                               : ""
                           }`}
@@ -508,8 +509,8 @@ function VisitorCatalogue() {
                             : cartFeedback[chilli.id]
                             ? cartFeedback[chilli.id]
                             : chilli.is_available
-                            ? "+ Add to Cart"
-                            : "Unavailable"}
+                            ? t("catalogue.addToCart")
+                            : t("catalogue.unavailable")}
                         </button>
 
                         <button
@@ -521,7 +522,7 @@ function VisitorCatalogue() {
                             })
                           }
                         >
-                          Learn More
+                          {t("catalogue.learnMore")}
                         </button>
                       </div>
                     </div>
@@ -533,15 +534,15 @@ function VisitorCatalogue() {
 
           {!isLoading && !isError && visibleChillies.length === 0 && (
             <div className="visitor-catalogue-empty">
-              <h3>No peppers found</h3>
-              <p>Try changing the filters or searching for something else.</p>
+              <h3>{t("catalogue.noMatch")}</h3>
+              <p>{t("catalogue.noMatchSub")}</p>
             </div>
           )}
 
           {!isLoading && isError && (
             <div className="visitor-catalogue-empty error-box">
-              <h3>Could not load the catalogue</h3>
-              <p>Please check the backend connection and try again.</p>
+              <h3>{t("catalogue.errorTitle")}</h3>
+              <p>{t("catalogue.errorSub")}</p>
             </div>
           )}
         </div>
@@ -558,19 +559,16 @@ function VisitorCatalogue() {
             >
               <div className="visitor-compare-header">
                 <div>
-                  <p className="visitor-compare-kicker">On-page comparison</p>
-                  <h3>Compare selected peppers</h3>
-                  <p>
-                    Review every selected pepper side by side without leaving
-                    the homepage.
-                  </p>
+                  <p className="visitor-compare-kicker">{t("catalogue.compareTitle")}</p>
+                  <h3>{t("catalogue.compareSubtitle")}</h3>
+                  <p>{t("catalogue.compareDesc")}</p>
                 </div>
 
                 <button
                   type="button"
                   className="visitor-compare-close"
                   onClick={() => setIsCompareOpen(false)}
-                  aria-label="Close comparison"
+                  aria-label={t("catalogue.closeCompare")}
                 >
                   ×
                 </button>
@@ -578,7 +576,7 @@ function VisitorCatalogue() {
 
               <div className="visitor-compare-toolbar">
                 <div className="visitor-compare-count">
-                  {selectedCompareItems.length} selected
+                  {t("catalogue.selectedCount", { count: selectedCompareItems.length })}
                 </div>
 
                 <button
@@ -587,7 +585,7 @@ function VisitorCatalogue() {
                   onClick={clearCompareItems}
                   disabled={selectedCompareItems.length === 0}
                 >
-                  Clear selection
+                  {t("catalogue.clearSelection")}
                 </button>
               </div>
 
@@ -596,14 +594,14 @@ function VisitorCatalogue() {
                   <table className="visitor-compare-table">
                     <thead>
                       <tr>
-                        <th>Details</th>
+                        <th>{t("catalogue.details")}</th>
                         {selectedCompareItems.map((chilli) => (
                           <th key={chilli.id}>
                             <div className="visitor-compare-pepper-head">
                               <img src={chilli.image_url} alt={chilli.name} />
                               <div>
                                 <strong>{chilli.name}</strong>
-                                <span>{chilli.origin || "Unknown origin"}</span>
+                                <span>{chilli.origin || t("catalogue.unknownOrigin")}</span>
                               </div>
                             </div>
                           </th>
@@ -627,11 +625,8 @@ function VisitorCatalogue() {
                 </div>
               ) : (
                 <div className="visitor-compare-empty">
-                  <h4>No peppers selected yet</h4>
-                  <p>
-                    Use the cards on this page to add peppers, then open this
-                    panel to compare them.
-                  </p>
+                  <h4>{t("catalogue.noSelected")}</h4>
+                  <p>{t("catalogue.noSelectedDesc")}</p>
                 </div>
               )}
             </aside>
