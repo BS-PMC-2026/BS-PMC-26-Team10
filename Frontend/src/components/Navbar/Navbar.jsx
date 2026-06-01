@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon } from "lucide-react";
+import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon, Languages } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
 import { useTheme } from "../../context/ThemeContext";
 import "./Navbar.css";
 
-const NAV_LINKS = [
-  { to: "/",              label: "Home",     Icon: Home       },
-  { to: "/products",      label: "Products", Icon: ShoppingBag },
-  { to: "/tours",         label: "Tours",    Icon: Tractor    },
-  { to: "/about",         label: "About",    Icon: Info       },
-  { to: "/farm-location", label: "Location", Icon: MapPin     },
-];
-
 function Navbar() {
   const { pathname } = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const isHome = pathname === "/";
 
-  // On the landing page, hide the navbar until the hero video has scrolled out of view.
-  // On every other page the navbar is always visible.
+  const NAV_LINKS = [
+    { to: "/",              label: t("nav.home"),     Icon: Home       },
+    { to: "/products",      label: t("nav.products"), Icon: ShoppingBag },
+    { to: "/tours",         label: t("nav.tours"),    Icon: Tractor    },
+    { to: "/about",         label: t("nav.about"),    Icon: Info       },
+    { to: "/farm-location", label: t("nav.location"), Icon: MapPin     },
+  ];
+
   const [visible, setVisible] = useState(!isHome);
 
   useEffect(() => {
@@ -31,7 +31,6 @@ function Navbar() {
       return;
     }
 
-    // Start hidden whenever we land on the home route
     setVisible(false);
 
     const hero = document.querySelector(".farm-header");
@@ -47,11 +46,15 @@ function Navbar() {
 
     observer.observe(hero);
     return () => observer.disconnect();
-  }, [pathname]); // re-run on every navigation so state resets correctly
+  }, [pathname]);
 
   function isActive(to) {
     if (to === "/") return pathname === "/";
     return pathname.startsWith(to);
+  }
+
+  function toggleLanguage() {
+    i18n.changeLanguage(i18n.language === "he" ? "en" : "he");
   }
 
   const hiddenClass = visible ? "" : " navbar--hidden";
@@ -101,13 +104,13 @@ function Navbar() {
           tabIndex={visible ? undefined : -1}
         >
           <LogIn size="1em" strokeWidth={1.6} />
-          <span className="navbar-staff-label">Staff</span>
+          <span className="navbar-staff-label">{t("nav.staff")}</span>
         </Link>
 
         <button
           className="navbar-theme-btn"
           onClick={toggleTheme}
-          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={theme === "dark" ? t("nav.switchLight") : t("nav.switchDark")}
           tabIndex={visible ? undefined : -1}
         >
           {theme === "dark"
@@ -115,15 +118,25 @@ function Navbar() {
             : <Moon size="1em" strokeWidth={1.6} />
           }
           <span className="navbar-staff-label">
-            {theme === "dark" ? "Light" : "Dark"}
+            {theme === "dark" ? t("nav.lightMode") : t("nav.darkMode")}
           </span>
+        </button>
+
+        <button
+          className="navbar-lang-btn"
+          onClick={toggleLanguage}
+          aria-label={`Switch language to ${t("nav.language")}`}
+          tabIndex={visible ? undefined : -1}
+        >
+          <Languages size="1em" strokeWidth={1.6} />
+          <span className="navbar-staff-label">{t("nav.language")}</span>
         </button>
       </nav>
 
       <button
         className={`navbar-toggle${open ? " navbar-toggle--open" : ""}${hiddenClass}`}
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close navigation" : "Open navigation"}
+        aria-label={open ? t("nav.closeNav") : t("nav.openNav")}
         aria-expanded={open}
         tabIndex={visible ? undefined : -1}
       >

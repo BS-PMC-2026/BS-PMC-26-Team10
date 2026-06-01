@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkill -f \"vite --port 5175\")",
+      "Bash(sed -n '370,400p' /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend/src/components/VisitorCatalogue/VisitorCatalogue.css)",
+      "Bash(sed -n '360,380p' /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend/src/pages/VisitorProducts.jsx)",
+      "Bash(sed -n '588,602p' /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend/src/locales/en.json)",
+      "Bash(sed -n '672,688p' /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend/src/locales/en.json)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); console.log\\('en.json valid'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('he.json valid'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('both valid'\\)\")"
+    ]
+  }
+}

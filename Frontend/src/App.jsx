@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation, Outlet } from "react-router-dom";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "./components/Navbar/Navbar";
 import Auth from "./pages/Auth";
 import VisitorMain from "./pages/VisitorMain";
@@ -30,11 +31,22 @@ function VisitorLayout() {
   );
 }
 
+function RtlSync() {
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    const dir = i18n.language === "he" ? "rtl" : "ltr";
+    document.documentElement.dir = dir;
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
       <AuthProvider>
+        <RtlSync />
         <ScrollToTop />
         <Routes>
           <Route element={<VisitorLayout />}>

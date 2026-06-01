@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -14,18 +15,6 @@ const EMPTY_FORM = {
   is_active: true,
 };
 
-function validateForm(form) {
-  const missing = [];
-  if (!form.code.trim()) missing.push("Code");
-  if (!form.discount_value) missing.push("Discount Value");
-  if (!form.min_order_amount) missing.push("Min Order Amount");
-  if (!form.max_uses) missing.push("Max Uses");
-  if (!form.valid_from) missing.push("Valid From");
-  if (!form.valid_until) missing.push("Valid Until");
-  if (missing.length > 0) return `Missing required fields: ${missing.join(", ")}.`;
-  return "";
-}
-
 function toLocalDatetimeInput(isoString) {
   if (!isoString) return "";
   const d = new Date(isoString);
@@ -34,6 +23,7 @@ function toLocalDatetimeInput(isoString) {
 }
 
 function OwnerPromoCodes() {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const dark = theme === "dark";
   const labelStyle = { display: "block", fontSize: "0.82rem", color: dark ? "#c8a090" : "#555", marginBottom: "0.25rem", fontWeight: 500 };
@@ -48,6 +38,21 @@ function OwnerPromoCodes() {
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef(null);
 
+  const validateForm = (form) => {
+    const missing = [];
+    if (!form.code.trim()) missing.push("Code");
+    if (!form.discount_value) missing.push("Discount Value");
+    if (!form.min_order_amount) missing.push("Min Order Amount");
+    if (!form.max_uses) missing.push("Max Uses");
+    if (!form.valid_from) missing.push("Valid From");
+    if (!form.valid_until) missing.push("Valid Until");
+    if (missing.length > 0) {
+      const fields = missing.join(", ");
+      return t('owner.promoCodes.missingFields', { fields });
+    }
+    return "";
+  };
+
   const fetchCodes = async () => {
     try {
       setLoading(true);
@@ -57,7 +62,7 @@ function OwnerPromoCodes() {
       const data = await res.json();
       setCodes(Array.isArray(data) ? data : []);
     } catch {
-      setError("Could not load promo codes.");
+      setError(t('owner.promoCodes.loadError'));
     } finally {
       setLoading(false);
     }
@@ -125,31 +130,31 @@ function OwnerPromoCodes() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || `Failed to ${editingId ? "update" : "create"} promo code.`);
+        throw new Error(data.detail || t('owner.promoCodes.saveFail'));
       }
-      setFormSuccess(editingId ? "Promo code updated!" : "Promo code created!");
+      setFormSuccess(editingId ? t('owner.promoCodes.updated') : t('owner.promoCodes.created'));
       setEditingId(null);
       setForm(EMPTY_FORM);
       fetchCodes();
     } catch (err) {
-      setFormError(err.message || "Could not save promo code.");
+      setFormError(err.message || t('owner.promoCodes.saveFail'));
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this promo code?")) return;
+    if (!window.confirm(t('owner.promoCodes.confirmDelete'))) return;
     try {
       const res = await fetch(`${API_BASE_URL}/promo/codes/${id}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || "Failed to delete.");
+        throw new Error(data.detail || t('owner.promoCodes.deleteFail'));
       }
       if (editingId === id) handleCancelEdit();
       fetchCodes();
     } catch (err) {
-      alert(err.message || "Could not delete promo code.");
+      alert(err.message || t('owner.promoCodes.deleteFail'));
     }
   };
 
@@ -160,10 +165,10 @@ function OwnerPromoCodes() {
 
   return (
     <div style={{ flex: 1, padding: "2rem" }}>
-        <p style={{ color: "#888", margin: 0 }}>Owner Control Center</p>
-        <h1 style={{ margin: "0.25rem 0 0.5rem" }}>Promo Codes</h1>
+        <p style={{ color: "#888", margin: 0 }}>{t('owner.controlCenter')}</p>
+        <h1 style={{ margin: "0.25rem 0 0.5rem" }}>{t('owner.promoCodes.title')}</h1>
         <p style={{ color: "#666", marginBottom: "1.5rem" }}>
-          Create discount codes for customers to use at checkout.
+          {t('owner.promoCodes.subtitle')}
         </p>
 
         {/* Add / Edit form */}
@@ -176,45 +181,45 @@ function OwnerPromoCodes() {
           }}
         >
           <h2 style={{ margin: "0 0 1rem", fontSize: "1.1rem" }}>
-            {editingId ? "Edit Promo Code" : "Add Promo Code"}
+            {editingId ? t('owner.promoCodes.editTitle') : t('owner.promoCodes.addTitle')}
           </h2>
           <form onSubmit={handleSubmit}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
               <div>
-                <label style={labelStyle}>Code <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.codeLabel')} <span style={reqStyle}>*</span></label>
                 <input name="code" value={form.code} onChange={handleChange}
-                  placeholder="SUMMER20" style={inputStyle} />
+                  placeholder={t('owner.promoCodes.codePlaceholder')} style={inputStyle} />
               </div>
               <div>
-                <label style={labelStyle}>Discount Type <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.discountTypeLabel')} <span style={reqStyle}>*</span></label>
                 <select name="discount_type" value={form.discount_type} onChange={handleChange} style={inputStyle}>
-                  <option value="percent">Percent (%)</option>
-                  <option value="fixed">Fixed (₪)</option>
+                  <option value="percent">{t('owner.promoCodes.typePercent')}</option>
+                  <option value="fixed">{t('owner.promoCodes.typeFixed')}</option>
                 </select>
               </div>
               <div>
-                <label style={labelStyle}>Discount Value <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.discountValueLabel')} <span style={reqStyle}>*</span></label>
                 <input name="discount_value" value={form.discount_value} onChange={handleChange}
                   type="number" min="0" step="0.01" placeholder="20" style={inputStyle} />
               </div>
               <div>
-                <label style={labelStyle}>Min Order Amount (₪) <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.minOrderLabel')} <span style={reqStyle}>*</span></label>
                 <input name="min_order_amount" value={form.min_order_amount} onChange={handleChange}
                   type="number" min="0" step="0.01" placeholder="0" style={inputStyle} />
               </div>
               <div>
-                <label style={labelStyle}>Max Uses <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.maxUsesLabel')} <span style={reqStyle}>*</span></label>
                 <input name="max_uses" value={form.max_uses} onChange={handleChange}
-                  type="number" min="1" placeholder="e.g. 100" style={inputStyle} />
+                  type="number" min="1" placeholder={t('owner.promoCodes.maxUsesPlaceholder')} style={inputStyle} />
               </div>
               <div />
               <div>
-                <label style={labelStyle}>Valid From <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.validFromLabel')} <span style={reqStyle}>*</span></label>
                 <input name="valid_from" value={form.valid_from} onChange={handleChange}
                   type="datetime-local" style={inputStyle} />
               </div>
               <div>
-                <label style={labelStyle}>Valid Until <span style={reqStyle}>*</span></label>
+                <label style={labelStyle}>{t('owner.promoCodes.validUntilLabel')} <span style={reqStyle}>*</span></label>
                 <input name="valid_until" value={form.valid_until} onChange={handleChange}
                   type="datetime-local" style={inputStyle} />
               </div>
@@ -222,7 +227,7 @@ function OwnerPromoCodes() {
             <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <input type="checkbox" id="is_active" name="is_active"
                 checked={form.is_active} onChange={handleChange} />
-              <label htmlFor="is_active" style={{ fontSize: "0.9rem", color: "#444" }}>Active</label>
+              <label htmlFor="is_active" style={{ fontSize: "0.9rem", color: "#444" }}>{t('owner.promoCodes.activeLabel')}</label>
             </div>
             {formError && <p style={{ color: "#c0392b", fontSize: "0.85rem", marginTop: "0.5rem" }}>{formError}</p>}
             {formSuccess && <p style={{ color: "#27ae60", fontSize: "0.85rem", marginTop: "0.5rem" }}>{formSuccess}</p>}
@@ -233,8 +238,8 @@ function OwnerPromoCodes() {
                 fontSize: "0.95rem", fontWeight: 600, cursor: "pointer",
               }}>
                 {submitting
-                  ? (editingId ? "Saving..." : "Creating...")
-                  : (editingId ? "Save Changes" : "+ Create Code")}
+                  ? (editingId ? t('owner.promoCodes.saving') : t('owner.promoCodes.creating'))
+                  : (editingId ? t('owner.promoCodes.save') : t('owner.promoCodes.create'))}
               </button>
               {editingId && (
                 <button type="button" onClick={handleCancelEdit} style={{
@@ -242,7 +247,7 @@ function OwnerPromoCodes() {
                   borderRadius: 6, padding: "0.6rem 1.2rem",
                   fontSize: "0.95rem", cursor: "pointer",
                 }}>
-                  Cancel
+                  {t('owner.promoCodes.cancel')}
                 </button>
               )}
             </div>
@@ -250,10 +255,10 @@ function OwnerPromoCodes() {
         </div>
 
         {/* Codes table */}
-        {loading && <p>Loading promo codes...</p>}
+        {loading && <p>{t('owner.promoCodes.loading')}</p>}
         {!loading && error && <p style={{ color: "red" }}>{error}</p>}
         {!loading && !error && codes.length === 0 && (
-          <p style={{ color: "#888" }}>No promo codes yet.</p>
+          <p style={{ color: "#888" }}>{t('owner.promoCodes.empty')}</p>
         )}
         {!loading && !error && codes.length > 0 && (
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem" }}>
@@ -309,7 +314,7 @@ function OwnerPromoCodes() {
                         fontSize: "0.8rem",
                       }}
                     >
-                      Edit
+                      {t('owner.promoCodes.edit')}
                     </button>
                     <button
                       onClick={() => handleDelete(c.id)}
@@ -319,7 +324,7 @@ function OwnerPromoCodes() {
                         fontSize: "0.8rem",
                       }}
                     >
-                      Delete
+                      {t('owner.promoCodes.delete')}
                     </button>
                   </td>
                 </tr>
