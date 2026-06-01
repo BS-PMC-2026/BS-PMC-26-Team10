@@ -76,3 +76,43 @@ jobs:
           path: chilliland-${{ github.sha }}.zip
           if-no-files-found: error
           retention-days: 14
+  deploy-frontend:
+    name: Deploy Frontend to Azure
+    needs: [build-artifact]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: Frontend
+        run: npm ci
+      - name: Build frontend
+        working-directory: Frontend
+        run: npm run build
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ChilliLand
+          publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
+          package: ./Frontend/dist
+  deploy-backend:
+    name: Deploy Backend to Azure
+    needs: [build-artifact]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: Chillieland-backend
+          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
+          package: ./Backend
