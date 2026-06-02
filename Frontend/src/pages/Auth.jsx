@@ -26,7 +26,7 @@ function Auth() {
   const [resetData, setResetData] = useState({ password: "", confirm: "" });
 
   useEffect(() => {
-    if (admin) navigate("/owner", { replace: true });
+    if (admin) navigate(admin.role === "guide" ? "/tourguide" : "/owner", { replace: true });
   }, [admin, navigate]);
 
   function switchView(next) {
@@ -67,7 +67,7 @@ function Auth() {
       }
 
       login(data.token, data.admin, data.expires_in);
-      navigate("/owner", { replace: true });
+      navigate(data.admin.role === "guide" ? "/tourguide" : "/owner", { replace: true });
     } catch {
       setError(t('auth.errNetwork'));
     } finally {

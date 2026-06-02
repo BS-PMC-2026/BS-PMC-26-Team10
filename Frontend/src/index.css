@@ -809,3 +809,222 @@ html[data-theme="dark"] {
   background: #3a1212;
   color: #f0a0a0;
 }
+
+/* ── Tour Guide Portal dark mode ─────────────────────────────────────────── */
+
+[data-theme="dark"] .tourguide-layout {
+  background: #1a0d0d;
+}
+
+/* Dashboard */
+[data-theme="dark"] .tgd-root {
+  background: #1a0d0d;
+}
+[data-theme="dark"] .tgd-stat-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgd-stat-label { color: #c8a090; }
+[data-theme="dark"] .tgd-stat-value { color: #e8c8b8; }
+[data-theme="dark"] .tgd-stat-sub   { color: #a07060; }
+[data-theme="dark"] .tgd-header h1  { color: #e8c8b8; }
+[data-theme="dark"] .tgd-subtitle   { color: #c8a090; }
+[data-theme="dark"] .tgd-error      { background: #3a1212; color: #f0a0a0; }
+
+[data-theme="dark"] .tgd-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgd-card-title { color: #e8c8b8; }
+[data-theme="dark"] .tgd-card-sub   { color: #c8a090; }
+
+[data-theme="dark"] .tgd-upcoming-row {
+  background: #2e1616;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgd-upcoming-row:hover { box-shadow: 0 0.3vw 0.9vw rgba(0,0,0,0.3); }
+[data-theme="dark"] .tgd-upcoming-title  { color: #e8c8b8; }
+[data-theme="dark"] .tgd-upcoming-meta   { color: #a07868; }
+[data-theme="dark"] .tgd-upcoming-location { color: #d06040; }
+[data-theme="dark"] .tgd-upcoming-price  { color: #e8c8b8; }
+[data-theme="dark"] .tgd-cap-bar-wrap    { background: #4a2020; }
+[data-theme="dark"] .tgd-more-hint       { color: #a07060; }
+
+[data-theme="dark"] .tgd-empty {
+  background: #261414;
+  border-color: #5c2b2b;
+  color: #c8a090;
+}
+
+[data-theme="dark"] .tgd-mini-cal-title  { color: #e8c8b8; }
+[data-theme="dark"] .tgd-mini-cal-day-name { color: #a07060; }
+[data-theme="dark"] .tgd-mini-cal-cell   { color: #e8c8b8; }
+[data-theme="dark"] .tgd-mini-cal-cell--today {
+  background: #4a2a1f;
+  color: #fff;
+}
+[data-theme="dark"] .tgd-mini-cal-cell--tour {
+  background: rgba(182,70,47,0.2);
+  color: #e87060;
+}
+
+/* Calendar */
+[data-theme="dark"] .tgc-root { background: #1a0d0d; }
+[data-theme="dark"] .tgc-header h1 { color: #e8c8b8; }
+[data-theme="dark"] .tgc-subtitle  { color: #c8a090; }
+[data-theme="dark"] .tgc-error     { background: #3a1212; color: #f0a0a0; }
+
+[data-theme="dark"] .tgc-cal-wrap {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgc-cal-nav {
+  background: #261414;
+  border-bottom-color: #5c2b2b;
+}
+[data-theme="dark"] .tgc-cal-month-title { color: #e8c8b8; }
+[data-theme="dark"] .tgc-nav-btn {
+  border-color: rgba(220,120,80,0.3);
+  color: #d06040;
+}
+[data-theme="dark"] .tgc-nav-btn:hover { background: rgba(220,120,80,0.12); }
+
+[data-theme="dark"] .tgc-col-head { color: #a07060; border-bottom-color: #3a1e1e; }
+
+[data-theme="dark"] .tgc-cell {
+  border-color: #3a1e1e;
+}
+[data-theme="dark"] .tgc-cell--empty  { background: rgba(30,12,12,0.5); }
+[data-theme="dark"] .tgc-cell--past   { background: rgba(30,14,14,0.6); }
+[data-theme="dark"] .tgc-cell--has-tours { background: #2e1414; }
+[data-theme="dark"] .tgc-cell--today  { background: rgba(182,70,47,0.1); outline-color: rgba(182,70,47,0.4); }
+[data-theme="dark"] .tgc-day-num      { color: #c8a090; }
+[data-theme="dark"] .tgc-cell--past .tgc-day-num { color: #604040; }
+
+[data-theme="dark"] .tgc-pill { background: rgba(182,70,47,0.18); }
+[data-theme="dark"] .tgc-pill:hover { background: rgba(182,70,47,0.3); }
+[data-theme="dark"] .tgc-pill-text  { color: #e8a080; }
+[data-theme="dark"] .tgc-pill--full { background: rgba(80,50,50,0.3); }
+[data-theme="dark"] .tgc-pill--full .tgc-pill-text { color: #806060; }
+
+[data-theme="dark"] .tgc-side {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgc-side-placeholder { color: #806060; }
+
+[data-theme="dark"] .tgc-detail-title  { color: #e8c8b8; }
+[data-theme="dark"] .tgc-detail-close  { background: rgba(220,80,80,0.15); color: #e87060; }
+[data-theme="dark"] .tgc-detail-row    { color: #c8a090; }
+[data-theme="dark"] .tgc-detail-capacity { background: #2e1414; }
+[data-theme="dark"] .tgc-detail-cap-header { color: #e8c8b8; }
+[data-theme="dark"] .tgc-detail-cap-bar-wrap { background: #4a2020; }
+[data-theme="dark"] .tgc-detail-cap-note { color: #a07060; }
+[data-theme="dark"] .tgc-detail-desc   { color: #c8a090; }
+[data-theme="dark"] .tgc-detail-includes { background: #1e2e14; }
+
+/* Bookings */
+[data-theme="dark"] .tgb-root { background: #1a0d0d; }
+[data-theme="dark"] .tgb-header h1 { color: #e8c8b8; }
+[data-theme="dark"] .tgb-subtitle  { color: #c8a090; }
+
+[data-theme="dark"] .tgb-stat-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgb-stat-card p  { color: #c8a090; }
+[data-theme="dark"] .tgb-stat-card h2 { color: #e8c8b8; }
+
+[data-theme="dark"] .tgb-search,
+[data-theme="dark"] .tgb-filter {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgb-message { background: #261414; color: #e8c8b8; }
+[data-theme="dark"] .tgb-message--error { background: #3a1212; color: #f0a0a0; }
+
+[data-theme="dark"] .tgb-empty {
+  background: #261414;
+  border-color: #5c2b2b;
+  color: #c8a090;
+}
+[data-theme="dark"] .tgb-empty h2 { color: #e8c8b8; }
+
+[data-theme="dark"] .tgb-table-wrap {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgb-table thead { background: #301818; border-bottom-color: #5c2b2b; }
+[data-theme="dark"] .tgb-table th   { color: #c8a090; }
+[data-theme="dark"] .tgb-table td   { color: #e8c8b8; border-bottom-color: #3a1e1e; }
+[data-theme="dark"] .tgb-table tbody tr:hover { background: #301818; }
+[data-theme="dark"] .tgb-ref        { background: #3a1e1e; color: #e8a080; }
+[data-theme="dark"] .tgb-visitor-name  { color: #e8c8b8; }
+[data-theme="dark"] .tgb-visitor-email,
+[data-theme="dark"] .tgb-visitor-phone { color: #a07060; }
+[data-theme="dark"] .tgb-tour-cell  { color: #e8c8b8; }
+[data-theme="dark"] .tgb-date-cell  { color: #c8a090; }
+
+/* Reviews */
+[data-theme="dark"] .tgr-root { background: #1a0d0d; }
+[data-theme="dark"] .tgr-header h1 { color: #e8c8b8; }
+[data-theme="dark"] .tgr-subtitle  { color: #c8a090; }
+
+[data-theme="dark"] .tgr-stat-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgr-stat-card p  { color: #c8a090; }
+[data-theme="dark"] .tgr-stat-card h2 { color: #e8c8b8; }
+
+[data-theme="dark"] .tgr-search,
+[data-theme="dark"] .tgr-filter {
+  background: #1a0d0d;
+  color: #e8c8b8;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgr-message { background: #261414; color: #e8c8b8; }
+[data-theme="dark"] .tgr-message--error { background: #3a1212; color: #f0a0a0; }
+
+[data-theme="dark"] .tgr-empty {
+  background: #261414;
+  border-color: #5c2b2b;
+  color: #c8a090;
+}
+[data-theme="dark"] .tgr-empty h2 { color: #e8c8b8; }
+
+[data-theme="dark"] .tgr-card {
+  background: #261414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgr-card:hover { box-shadow: 0 0.5vw 1.6vw rgba(0,0,0,0.35); }
+[data-theme="dark"] .tgr-tour-name  { color: #e07050; }
+[data-theme="dark"] .tgr-date       { color: #906050; }
+[data-theme="dark"] .tgr-reviewer-name { color: #e8c8b8; }
+[data-theme="dark"] .tgr-comment    { color: #c8a898; }
+[data-theme="dark"] .tgr-reply-block { background: #1e2e14; border-left-color: #4a8030; }
+[data-theme="dark"] .tgr-reply-label { color: #6db040; }
+[data-theme="dark"] .tgr-reply-text  { color: #b8d0a8; }
+
+[data-theme="dark"] .tgr-reply-toggle {
+  border-color: rgba(220, 120, 80, 0.35);
+  color: #d06040;
+}
+[data-theme="dark"] .tgr-reply-toggle:hover { background: rgba(220, 120, 80, 0.1); }
+[data-theme="dark"] .tgr-reply-form {
+  background: #2e1414;
+  border-color: #5c2b2b;
+}
+[data-theme="dark"] .tgr-reply-form-label { color: #c8a090; }
+[data-theme="dark"] .tgr-reply-textarea {
+  background: #1a0d0d;
+  border-color: #5c2b2b;
+  color: #e8c8b8;
+}
+[data-theme="dark"] .tgr-reply-textarea:focus { border-color: #c55b3c; }
+[data-theme="dark"] .tgr-btn--ghost {
+  border-color: rgba(220, 120, 80, 0.3);
+  color: #c8a090;
+}
+[data-theme="dark"] .tgr-btn--ghost:hover { background: rgba(220, 120, 80, 0.1); }
