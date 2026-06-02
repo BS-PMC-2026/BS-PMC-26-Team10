@@ -1,0 +1,32 @@
+.owner-promo-content {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.owner-promo-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.owner-promo-table {
+  min-width: 780px;
+}
+
+@media (max-width: 768px) {
+  .owner-promo-content {
+    padding: 6vw 4vw !important;
+  }
+
+  .owner-promo-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .owner-promo-form-actions {
+    flex-direction: column;
+  }
+
+  .owner-promo-form-actions button {
+    width: 100%;
+  }
+}

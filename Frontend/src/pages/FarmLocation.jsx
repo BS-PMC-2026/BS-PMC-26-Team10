@@ -3,6 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MapPin, Tractor, ShoppingBag, Camera, Car, Compass, Bus, Phone, Mail, Flame } from "lucide-react";
 import "../styles/FarmLocation.css";
+import farmImageOne from "../assets/imgae1.jpeg";
+import farmImageTwo from "../assets/image6.jpeg";
+import farmImageThree from "../assets/image7.jpeg";
 
 function FarmLocation() {
   const { t } = useTranslation();
@@ -24,9 +27,9 @@ function FarmLocation() {
     "&output=embed";
 
   const farmImages = [
-    "/chilli_images/aji_fantasy.jpeg",
-    "/chilli_images/cherry_bomb_orange.jpg",
-    "/chilli_images/naga.jpg",
+    farmImageOne,
+    farmImageTwo,
+    farmImageThree,
   ];
 
   const awaits = t('location.awaits', { returnObjects: true });

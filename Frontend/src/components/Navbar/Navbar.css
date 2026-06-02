@@ -368,6 +368,12 @@
     transform: translateX(0);
   }
 
+  .navbar.navbar--open.navbar--hidden {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+
   /* always show labels on mobile */
   .navbar .navbar-brand-text,
   .navbar .navbar-link-label {
