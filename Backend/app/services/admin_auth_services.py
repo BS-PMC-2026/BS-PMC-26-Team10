@@ -48,7 +48,7 @@ def _decode_token(token: str) -> Optional[dict]:
 
 def login_admin(email: str, password: str) -> dict:
     try:
-        result = supabase.table("admin_users").select("id, first_name, last_name, email, password_hash").eq("email", email).execute()
+        result = supabase.table("admin_users").select("id, first_name, last_name, email, password_hash, role").eq("email", email).execute()
         if not result.data:
             return {"error": "invalid_credentials", "message": "Invalid email or password."}
 
@@ -60,7 +60,7 @@ def login_admin(email: str, password: str) -> dict:
         return {
             "token": token,
             "expires_in": JWT_EXPIRE_MINUTES * 60,
-            "admin": {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"]},
+            "admin": {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"], "role": row.get("role", "owner")},
         }
     except Exception as e:
         print("login_admin error:", e)
@@ -73,11 +73,11 @@ def get_admin_from_token(token: str) -> Optional[dict]:
         return None
 
     try:
-        result = supabase.table("admin_users").select("id, first_name, last_name, email").eq("id", int(payload["sub"])).execute()
+        result = supabase.table("admin_users").select("id, first_name, last_name, email, role").eq("id", int(payload["sub"])).execute()
         if not result.data:
             return None
         row = result.data[0]
-        return {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"]}
+        return {"id": row["id"], "first_name": row["first_name"], "last_name": row["last_name"], "email": row["email"], "role": row.get("role", "owner")}
     except Exception as e:
         print("get_admin_from_token error:", e)
         return None

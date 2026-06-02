@@ -1,6 +1,7 @@
 .tourguide-layout {
   display: flex;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 /* ── My tours view ── */
