@@ -7,7 +7,7 @@ import "../styles/pepperDetailsPage.css";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const FALLBACK_DESCRIPTION =
-  "This content is curated from reliable reference sources to provide a richer and more informative overview of each pepper variety.";
+  "A unique chilli variety from our farm collection.";
 
 function formatHeatRange(pepper) {
   if (pepper.shu_min && pepper.shu_max) {

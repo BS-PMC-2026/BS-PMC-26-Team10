@@ -8,7 +8,26 @@
       "Bash(sed -n '672,688p' /Users/normuradov/Documents/GitHub/BS-PMC-26-Team10/Frontend/src/locales/en.json)",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); console.log\\('en.json valid'\\)\")",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('he.json valid'\\)\")",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('both valid'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/locales/he.json','utf8'\\)\\); console.log\\('both valid'\\)\")",
+      "Bash(python -m unittest tests.test_admin_auth_services -v)",
+      "Bash(python3 -m unittest tests.test_admin_auth_services -v)",
+      "Bash(python3 -m unittest discover -s tests)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(sed -n '25,33p;88,93p' src/tests/AboutPage.test.jsx)",
+      "Bash(sed -n '196,210p' src/tests/Auth.test.jsx)",
+      "Bash(sed -n '100,130p' src/tests/PepperDetailsPage.test.jsx)",
+      "Bash(sed -n '/Apply Filters filters by heat level band/,/^  }\\);/p' src/tests/PepperDetailsPage.test.jsx)",
+      "Bash(sed -n '478,492p' src/components/VisitorCatalogue/VisitorCatalogue.jsx)",
+      "Bash(sed -n '155,170p;433,441p' src/tests/VisitorCatalogue.test.jsx)",
+      "Bash(sed -n '466,490p' src/pages/TourDetailPage.jsx)",
+      "Bash(sed -n '150,155p' src/tests/ToursPage.test.jsx)",
+      "Bash(npm run *)",
+      "Bash(echo \"BUILD exit: $?\")",
+      "Bash(echo \"BACKEND exit: $?\")"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }

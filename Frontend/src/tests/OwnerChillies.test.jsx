@@ -108,6 +108,30 @@ describe("OwnerChillies", () => {
     );
   });
 
+  test("shows Print QR button for each pepper", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("Habanero"));
+    const printBtns = screen.getAllByText(/Print QR/i);
+    expect(printBtns).toHaveLength(2);
+  });
+
+  test("clicking Print QR opens modal with pepper name and QR code", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("Habanero"));
+    await userEvent.click(screen.getAllByText(/Print QR/i)[0]);
+    expect(screen.getByRole("heading", { level: 2, name: "Habanero" })).toBeInTheDocument();
+    expect(document.querySelector("svg")).toBeInTheDocument();
+  });
+
+  test("clicking Close dismisses the QR modal", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("Habanero"));
+    await userEvent.click(screen.getAllByText(/Print QR/i)[0]);
+    expect(screen.getByRole("heading", { level: 2, name: "Habanero" })).toBeInTheDocument();
+    await userEvent.click(screen.getByText("Close"));
+    expect(screen.queryByRole("heading", { level: 2, name: "Habanero" })).not.toBeInTheDocument();
+  });
+
   test("does not call DELETE when confirm is cancelled", async () => {
     vi.stubGlobal("confirm", vi.fn(() => false));
     const mockFetch = vi.fn(() =>

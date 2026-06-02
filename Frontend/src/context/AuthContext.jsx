@@ -11,13 +11,34 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const timerRef = useRef(null);
 
+  function _clear() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(EXPIRY_KEY);
+  }
+
+  function logout() {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    _clear();
+    setAdmin(null);
+  }
+
+  function _scheduleLogout(expiryMs) {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    const remaining = expiryMs - Date.now();
+    if (remaining <= 0) {
+      logout();
+      return;
+    }
+    timerRef.current = setTimeout(logout, remaining);
+  }
+
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY);
     const expiry = localStorage.getItem(EXPIRY_KEY);
 
     if (!token || !expiry || Date.now() >= Number(expiry)) {
       _clear();
-      setLoading(false);
+      setLoading(false); // eslint-disable-line react-hooks/set-state-in-effect
       return;
     }
 
@@ -37,33 +58,12 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  function _clear() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(EXPIRY_KEY);
-  }
-
-  function _scheduleLogout(expiryMs) {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    const remaining = expiryMs - Date.now();
-    if (remaining <= 0) {
-      logout();
-      return;
-    }
-    timerRef.current = setTimeout(logout, remaining);
-  }
-
   function login(token, adminData, expiresInSeconds = 600) {
     const expiry = Date.now() + expiresInSeconds * 1000;
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(EXPIRY_KEY, String(expiry));
     setAdmin(adminData);
     _scheduleLogout(expiry);
-  }
-
-  function logout() {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    _clear();
-    setAdmin(null);
   }
 
   function getToken() {
@@ -80,6 +80,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }

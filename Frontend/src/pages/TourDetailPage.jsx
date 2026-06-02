@@ -69,7 +69,7 @@ function TourDetailPage() {
       })
       .then((data) => {
         const found = data.find((tour) => String(tour.id) === String(id));
-        if (!found) throw new Error(t("tourDetail.loadError"));
+        if (!found) throw new Error(t("tourDetail.notFound"));
         setTour(found);
         setLoading(false);
       })
