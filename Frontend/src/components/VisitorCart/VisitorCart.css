@@ -530,3 +530,14 @@
     height: 60px;
   }
 }
+/* ===== RTL SUPPORT ===== */
+[dir="rtl"] .vc-drawer {
+  right: auto;
+  left: 0;
+  box-shadow: 8px 0 40px rgba(45, 20, 8, 0.18);
+  transform: translateX(-100%);
+}
+
+[dir="rtl"] .vc-drawer--open {
+  transform: translateX(0);
+}

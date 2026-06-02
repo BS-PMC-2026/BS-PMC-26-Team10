@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "../styles/OwnerOrders.css";
 
+function translateStatus(value, t) {
+  if (!value) return "—";
+  const key = value.toLowerCase().replace(/\s+/g, "_");
+  return t(`owner.status.${key}`, value);
+}
+
 function OwnerOrders() {
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -22,7 +30,7 @@ function OwnerOrders() {
       setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
-      setError("Could not load orders from the server.");
+      setError(t('owner.orders.loadError'));
     } finally {
       setLoading(false);
     }
@@ -60,27 +68,26 @@ function OwnerOrders() {
   return (
     <div className="owner-orders-content">
         <div className="owner-orders-header">
-          <p className="owner-orders-overline">Owner Control Center</p>
-          <h1>Orders</h1>
+          <p className="owner-orders-overline">{t('owner.controlCenter')}</p>
+          <h1>{t('owner.orders.title')}</h1>
           <p className="owner-orders-subtitle">
-            Track recent orders, payment progress and delivery updates in one
-            place.
+            {t('owner.orders.subtitle')}
           </p>
         </div>
 
         <div className="owner-orders-summary">
           <div className="owner-orders-stat-card">
-            <p>Total Orders</p>
+            <p>{t('owner.orders.totalOrders')}</p>
             <h2>{totalOrders}</h2>
           </div>
 
           <div className="owner-orders-stat-card">
-            <p>Pending Orders</p>
+            <p>{t('owner.orders.pendingOrders')}</p>
             <h2>{pendingOrders}</h2>
           </div>
 
           <div className="owner-orders-stat-card">
-            <p>Delivered</p>
+            <p>{t('owner.orders.delivered')}</p>
             <h2>{deliveredOrders}</h2>
           </div>
         </div>
@@ -88,7 +95,7 @@ function OwnerOrders() {
         <div className="owner-orders-toolbar">
           <input
             type="text"
-            placeholder="Search by order ID, name or email..."
+            placeholder={t('owner.orders.searchPlaceholder')}
             className="owner-orders-search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -96,7 +103,7 @@ function OwnerOrders() {
         </div>
 
         {loading && (
-          <div className="owner-orders-message">Loading orders...</div>
+          <div className="owner-orders-message">{t('owner.orders.loading')}</div>
         )}
 
         {!loading && error && (
@@ -105,8 +112,8 @@ function OwnerOrders() {
 
         {!loading && !error && filteredOrders.length === 0 && (
           <div className="owner-orders-empty">
-            <h2>No orders found</h2>
-            <p>Orders will appear here once customers start buying.</p>
+            <h2>{t('owner.orders.emptyTitle')}</h2>
+            <p>{t('owner.orders.emptyDesc')}</p>
           </div>
         )}
 
@@ -115,13 +122,13 @@ function OwnerOrders() {
             <table className="owner-orders-table">
               <thead>
                 <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Payment</th>
-                  <th>Delivery</th>
-                  <th>Status</th>
+                  <th>{t('owner.orders.colId')}</th>
+                  <th>{t('owner.orders.colCustomer')}</th>
+                  <th>{t('owner.orders.colDate')}</th>
+                  <th>{t('owner.orders.colTotal')}</th>
+                  <th>{t('owner.orders.colPayment')}</th>
+                  <th>{t('owner.orders.colDelivery')}</th>
+                  <th>{t('owner.orders.colStatus')}</th>
                 </tr>
               </thead>
 
@@ -145,9 +152,9 @@ function OwnerOrders() {
                         ? `₪${order.total_amount}`
                         : "-"}
                     </td>
-                    <td>{order.payment_status || "-"}</td>
-                    <td>{order.delivery_status || "-"}</td>
-                    <td>{order.status || "-"}</td>
+                    <td>{translateStatus(order.payment_status, t)}</td>
+                    <td>{translateStatus(order.delivery_status, t)}</td>
+                    <td>{translateStatus(order.status, t)}</td>
                   </tr>
                 ))}
               </tbody>

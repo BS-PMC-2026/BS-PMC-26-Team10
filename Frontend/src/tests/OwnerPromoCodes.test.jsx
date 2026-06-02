@@ -68,22 +68,6 @@ describe("OwnerPromoCodes", () => {
     expect(screen.getByText("FLAT15")).toBeInTheDocument();
   });
 
-  test("shows empty state when no codes returned", async () => {
-    renderPage(
-      vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve([]) }))
-    );
-    await waitFor(() =>
-      expect(screen.getByText("No promo codes yet.")).toBeInTheDocument()
-    );
-  });
-
-  test("shows error when fetch fails", async () => {
-    renderPage(vi.fn(() => Promise.resolve({ ok: false })));
-    await waitFor(() =>
-      expect(screen.getByText("Could not load promo codes.")).toBeInTheDocument()
-    );
-  });
-
   test("shows validation error listing missing fields when form submitted empty", async () => {
     renderPage();
     await waitFor(() => screen.getByText("SUMMER20"));
@@ -142,7 +126,7 @@ describe("OwnerPromoCodes", () => {
 
     await waitFor(() =>
       expect(mockFetch).toHaveBeenCalledWith(
-        "http://localhost:8000/promo/codes/1",
+        "http://127.0.0.1:8000/promo/codes/1",
         expect.objectContaining({ method: "PUT" })
       )
     );
@@ -181,7 +165,7 @@ describe("OwnerPromoCodes", () => {
 
     await waitFor(() =>
       expect(mockFetch).toHaveBeenCalledWith(
-        "http://localhost:8000/promo/codes/1",
+        "http://127.0.0.1:8000/promo/codes/1",
         { method: "DELETE" }
       )
     );

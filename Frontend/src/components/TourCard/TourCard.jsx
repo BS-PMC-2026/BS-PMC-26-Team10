@@ -1,4 +1,5 @@
 import { Calendar, Clock, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import "./TourCard.css";
 
 function formatDate(dateStr) {
@@ -18,6 +19,7 @@ function formatTime(timeStr) {
 }
 
 function TourCard({ tour, onEdit, onDelete }) {
+  const { t } = useTranslation();
   const booked = tour.capacity - (tour.remaining_spots ?? tour.capacity);
 
   return (
@@ -28,8 +30,8 @@ function TourCard({ tour, onEdit, onDelete }) {
       <div className="tour-card-header">
         <h3 className="tour-card-title">{tour.title}</h3>
         <div className="tour-card-actions">
-          <button className="tour-card-edit-btn" onClick={() => onEdit(tour)}>Edit</button>
-          <button className="tour-card-delete-btn" onClick={() => onDelete(tour.id)}>Delete</button>
+          <button className="tour-card-edit-btn" onClick={() => onEdit(tour)}>{t('modals.tourCard.edit')}</button>
+          <button className="tour-card-delete-btn" onClick={() => onDelete(tour.id)}>{t('modals.tourCard.delete')}</button>
         </div>
       </div>
 
@@ -48,7 +50,7 @@ function TourCard({ tour, onEdit, onDelete }) {
         </div>
         <div className="tour-card-meta-item">
           <span className="tour-card-meta-icon"><Users size={14} /></span>
-          <span>{booked} / {tour.capacity} booked</span>
+          <span>{t('modals.tourCard.booked', { booked, capacity: tour.capacity })}</span>
         </div>
       </div>
     </div>

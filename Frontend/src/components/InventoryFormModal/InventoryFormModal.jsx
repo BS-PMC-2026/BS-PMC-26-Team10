@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./InventoryFormModal.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -9,6 +10,7 @@ function InventoryFormModal({
   onProductAdded,
   selectedProduct,
 }) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -82,13 +84,13 @@ function InventoryFormModal({
     e.preventDefault();
 
     if (!formData.name.trim() || !formData.description.trim() || formData.quantity === "" || formData.price === "") {
-      setError("Please fill in name, description, quantity, and price.");
+      setError(t('modals.inventoryForm.errRequired'));
       return;
     }
 
     const isEditing = !!selectedProduct;
     if (!isEditing && !imageFile) {
-      setError("Please select an image.");
+      setError(t('modals.inventoryForm.errNoImage'));
       return;
     }
 
@@ -106,7 +108,7 @@ function InventoryFormModal({
           method: "POST",
           body: uploadForm,
         });
-        if (!uploadRes.ok) throw new Error("Image upload failed.");
+        if (!uploadRes.ok) throw new Error(t('modals.inventoryForm.errUpload'));
         const uploadData = await uploadRes.json();
         imageUrl = uploadData.image_url;
       }
@@ -121,7 +123,7 @@ function InventoryFormModal({
           method: "POST",
           body: uploadForm,
         });
-        if (!uploadRes.ok) throw new Error("Ingredients image upload failed.");
+        if (!uploadRes.ok) throw new Error(t('modals.inventoryForm.errIngredientsUpload'));
         const uploadData = await uploadRes.json();
         ingredientsImageUrl = uploadData.image_url;
       }
@@ -147,14 +149,14 @@ function InventoryFormModal({
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error(isEditing ? "Failed to update product." : "Failed to add product.");
+      if (!res.ok) throw new Error(t('modals.inventoryForm.errSave'));
 
       resetForm();
       onClose();
       onProductAdded();
     } catch (err) {
       console.error(err);
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err.message || t('modals.inventoryForm.errSave'));
     } finally {
       setLoading(false);
     }
@@ -168,38 +170,38 @@ function InventoryFormModal({
     <div className="inventory-modal-overlay" onClick={handleOverlayClick}>
       <div className="inventory-modal">
         <div className="inventory-modal-header">
-          <h2>{selectedProduct ? "Edit Product" : "Add Product"}</h2>
+          <h2>{selectedProduct ? t('modals.inventoryForm.editTitle') : t('modals.inventoryForm.addTitle')}</h2>
           <button type="button" className="inventory-modal-close" onClick={onClose}>×</button>
         </div>
 
         <form className="inventory-modal-form" onSubmit={handleSubmit}>
           <div className="inventory-form-group">
-            <label>Product name</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Hot Sour Sauce" />
+            <label>{t('modals.inventoryForm.nameLabel')}</label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder={t('modals.inventoryForm.namePlaceholder')} />
           </div>
 
           <div className="inventory-form-group">
-            <label>Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Write a short product description..." rows="4" />
+            <label>{t('modals.inventoryForm.descLabel')}</label>
+            <textarea name="description" value={formData.description} onChange={handleChange} placeholder={t('modals.inventoryForm.descPlaceholder')} rows="4" />
           </div>
 
           {/* Ingredients section */}
           <div className="inventory-form-group">
-            <label>Ingredients</label>
+            <label>{t('modals.inventoryForm.ingredientsLabel')}</label>
             <div className="inventory-ingredients-toggle">
               <button
                 type="button"
                 className={`inv-toggle-btn${ingredientsMode === "text" ? " active" : ""}`}
                 onClick={() => setIngredientsMode("text")}
               >
-                Text
+                {t('modals.inventoryForm.modeText')}
               </button>
               <button
                 type="button"
                 className={`inv-toggle-btn${ingredientsMode === "image" ? " active" : ""}`}
                 onClick={() => setIngredientsMode("image")}
               >
-                Image
+                {t('modals.inventoryForm.modeImage')}
               </button>
             </div>
 
@@ -208,7 +210,7 @@ function InventoryFormModal({
                 name="ingredients"
                 value={formData.ingredients}
                 onChange={handleChange}
-                placeholder="e.g. Chili peppers, vinegar, salt, garlic..."
+                placeholder={t('modals.inventoryForm.ingredientsPlaceholder')}
                 rows="4"
               />
             ) : (
@@ -226,10 +228,10 @@ function InventoryFormModal({
                   type="text"
                   value={ingredientsImageName}
                   onChange={(e) => setIngredientsImageName(e.target.value)}
-                  placeholder="File name (optional)"
+                  placeholder={t('modals.inventoryForm.filenamePlaceholder')}
                 />
                 {selectedProduct && formData.ingredients_image_url && !ingredientsImageFile && (
-                  <small style={{ color: "#888" }}>Current ingredients image already set</small>
+                  <small style={{ color: "#888" }}>{t('modals.inventoryForm.currentIngredientsImage')}</small>
                 )}
               </div>
             )}
@@ -237,22 +239,22 @@ function InventoryFormModal({
 
           <div className="inventory-form-row">
             <div className="inventory-form-group">
-              <label>Quantity</label>
+              <label>{t('modals.inventoryForm.quantityLabel')}</label>
               <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} placeholder="10" min="0" />
             </div>
             <div className="inventory-form-group">
-              <label>Price</label>
+              <label>{t('modals.inventoryForm.priceLabel')}</label>
               <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="15" min="0" step="0.01" />
             </div>
           </div>
 
           <div className="inventory-form-row">
             <div className="inventory-form-group">
-              <label>Restock date</label>
+              <label>{t('modals.inventoryForm.restockLabel')}</label>
               <input type="date" name="restock_date" value={formData.restock_date} onChange={handleChange} />
             </div>
             <div className="inventory-form-group">
-              <label>Image {selectedProduct ? "(leave empty to keep current)" : ""}</label>
+              <label>{selectedProduct ? t('modals.inventoryForm.imageLabelEdit') : t('modals.inventoryForm.imageLabel')}</label>
               <input
                 type="file"
                 accept="image/*"
@@ -266,10 +268,10 @@ function InventoryFormModal({
                 type="text"
                 value={imageName}
                 onChange={(e) => setImageName(e.target.value)}
-                placeholder="File name (optional)"
+                placeholder={t('modals.inventoryForm.filenamePlaceholder')}
               />
               {selectedProduct && formData.image_url && !imageFile && (
-                <small style={{ color: "#888" }}>Current image already set</small>
+                <small style={{ color: "#888" }}>{t('modals.inventoryForm.currentImage')}</small>
               )}
             </div>
           </div>
@@ -277,9 +279,11 @@ function InventoryFormModal({
           {error && <div className="inventory-form-error">{error}</div>}
 
           <div className="inventory-modal-actions">
-            <button type="button" className="inventory-cancel-btn" onClick={() => { resetForm(); onClose(); }}>Cancel</button>
+            <button type="button" className="inventory-cancel-btn" onClick={() => { resetForm(); onClose(); }}>{t('modals.inventoryForm.cancel')}</button>
             <button type="submit" className="inventory-save-btn" disabled={loading}>
-              {loading ? (selectedProduct ? "Saving..." : "Adding...") : (selectedProduct ? "Save Changes" : "Add Product")}
+              {loading
+                ? (selectedProduct ? t('modals.inventoryForm.saving') : t('modals.inventoryForm.adding'))
+                : (selectedProduct ? t('modals.inventoryForm.save') : t('modals.inventoryForm.add'))}
             </button>
           </div>
         </form>

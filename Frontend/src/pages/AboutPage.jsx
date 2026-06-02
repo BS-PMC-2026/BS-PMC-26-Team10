@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Flame, Users, Package, GraduationCap, Sprout, FlaskConical, MapPin, ShoppingCart } from "lucide-react";
 import "../styles/AboutPage.css";
 import heroImg from "../assets/imgae3.jpeg";
@@ -7,80 +8,60 @@ function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
-const OFFERS = [
-  {
-    icon: <Flame size={28} />,
-    title: "150+ Pepper Varieties",
-    text: "Explore one of the largest collections of hot peppers in the region — from mild and fruity to scorching rare varieties sourced from every corner of the world.",
-  },
-  {
-    icon: <Users size={28} />,
-    title: "Guided Farm Tours",
-    text: "Walk the growing tunnels with a knowledgeable guide. See the plants up close, learn how each variety is cultivated, and hear the story behind the farm.",
-  },
-  {
-    icon: <Package size={28} />,
-    title: "Handcrafted Products",
-    text: "Our small-scale production facility turns fresh peppers into hot sauces, chutneys, and spice blends — all made on-site with care and quality.",
-  },
-  {
-    icon: <GraduationCap size={28} />,
-    title: "Tasting & Education",
-    text: "Compare heat levels on the Scoville scale, taste fresh and processed peppers, and leave with real knowledge about origins, colours, and flavour profiles.",
-  },
-  {
-    icon: <Sprout size={28} />,
-    title: "Seeds & Seedlings",
-    text: "Take a piece of the farm home. We offer a curated selection of seeds and young seedlings so you can start your own spicy growing journey.",
-  },
-  {
-    icon: <Users size={28} />,
-    title: "Family-Friendly Experience",
-    text: "An inclusive, outdoor experience designed for all ages — couples, families, and curious solo visitors who want something different from a typical day out.",
-  },
+const OFFER_ICONS = [
+  <Flame size={28} />,
+  <Users size={28} />,
+  <Package size={28} />,
+  <GraduationCap size={28} />,
+  <Sprout size={28} />,
+  <Users size={28} />,
 ];
 
-const WHY_VISIT = [
-  "A one-of-a-kind destination — there's nothing quite like it in the region",
-  "Real farm, real people, real story behind every plant",
-  "Sensory and hands-on — not just another museum visit",
-  "Learn something you'll actually use in your kitchen",
-  "Supporting a family-run farm with deep personal roots",
+const EXPERIENCE_ICONS = [
+  <Flame size={20} />,
+  <FlaskConical size={20} />,
+  <MapPin size={20} />,
+  <ShoppingCart size={20} />,
 ];
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+
+  const OFFERS = t('about.offers', { returnObjects: true });
+  const WHY_VISIT = t('about.whyVisit', { returnObjects: true });
+  const experiencePoints = t('about.experiencePoints', { returnObjects: true });
+
   return (
     <div className="about-page">
       <section className="about-hero">
         <div className="about-hero-layout">
           <div className="about-hero-inner">
             <Link to="/" className="about-back">
-              &#8592; Back to Home
+              {t('about.backHome')}
             </Link>
 
-            <p className="about-kicker">Hadiners · House of Spicy</p>
+            <p className="about-kicker">{t('about.kicker')}</p>
 
             <h1 className="about-hero-title">
-              More than a farm.
-              <br />A story grown from the ground up.
+              {t('about.title').split('\n').map((line, i, arr) => (
+                i < arr.length - 1 ? <span key={i}>{line}<br /></span> : <span key={i}>{line}</span>
+              ))}
             </h1>
 
             <p className="about-hero-sub">
-              A living farm, a visitor destination, and a personal journey — all
-              in one place. Come explore over 150 varieties of hot peppers and
-              discover where passion meets the soil.
+              {t('about.subtitle')}
             </p>
 
             <div className="about-hero-actions">
               <Link to="/tours" className="about-btn about-btn--primary">
-                Book a Tour
+                {t('about.btnTour')}
               </Link>
 
               <button
                 className="about-btn about-btn--ghost"
                 onClick={() => scrollTo("our-story")}
               >
-                Read Our Story
+                {t('about.btnStory')}
               </button>
 
               <Link
@@ -88,13 +69,13 @@ export default function AboutPage() {
                 state={{ from: "/about" }}
                 className="about-btn about-btn--primary"
               >
-                Farm Location
+                {t('about.btnLocation')}
               </Link>
             </div>
           </div>
 
           <div className="about-hero-image-wrap">
-            <img src={heroImg} alt="The Hadiners farm" className="about-hero-img" />
+            <img src={heroImg} alt={t('about.heroImgAlt')} className="about-hero-img" />
           </div>
         </div>
       </section>
@@ -103,64 +84,50 @@ export default function AboutPage() {
         <div className="about-section-inner">
           <div className="about-story-grid">
             <div className="about-story-text">
-              <p className="about-section-kicker">Our Story</p>
-              <h2 className="about-section-title">From grief to growing</h2>
+              <p className="about-section-kicker">{t('about.storyKicker')}</p>
+              <h2 className="about-section-title">{t('about.storyTitle')}</h2>
 
               <p className="about-story-body">
-                Life doesn't always follow the path we imagine. For the founder
-                of Hadiners, a career in farming was never part of the plan —
-                until everything changed.
+                {t('about.storyBody1')}
               </p>
 
               <p className="about-story-body">
-                After losing his beloved nephew Kfir in a car accident, the
-                weight of grief pulled him away from the things he once loved.
-                For a while, it felt like part of him had gone too. Then
-                something unexpected happened.
+                {t('about.storyBody2')}
               </p>
 
               <p className="about-story-body">
-                His eldest son introduced him to a large online community of hot
-                pepper enthusiasts. What began as a distraction became a genuine
-                passion. He started growing his first plants — slowly, carefully
-                — and for the first time in a long while, the smile returned.
+                {t('about.storyBody3')}
               </p>
 
               <p className="about-story-body">
-                That hobby grew into a calling. The growing tunnels expanded. A
-                small production kitchen followed. Then a visitor centre. What
-                was once a way to heal quietly became a place where others could
-                come, explore, taste, and feel at home.
+                {t('about.storyBody4')}
               </p>
 
               <p className="about-story-body about-story-highlight">
-                Today, Hadiners is a farm, a food producer, and a community —
-                built by hand, built from loss, and built with love for
-                everything spicy.
+                {t('about.storyBody5')}
               </p>
             </div>
 
             <div className="about-story-aside">
               <div className="about-story-card">
                 <div className="about-story-stat">
-                  <span className="about-stat-number">150+</span>
-                  <span className="about-stat-label">pepper varieties</span>
+                  <span className="about-stat-number">{t('about.stat1Value')}</span>
+                  <span className="about-stat-label">{t('about.stat1Label')}</span>
                 </div>
 
                 <div className="about-story-stat">
-                  <span className="about-stat-number">4</span>
-                  <span className="about-stat-label">farm zones</span>
+                  <span className="about-stat-number">{t('about.stat2Value')}</span>
+                  <span className="about-stat-label">{t('about.stat2Label')}</span>
                 </div>
 
                 <div className="about-story-stat">
-                  <span className="about-stat-number">1</span>
-                  <span className="about-stat-label">family, one dream</span>
+                  <span className="about-stat-number">{t('about.stat3Value')}</span>
+                  <span className="about-stat-label">{t('about.stat3Label')}</span>
                 </div>
               </div>
 
               <blockquote className="about-quote">
-                "What started as a way to heal quietly became a place where
-                others could feel at home too."
+                {t('about.quote')}
               </blockquote>
             </div>
           </div>
@@ -169,18 +136,17 @@ export default function AboutPage() {
 
       <section className="about-offers">
         <div className="about-section-inner">
-          <p className="about-section-kicker">What We Offer</p>
-          <h2 className="about-section-title">A full day of spicy discovery</h2>
+          <p className="about-section-kicker">{t('about.offersKicker')}</p>
+          <h2 className="about-section-title">{t('about.offersTitle')}</h2>
 
           <p className="about-section-sub">
-            Whether you're a seasoned chilli lover or curious for the first time,
-            there's something here for you.
+            {t('about.offersSubtitle')}
           </p>
 
           <div className="about-offers-grid">
-            {OFFERS.map((item) => (
+            {OFFERS.map((item, i) => (
               <article key={item.title} className="about-offer-card">
-                <div className="about-offer-icon">{item.icon}</div>
+                <div className="about-offer-icon">{OFFER_ICONS[i]}</div>
                 <h3 className="about-offer-title">{item.title}</h3>
                 <p className="about-offer-text">{item.text}</p>
               </article>
@@ -193,11 +159,11 @@ export default function AboutPage() {
         <div className="about-section-inner about-experience-inner">
           <div className="about-experience-text">
             <p className="about-section-kicker about-section-kicker--light">
-              The Visitor Experience
+              {t('about.experienceKicker')}
             </p>
 
             <h2 className="about-section-title about-section-title--light">
-              Step inside a world of heat and flavour
+              {t('about.experienceTitle')}
             </h2>
 
             <p className="about-experience-body">
@@ -221,37 +187,24 @@ export default function AboutPage() {
           </div>
 
           <div className="about-experience-visual">
-            <div className="about-experience-badge">
-              <span className="about-experience-badge-icon"><Flame size={20} /></span>
-              <span>Field walk included in every tour</span>
-            </div>
-
-            <div className="about-experience-badge">
-              <span className="about-experience-badge-icon"><FlaskConical size={20} /></span>
-              <span>Live Scoville tastings</span>
-            </div>
-
-            <div className="about-experience-badge">
-              <span className="about-experience-badge-icon"><MapPin size={20} /></span>
-              <span>Small groups — personal attention</span>
-            </div>
-
-            <div className="about-experience-badge">
-              <span className="about-experience-badge-icon"><ShoppingCart size={20} /></span>
-              <span>Farm shop open after every tour</span>
-            </div>
+            {experiencePoints.map((point, i) => (
+              <div key={i} className="about-experience-badge">
+                <span className="about-experience-badge-icon">{EXPERIENCE_ICONS[i]}</span>
+                <span>{point}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="about-why">
         <div className="about-section-inner">
-          <p className="about-section-kicker">Why Visit Us</p>
-          <h2 className="about-section-title">A place unlike any other</h2>
+          <p className="about-section-kicker">{t('about.whyKicker')}</p>
+          <h2 className="about-section-title">{t('about.whyTitle')}</h2>
 
           <ul className="about-why-list">
-            {WHY_VISIT.map((item) => (
-              <li key={item} className="about-why-item">
+            {WHY_VISIT.map((item, i) => (
+              <li key={i} className="about-why-item">
                 <span className="about-why-check">✓</span>
                 {item}
               </li>
@@ -262,17 +215,14 @@ export default function AboutPage() {
 
       <section className="about-closing">
         <div className="about-closing-inner">
-          <h2 className="about-closing-title">You're welcome here</h2>
+          <h2 className="about-closing-title">{t('about.ctaText')}</h2>
 
           <p className="about-closing-text">
-            Hadiners was built as a place of passion, healing, and community.
-            Whatever brings you — curiosity, love of food, a family outing, or
-            just a great day out — you'll find your place among the peppers. Come
-            as a visitor. Leave as part of the story.
+            {t('about.ctaBody')}
           </p>
 
           <Link to="/tours" className="about-btn about-btn--primary about-btn--large">
-            View Tours &amp; Book Your Visit
+            {t('about.ctaBtn')}
           </Link>
         </div>
       </section>

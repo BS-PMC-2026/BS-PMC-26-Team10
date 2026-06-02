@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Flame, Search, ShoppingCart, ShoppingBag } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import "../styles/VisitorProducts.css";
 import { useCart } from "../hooks/useCart";
 import VisitorCart from "../components/VisitorCart/VisitorCart";
@@ -18,8 +19,9 @@ function getHeatLevel(price) {
 }
 
 function HeatMeter({ level }) {
+  const { t } = useTranslation();
   return (
-    <div className="vp-heat" aria-label={`Heat level: ${HEAT_LABELS[level]}`}>
+    <div className="vp-heat" aria-label={t("products.heat", { level: HEAT_LABELS[level] })}>
       <div className="vp-heat-flames">
         {Array.from({ length: 5 }).map((_, i) => (
           <Flame
@@ -38,6 +40,7 @@ function HeatMeter({ level }) {
 }
 
 function ProductModal({ product, onClose, onAddToCart }) {
+  const { t } = useTranslation();
   const heat = getHeatLevel(product.price);
   const [adding, setAdding] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -56,7 +59,7 @@ function ProductModal({ product, onClose, onAddToCart }) {
   const handleAdd = async () => {
     setAdding(true);
     const result = await onAddToCart(product);
-    setFeedback(result.success ? "Added to cart!" : result.error === "out_of_stock" ? "Sold out!" : "Try again");
+    setFeedback(result.success ? t("products.addedToCart") : result.error === "out_of_stock" ? t("products.soldOut") : "Try again");
     setAdding(false);
     setTimeout(() => setFeedback(""), 2500);
   };
@@ -76,9 +79,9 @@ function ProductModal({ product, onClose, onAddToCart }) {
             <div className="vp-modal-img-overlay" />
             <div className="vp-modal-img-badge">
               {product.quantity > 0 ? (
-                <span className="vp-badge in-stock">In Stock</span>
+                <span className="vp-badge in-stock">{t("products.inStock")}</span>
               ) : (
-                <span className="vp-badge out-stock">Out of Stock</span>
+                <span className="vp-badge out-stock">{t("products.outOfStock")}</span>
               )}
             </div>
           </div>
@@ -97,20 +100,20 @@ function ProductModal({ product, onClose, onAddToCart }) {
                 <span className="vp-modal-meta-icon">📦</span>
                 <span className="vp-modal-meta-label">Available</span>
                 <span className="vp-modal-meta-value">
-                  {product.quantity > 0 ? `${product.quantity} units` : "Out of stock"}
+                  {product.quantity > 0 ? t("products.units", { count: product.quantity }) : t("products.outOfStock")}
                 </span>
               </div>
               {product.restock_date && product.quantity === 0 && (
                 <div className="vp-modal-meta-row">
                   <span className="vp-modal-meta-icon">🗓</span>
-                  <span className="vp-modal-meta-label">Restock</span>
+                  <span className="vp-modal-meta-label">{t("products.restock")}</span>
                   <span className="vp-modal-meta-value">{product.restock_date}</span>
                 </div>
               )}
               {product.last_updated && (
                 <div className="vp-modal-meta-row">
                   <span className="vp-modal-meta-icon">🕐</span>
-                  <span className="vp-modal-meta-label">Last updated</span>
+                  <span className="vp-modal-meta-label">{t("products.lastUpdated")}</span>
                   <span className="vp-modal-meta-value">{product.last_updated}</span>
                 </div>
               )}
@@ -122,11 +125,11 @@ function ProductModal({ product, onClose, onAddToCart }) {
                 <span className="vp-modal-price">₪{parseFloat(product.price).toFixed(2)}</span>
               </div>
               <button
-                className={`vp-modal-btn${feedback === "Added to cart!" ? " vp-modal-btn--added" : ""}`}
+                className={`vp-modal-btn${feedback === t("products.addedToCart") ? " vp-modal-btn--added" : ""}`}
                 disabled={product.quantity === 0 || adding}
                 onClick={handleAdd}
               >
-                {adding ? "Adding…" : feedback || (product.quantity > 0 ? "🛒 Add to Cart" : "Sold Out")}
+                {adding ? "Adding…" : feedback || (product.quantity > 0 ? `🛒 ${t("products.addToCart")}` : t("products.soldOut"))}
               </button>
             </div>
           </div>
@@ -137,6 +140,7 @@ function ProductModal({ product, onClose, onAddToCart }) {
 }
 
 function ProductCard({ item, index, onAddToCart, onViewDetails }) {
+  const { t } = useTranslation();
   const heat = getHeatLevel(item.price);
   const [adding, setAdding] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -152,7 +156,7 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
     if (result.success) {
       setFeedback("Added!");
     } else if (result.error === "out_of_stock") {
-      setFeedback("Sold out!");
+      setFeedback(t("products.soldOut"));
     } else {
       setFeedback("Try again");
     }
@@ -173,12 +177,12 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
         <div className="vp-card-img-fade" />
         <div className="vp-card-badge">
           {item.quantity > 0 ? (
-            <span className="vp-badge in-stock">In Stock</span>
+            <span className="vp-badge in-stock">{t("products.inStock")}</span>
           ) : (
-            <span className="vp-badge out-stock">Out of Stock</span>
+            <span className="vp-badge out-stock">{t("products.outOfStock")}</span>
           )}
         </div>
-        <div className="vp-card-img-hover-hint">View details</div>
+        <div className="vp-card-img-hover-hint">{t("products.viewDetails")}</div>
       </button>
 
       <div className="vp-card-body">
@@ -192,7 +196,7 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
               className="vp-ingredients-toggle"
               onClick={() => setShowIngredients((prev) => !prev)}
             >
-              {showIngredients ? "Hide ingredients ▲" : "View ingredients ▼"}
+              {showIngredients ? t("products.hideIngredients") : t("products.viewIngredients")}
             </button>
             {showIngredients && (
               <div className="vp-ingredients-body">
@@ -222,7 +226,7 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
               disabled={item.quantity === 0 || adding}
               onClick={handleAdd}
             >
-              {adding ? "…" : feedback ? feedback : item.quantity > 0 ? "Add" : "Sold Out"}
+              {adding ? "…" : feedback ? feedback : item.quantity > 0 ? "Add" : t("products.soldOut")}
             </button>
           </div>
         </div>
@@ -234,6 +238,7 @@ function ProductCard({ item, index, onAddToCart, onViewDetails }) {
 const CATEGORIES = ["All", "Sauce", "Powder", "Fresh", "Pickled"];
 
 export default function VisitorProducts() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -253,7 +258,7 @@ export default function VisitorProducts() {
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
       } catch {
-        setError("Could not load products. Please try again shortly.");
+        setError(t("products.loadError"));
       } finally {
         setLoading(false);
       }
@@ -276,6 +281,12 @@ export default function VisitorProducts() {
     return result;
   }, [products, search, sortBy, activeCategory]);
 
+  function getCategoryLabel(cat) {
+    if (cat === "All") return t("products.all");
+    const key = cat.toLowerCase();
+    return t(`products.categories.${key}`, { defaultValue: cat });
+  }
+
   return (
     <div className="vp-root">
       {selectedProduct && (
@@ -291,23 +302,21 @@ export default function VisitorProducts() {
       <section className="vp-hero">
         <div className="vp-hero-watermark"><Flame size={120} /></div>
         <div className="vp-hero-text">
-          <p className="vp-hero-kicker">Straight from the field</p>
-          <h1 className="vp-hero-title">Our <span>Products</span></h1>
-          <p className="vp-hero-sub">
-            Every jar, bag, and bottle is born on our farm — fiery, honest, and packed with flavour.
-          </p>
+          <p className="vp-hero-kicker">{t("products.kicker")}</p>
+          <h1 className="vp-hero-title">{t("products.title")}</h1>
+          <p className="vp-hero-sub">{t("products.subtitle")}</p>
           <div className="vp-hero-stats">
             <div className="vp-hero-stat">
-              <span className="vp-hero-stat-number">12+</span>
-              <span className="vp-hero-stat-label">Varieties</span>
+              <span className="vp-hero-stat-number">{t("products.stat1")}</span>
+              <span className="vp-hero-stat-label">{t("products.stat1Label")}</span>
             </div>
             <div className="vp-hero-stat">
-              <span className="vp-hero-stat-number">100%</span>
-              <span className="vp-hero-stat-label">Farm Fresh</span>
+              <span className="vp-hero-stat-number">{t("products.stat2")}</span>
+              <span className="vp-hero-stat-label">{t("products.stat2Label")}</span>
             </div>
             <div className="vp-hero-stat">
               <Flame size={22} className="vp-hero-stat-number" />
-              <span className="vp-hero-stat-label">All heat levels</span>
+              <span className="vp-hero-stat-label">{t("products.stat3Label")}</span>
             </div>
           </div>
         </div>
@@ -322,7 +331,7 @@ export default function VisitorProducts() {
           <input
             className="vp-search"
             type="text"
-            placeholder="Search products…"
+            placeholder={t("products.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -335,7 +344,7 @@ export default function VisitorProducts() {
               className={`vp-cat-btn${activeCategory === cat ? " active" : ""}`}
               onClick={() => setActiveCategory(cat)}
             >
-              {cat}
+              {getCategoryLabel(cat)}
             </button>
           ))}
         </div>
@@ -345,9 +354,9 @@ export default function VisitorProducts() {
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
         >
-          <option value="name">Sort: A–Z</option>
-          <option value="price-asc">Price: Low → High</option>
-          <option value="price-desc">Price: High → Low</option>
+          <option value="name">{t("products.sortAZ")}</option>
+          <option value="price-asc">{t("products.sortPriceLow")}</option>
+          <option value="price-desc">{t("products.sortPriceHigh")}</option>
         </select>
 
         {/* cart trigger */}
@@ -365,15 +374,16 @@ export default function VisitorProducts() {
 
       {!loading && !error && (
         <p className="vp-results-count">
-          {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
-          {activeCategory !== "All" && ` in "${activeCategory}"`}
+          {activeCategory !== "All"
+            ? t("products.foundInCategory", { count: filtered.length, category: activeCategory })
+            : t("products.found", { count: filtered.length })}
         </p>
       )}
 
       {loading && (
         <div className="vp-state">
           <div className="vp-spinner" />
-          <p>Harvesting products…</p>
+          <p>{t("products.loading")}</p>
         </div>
       )}
       {!loading && error && (
@@ -385,7 +395,7 @@ export default function VisitorProducts() {
       {!loading && !error && filtered.length === 0 && (
         <div className="vp-state">
           <ShoppingBag size={48} className="vp-empty-icon" />
-          <p>No products found — try a different search.</p>
+          <p>{t("products.noResults")}</p>
         </div>
       )}
 
@@ -405,11 +415,9 @@ export default function VisitorProducts() {
 
       <div className="vp-footer-strip">
         <p>
-          Questions?{" "}
           <Link to="/tours" className="vp-footer-link">
-            Book a farm tour
-          </Link>{" "}
-          and meet us in person.
+            {t("products.tourCta")}
+          </Link>
         </p>
       </div>
     </div>
