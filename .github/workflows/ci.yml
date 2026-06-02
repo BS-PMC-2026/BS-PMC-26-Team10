@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev
 jobs:
   frontend:
     name: Frontend Checks
@@ -80,7 +82,7 @@ jobs:
     name: Deploy Frontend to Azure
     needs: [build-artifact]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -106,7 +108,7 @@ jobs:
     name: Deploy Backend to Azure
     needs: [build-artifact]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
