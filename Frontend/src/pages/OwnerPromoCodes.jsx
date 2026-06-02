@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import "../styles/OwnerPromoCodes.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -159,7 +160,7 @@ function OwnerPromoCodes() {
   };
 
   return (
-    <div style={{ flex: 1, padding: "2rem" }}>
+    <div className="owner-promo-content" style={{ flex: 1, padding: "2rem" }}>
         <p style={{ color: "#888", margin: 0 }}>Owner Control Center</p>
         <h1 style={{ margin: "0.25rem 0 0.5rem" }}>Promo Codes</h1>
         <p style={{ color: "#666", marginBottom: "1.5rem" }}>
@@ -179,7 +180,7 @@ function OwnerPromoCodes() {
             {editingId ? "Edit Promo Code" : "Add Promo Code"}
           </h2>
           <form onSubmit={handleSubmit}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+            <div className="owner-promo-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
               <div>
                 <label style={labelStyle}>Code <span style={reqStyle}>*</span></label>
                 <input name="code" value={form.code} onChange={handleChange}
@@ -226,7 +227,7 @@ function OwnerPromoCodes() {
             </div>
             {formError && <p style={{ color: "#c0392b", fontSize: "0.85rem", marginTop: "0.5rem" }}>{formError}</p>}
             {formSuccess && <p style={{ color: "#27ae60", fontSize: "0.85rem", marginTop: "0.5rem" }}>{formSuccess}</p>}
-            <div style={{ display: "flex", gap: "0.75rem", marginTop: "1rem" }}>
+            <div className="owner-promo-form-actions" style={{ display: "flex", gap: "0.75rem", marginTop: "1rem" }}>
               <button type="submit" disabled={submitting} style={{
                 background: editingId ? "#e67e22" : "#c0392b", color: "#fff",
                 border: "none", borderRadius: 6, padding: "0.6rem 1.4rem",
@@ -256,7 +257,8 @@ function OwnerPromoCodes() {
           <p style={{ color: "#888" }}>No promo codes yet.</p>
         )}
         {!loading && !error && codes.length > 0 && (
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem" }}>
+          <div className="owner-promo-table-wrap">
+          <table className="owner-promo-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem" }}>
             <thead>
               <tr style={{ borderBottom: "2px solid #eee", textAlign: "left" }}>
                 <th style={thStyle}>Code</th>
@@ -326,6 +328,7 @@ function OwnerPromoCodes() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
     </div>
   );

@@ -16,6 +16,10 @@ vi.mock("../context/AuthContext", () => ({
   useAuth: () => ({ logout: mockLogout }),
 }));
 
+vi.mock("../context/ThemeContext", () => ({
+  useTheme: () => ({ theme: "light", toggleTheme: vi.fn() }),
+}));
+
 function renderSidebar(activeSection = "dashboard") {
   return render(
     <MemoryRouter>

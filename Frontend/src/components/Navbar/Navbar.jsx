@@ -55,13 +55,14 @@ function Navbar() {
   }
 
   const hiddenClass = visible ? "" : " navbar--hidden";
+  const mobileMenuVisible = visible || open;
 
   return (
     <>
       <nav
         className={`navbar${open ? " navbar--open" : ""}${hiddenClass}`}
         aria-label="Site navigation"
-        aria-hidden={!visible}
+        aria-hidden={!mobileMenuVisible}
       >
         <div className="navbar-brand">
           <CLMonogram
@@ -82,7 +83,7 @@ function Navbar() {
                 className={`navbar-link${isActive(to) ? " navbar-link--active" : ""}`}
                 onClick={() => setOpen(false)}
                 aria-current={isActive(to) ? "page" : undefined}
-                tabIndex={visible ? undefined : -1}
+                tabIndex={mobileMenuVisible ? undefined : -1}
               >
                 <span className="navbar-link-icon" aria-hidden="true">
                   <Icon size="1em" strokeWidth={isActive(to) ? 2.2 : 1.6} />
@@ -98,7 +99,7 @@ function Navbar() {
           to="/staffLogin"
           className="navbar-staff-btn"
           onClick={() => setOpen(false)}
-          tabIndex={visible ? undefined : -1}
+          tabIndex={mobileMenuVisible ? undefined : -1}
         >
           <LogIn size="1em" strokeWidth={1.6} />
           <span className="navbar-staff-label">Staff</span>
@@ -108,7 +109,7 @@ function Navbar() {
           className="navbar-theme-btn"
           onClick={toggleTheme}
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          tabIndex={visible ? undefined : -1}
+          tabIndex={mobileMenuVisible ? undefined : -1}
         >
           {theme === "dark"
             ? <Sun size="1em" strokeWidth={1.6} />
@@ -121,11 +122,10 @@ function Navbar() {
       </nav>
 
       <button
-        className={`navbar-toggle${open ? " navbar-toggle--open" : ""}${hiddenClass}`}
+        className={`navbar-toggle${open ? " navbar-toggle--open" : ""}${visible ? "" : " navbar-toggle--hidden"}`}
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close navigation" : "Open navigation"}
         aria-expanded={open}
-        tabIndex={visible ? undefined : -1}
       >
         {open ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
       </button>

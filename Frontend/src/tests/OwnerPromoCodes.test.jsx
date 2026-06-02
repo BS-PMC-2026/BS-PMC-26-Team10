@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import OwnerPromoCodes from "../pages/OwnerPromoCodes";
 
+vi.mock("../context/ThemeContext", () => ({
+  useTheme: () => ({ theme: "light", toggleTheme: vi.fn() }),
+}));
+
 const mockCodes = [
   {
     id: 1,
@@ -138,7 +142,7 @@ describe("OwnerPromoCodes", () => {
 
     await waitFor(() =>
       expect(mockFetch).toHaveBeenCalledWith(
-        "http://127.0.0.1:8000/promo/codes/1",
+        "http://localhost:8000/promo/codes/1",
         expect.objectContaining({ method: "PUT" })
       )
     );
@@ -177,7 +181,7 @@ describe("OwnerPromoCodes", () => {
 
     await waitFor(() =>
       expect(mockFetch).toHaveBeenCalledWith(
-        "http://127.0.0.1:8000/promo/codes/1",
+        "http://localhost:8000/promo/codes/1",
         { method: "DELETE" }
       )
     );
