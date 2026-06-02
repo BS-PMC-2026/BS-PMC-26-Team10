@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import OwnerPromoCodes from "../pages/OwnerPromoCodes";
 
+vi.mock("../context/ThemeContext", () => ({
+  useTheme: () => ({ theme: "light", toggleTheme: vi.fn() }),
+}));
+
 const mockCodes = [
   {
     id: 1,
@@ -69,5 +73,116 @@ describe("OwnerPromoCodes", () => {
     await waitFor(() => screen.getByText("SUMMER20"));
     await userEvent.click(screen.getByRole("button", { name: "+ Create Code" }));
     expect(screen.getByText(/Missing required fields/i)).toBeInTheDocument();
+  });
+
+  test("shows specific missing fields in validation error", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("SUMMER20"));
+    await userEvent.click(screen.getByRole("button", { name: "+ Create Code" }));
+    const errMsg = screen.getByText(/Missing required fields/i).textContent;
+    expect(errMsg).toContain("Discount Value");
+    expect(errMsg).toContain("Valid From");
+    expect(errMsg).toContain("Valid Until");
+    expect(errMsg).toContain("Max Uses");
+  });
+
+  test("shows Uses / Max column in table", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("SUMMER20"));
+    expect(screen.getByText("Uses / Max")).toBeInTheDocument();
+    expect(screen.getByText("5 / 100")).toBeInTheDocument();
+  });
+
+  test("clicking Edit populates form with existing code values", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("SUMMER20"));
+    await userEvent.click(screen.getAllByText("Edit")[0]);
+    expect(screen.getByRole("heading", { name: "Edit Promo Code" })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("SUMMER20")).toHaveValue("SUMMER20");
+    expect(screen.getByPlaceholderText("20")).toHaveValue(20);
+  });
+
+  test("Cancel button in edit mode resets form to add mode", async () => {
+    renderPage();
+    await waitFor(() => screen.getByText("SUMMER20"));
+    await userEvent.click(screen.getAllByText("Edit")[0]);
+    expect(screen.getByRole("heading", { name: "Edit Promo Code" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.getByRole("heading", { name: "Add Promo Code" })).toBeInTheDocument();
+  });
+
+  test("calls PUT endpoint when saving edited code", async () => {
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockCodes) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ message: "Promo code updated successfully!" }) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockCodes) });
+    vi.stubGlobal("fetch", mockFetch);
+
+    render(<MemoryRouter><OwnerPromoCodes /></MemoryRouter>);
+    await waitFor(() => screen.getByText("SUMMER20"));
+
+    await userEvent.click(screen.getAllByText("Edit")[0]);
+    await userEvent.click(screen.getByRole("button", { name: "Save Changes" }));
+
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://127.0.0.1:8000/promo/codes/1",
+        expect.objectContaining({ method: "PUT" })
+      )
+    );
+  });
+
+  test("shows success message after code is updated", async () => {
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockCodes) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ message: "Promo code updated successfully!" }) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockCodes) });
+    vi.stubGlobal("fetch", mockFetch);
+
+    render(<MemoryRouter><OwnerPromoCodes /></MemoryRouter>);
+    await waitFor(() => screen.getByText("SUMMER20"));
+
+    await userEvent.click(screen.getAllByText("Edit")[0]);
+    await userEvent.click(screen.getByRole("button", { name: "Save Changes" }));
+
+    await waitFor(() =>
+      expect(screen.getByText("Promo code updated!")).toBeInTheDocument()
+    );
+  });
+
+  test("calls DELETE endpoint when delete is confirmed", async () => {
+    vi.stubGlobal("confirm", vi.fn(() => true));
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockCodes) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ message: "Promo code deleted." }) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve([mockCodes[1]]) });
+    vi.stubGlobal("fetch", mockFetch);
+
+    render(<MemoryRouter><OwnerPromoCodes /></MemoryRouter>);
+    await waitFor(() => screen.getByText("SUMMER20"));
+
+    await userEvent.click(screen.getAllByText("Delete")[0]);
+
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://127.0.0.1:8000/promo/codes/1",
+        { method: "DELETE" }
+      )
+    );
+  });
+
+  test("does not call DELETE when confirm is cancelled", async () => {
+    vi.stubGlobal("confirm", vi.fn(() => false));
+    const mockFetch = vi.fn(() =>
+      Promise.resolve({ ok: true, json: () => Promise.resolve(mockCodes) })
+    );
+    vi.stubGlobal("fetch", mockFetch);
+
+    render(<MemoryRouter><OwnerPromoCodes /></MemoryRouter>);
+    await waitFor(() => screen.getByText("SUMMER20"));
+
+    await userEvent.click(screen.getAllByText("Delete")[0]);
+
+    expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 });
