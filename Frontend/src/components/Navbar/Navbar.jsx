@@ -57,6 +57,16 @@ function Navbar() {
     i18n.changeLanguage(i18n.language === "he" ? "en" : "he");
   }
 
+  function handleMenuLinkClick() {
+    setOpen(false);
+  }
+
+  function handleMenuLinkKeyDown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      setOpen(false);
+    }
+  }
+
   const hiddenClass = visible ? "" : " navbar--hidden";
   const mobileMenuVisible = visible || open;
 
@@ -84,7 +94,8 @@ function Navbar() {
               <Link
                 to={to}
                 className={`navbar-link${isActive(to) ? " navbar-link--active" : ""}`}
-                onClick={() => setOpen(false)}
+                onClick={handleMenuLinkClick}
+                onKeyDown={handleMenuLinkKeyDown}
                 aria-current={isActive(to) ? "page" : undefined}
                 tabIndex={mobileMenuVisible ? undefined : -1}
               >
@@ -101,7 +112,8 @@ function Navbar() {
         <Link
           to="/staffLogin"
           className="navbar-staff-btn"
-          onClick={() => setOpen(false)}
+          onClick={handleMenuLinkClick}
+          onKeyDown={handleMenuLinkKeyDown}
           tabIndex={mobileMenuVisible ? undefined : -1}
         >
           <LogIn size="1em" strokeWidth={1.6} />
