@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MapPin, Tractor, ShoppingBag, Camera, Car, Compass, Bus, Phone, Mail, Flame } from "lucide-react";
 import "../styles/FarmLocation.css";
+import SocialLinks from "../components/SocialLinks/SocialLinks";
 import farmImageOne from "../assets/imgae1.jpeg";
 import farmImageTwo from "../assets/image6.jpeg";
 import farmImageThree from "../assets/image7.jpeg";
@@ -125,6 +126,9 @@ function FarmLocation() {
             <p>{t('location.helpDesc')}</p>
             <div className="contact-item"><Phone size={14} style={{display:'inline',marginInlineEnd:6}} />052-324-4448</div>
             <div className="contact-item"><Mail size={14} style={{display:'inline',marginInlineEnd:6}} />SPICYDINARS@GMAIL.COM</div>
+            <div className="contact-social">
+              <SocialLinks variant="inline" />
+            </div>
           </div>
         </section>
       </div>
