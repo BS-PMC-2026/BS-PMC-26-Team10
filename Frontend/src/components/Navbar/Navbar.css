@@ -266,7 +266,8 @@
   .navbar-theme-btn {
     font-size: 3.5vw;
     margin-top: 3vw;
-    width: auto;
+    width: 100%;
+    box-sizing: border-box;
     padding: 3vw 5vw;
     border-color: rgba(255, 244, 230, 0.2);
     gap: 2vw;
@@ -607,7 +608,8 @@
   .navbar-lang-btn {
     font-size: 3.5vw;
     margin-top: 3vw;
-    width: auto;
+    width: 100%;
+    box-sizing: border-box;
     padding: 3vw 5vw;
     border-color: rgba(255, 244, 230, 0.2);
     gap: 2vw;
@@ -682,5 +684,45 @@
   [dir="rtl"] .navbar-toggle {
     left: auto;
     right: 5vw;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navbar.navbar--open,
+  .navbar.navbar--open.navbar--hidden,
+  [dir="rtl"] .navbar.navbar--open,
+  [dir="rtl"] .navbar.navbar--open.navbar--hidden {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    background: rgba(45, 24, 13, 0.97) !important;
+    z-index: 3000 !important;
+  }
+
+  .navbar.navbar--open .navbar-links,
+  .navbar.navbar--open .navbar-links li,
+  .navbar.navbar--open .navbar-link,
+  .navbar.navbar--open .navbar-staff-btn,
+  .navbar.navbar--open .navbar-theme-btn,
+  .navbar.navbar--open .navbar-lang-btn {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .navbar.navbar--open .navbar-brand-text,
+  .navbar.navbar--open .navbar-link-label,
+  .navbar.navbar--open .navbar-staff-label {
+    opacity: 1 !important;
+    max-width: 70vw !important;
+  }
+
+  .navbar-toggle {
+    z-index: 3100 !important;
   }
 }
