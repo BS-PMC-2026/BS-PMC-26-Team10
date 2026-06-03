@@ -250,54 +250,96 @@
     .owner-sidebar {
         width: 100%;
         min-height: auto;
-        padding: 5vw 4vw;
-        gap: 4vw;
+        padding: 4vw;
+        gap: 3vw;
+        box-sizing: border-box;
+        position: sticky;
+        top: 0;
+        box-shadow: 0 1vw 4vw rgba(74, 42, 31, 0.2);
+    }
+
+    .owner-sidebar-top {
+        display: flex;
+        align-items: center;
+        gap: 3vw;
+        flex-wrap: wrap;
     }
 
     .owner-sidebar-badge {
         font-size: 3.2vw;
         padding: 1.4vw 3vw;
-        margin-bottom: 2.5vw;
+        margin-bottom: 0;
         border-width: 0.25vw;
     }
 
     .owner-sidebar-top h2 {
-        font-size: 6vw;
-        margin-bottom: 1.5vw;
+        font-size: 5.2vw;
+        margin: 0;
     }
 
-    .owner-sidebar-top p { font-size: 3.7vw; }
+    .owner-sidebar-top p {
+        display: none;
+    }
 
-    .owner-sidebar-nav { gap: 2vw; }
+    .owner-sidebar-nav {
+        flex-direction: row;
+        gap: 2vw;
+        overflow-x: auto;
+        padding-bottom: 1vw;
+        scrollbar-width: thin;
+    }
 
     .owner-nav-btn {
-        border-radius: 3.5vw;
-        padding: 3.5vw 4vw;
-        gap: 3vw;
-        font-size: 3.8vw;
+        width: auto;
+        flex: 0 0 auto;
+        border-radius: 999vw;
+        padding: 2.6vw 3.5vw;
+        gap: 2vw;
+        font-size: 3.4vw;
     }
 
-    .owner-nav-icon { font-size: 4.5vw; width: 5vw; }
+    .owner-nav-btn:hover {
+        transform: none;
+    }
+
+    .owner-nav-icon {
+        font-size: 4vw;
+        width: 4.5vw;
+    }
+
+    .owner-nav-label {
+        white-space: nowrap;
+    }
 
     .owner-nav-indicator { width: 1.5vw; height: 1.5vw; }
 
     .owner-sidebar-bottom {
+        flex-direction: row;
         gap: 2.5vw;
     }
 
+    .owner-sidebar-theme-btn,
     .owner-sidebar-view-site {
         font-size: 3.8vw;
         border-radius: 4vw;
-        padding: 3.5vw;
+        padding: 3vw;
         gap: 2.5vw;
         border-width: 0.25vw;
+        flex: 1;
+    }
+
+    .owner-sidebar-theme-btn span,
+    .owner-sidebar-view-site span,
+    .owner-sidebar-logout span {
+        white-space: nowrap;
     }
 
     .owner-sidebar-logout {
         font-size: 3.8vw;
         border-radius: 4vw;
-        padding: 3.5vw;
+        padding: 3vw;
         gap: 2.5vw;
         border-width: 0.25vw;
+        flex: 1;
     }
 }

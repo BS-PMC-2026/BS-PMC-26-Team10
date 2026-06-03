@@ -433,28 +433,64 @@
   .or-header h1 { font-size: 7vw; }
   .or-subtitle { font-size: 3.5vw; max-width: 100%; }
 
-  .or-stats { gap: 3vw; margin: 5vw 0; }
-  .or-stat-card { min-width: 40vw; border-radius: 4vw; padding: 4vw; }
+  .or-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    margin: 5vw 0;
+  }
+
+  .or-stat-card { min-width: 0; border-radius: 4vw; padding: 4vw; }
   .or-stat-card p { font-size: 3.2vw; }
   .or-stat-card h2 { font-size: 6vw; }
 
-  .or-toolbar { gap: 3vw; margin: 4vw 0; }
-  .or-search, .or-filter { font-size: 3.5vw; padding: 2.5vw 3vw; border-radius: 2.5vw; }
+  .or-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3vw;
+    margin: 4vw 0;
+  }
+
+  .or-search,
+  .or-filter {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 3.5vw;
+    padding: 2.5vw 3vw;
+    border-radius: 2.5vw;
+  }
   .or-filter { background-size: 2.5vw; padding-right: 7vw; }
 
   .or-reviews-list { gap: 4vw; }
   .or-review-card { border-radius: 4vw; padding: 4.5vw; }
-  .or-review-top { margin-bottom: 3vw; }
+  .or-review-top {
+    align-items: flex-start;
+    margin-bottom: 3vw;
+  }
+
+  .or-review-meta {
+    align-items: flex-start;
+  }
+
   .or-star { font-size: 4vw; }
   .or-review-tour { font-size: 3vw; padding: 0.8vw 2.5vw; }
   .or-review-date { font-size: 3vw; }
   .or-reply-badge { font-size: 3vw; padding: 0.8vw 2.5vw; }
 
+  .or-review-body {
+    flex-direction: column;
+    gap: 3vw;
+  }
+
   .or-reviewer-avatar { width: 8vw; height: 8vw; font-size: 3.2vw; }
   .or-reviewer-name { font-size: 3.5vw; }
   .or-verified-tag { font-size: 2.8vw; }
   .or-review-comment { font-size: 3.4vw; }
-  .or-review-photo { width: 14vw; height: 14vw; border-radius: 2.5vw; }
+  .or-review-photo {
+    width: 100%;
+    height: 42vw;
+    border-radius: 3vw;
+  }
 
   .or-existing-reply { padding: 2.5vw 3vw; border-left-width: 0.8vw; border-radius: 0 2vw 2vw 0; }
   .or-existing-reply-label { font-size: 2.8vw; }
@@ -464,6 +500,9 @@
   .or-reply-label { font-size: 3.2vw; }
   .or-reply-textarea { font-size: 3.5vw; padding: 2.5vw 3vw; border-radius: 2.5vw; }
   .or-btn { font-size: 3.5vw; padding: 2.2vw 4vw; border-radius: 2vw; }
+  .or-reply-actions {
+    flex-direction: column-reverse;
+  }
 
   .or-empty-icon { font-size: 10vw; }
   .or-empty h2 { font-size: 5.5vw; }

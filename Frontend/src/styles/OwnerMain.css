@@ -3,11 +3,12 @@
     display: flex;
     background: linear-gradient(180deg, #fdf7f0 0%, #f8f1e7 100%);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .owner-content {
     flex: 1;
+    min-width: 0;
     padding: 3vw;
     position: relative;
     z-index: 2;
@@ -117,10 +118,13 @@
 @media (max-width: 768px) {
     .owner-layout {
         flex-direction: column;
+        overflow-x: hidden;
     }
 
     .owner-content {
         padding: 5vw 4vw;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .owner-header {
@@ -155,5 +159,29 @@
         height: 30vw;
         bottom: 10vw;
         left: -5vw;
+    }
+
+    .owner-coming-soon {
+        min-height: 45vh;
+        gap: 3vw;
+        padding: 8vw 4vw;
+    }
+
+    .owner-coming-soon-icon {
+        font-size: 12vw;
+    }
+
+    .owner-coming-soon h2 {
+        font-size: 6vw;
+    }
+
+    .owner-coming-soon p {
+        max-width: 100%;
+        font-size: 3.6vw;
+    }
+
+    .owner-coming-soon-tag {
+        padding: 1.5vw 4vw;
+        font-size: 3vw;
     }
 }

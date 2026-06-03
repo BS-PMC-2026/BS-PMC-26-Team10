@@ -74,6 +74,7 @@ def get_admin_from_token(token: str) -> Optional[dict]:
 
     try:
         result = supabase.table("admin_users").select("id, first_name, last_name, email, role").eq("id", int(payload["sub"])).execute()
+        result = supabase.table("admin_users").select("id, first_name, last_name, email, role").eq("id", int(payload["sub"])).execute()
         if not result.data:
             return None
         row = result.data[0]

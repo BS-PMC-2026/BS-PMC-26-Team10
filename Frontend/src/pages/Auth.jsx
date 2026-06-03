@@ -218,7 +218,7 @@ function Auth() {
           {view === "forgot" && (
             <form className="auth-form" onSubmit={handleForgot} noValidate>
               <button type="button" className="auth-back" onClick={() => switchView("login")}>
-                {t('auth.backSite')}
+                {t('auth.backToLogin')}
               </button>
 
               <h2 className="auth-form-title">{t('auth.resetTitle')}</h2>

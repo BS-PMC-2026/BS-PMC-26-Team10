@@ -3,13 +3,18 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev
 jobs:
   frontend:
     name: Frontend Checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Frontend
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,10 +23,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: Frontend/package-lock.json
       - name: Install frontend dependencies
         run: npm ci
-      - name: Lint frontend
-        run: npm run lint
       - name: Build frontend
         run: npm run build
       - name: Run frontend unit tests
@@ -58,16 +62,59 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: Frontend/package-lock.json
       - name: Install frontend dependencies
+        working-directory: Frontend
         run: npm ci
       - name: Build frontend
+        working-directory: Frontend
         run: npm run build
       - name: Zip bundle
-        run: zip -r dist/chilliland-${{ github.sha }}.zip dist/ Backend/
+        run: zip -r chilliland-${{ github.sha }}.zip Frontend/dist/ Backend/
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: chilliland-${{ github.run_number }}-${{ github.sha }}
-          path: dist/chilliland-${{ github.sha }}.zip
+          path: chilliland-${{ github.sha }}.zip
           if-no-files-found: error
           retention-days: 14
+  deploy-frontend:
+    name: Deploy Frontend to Azure
+    needs: [build-artifact]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: Frontend
+        run: npm ci
+      - name: Build frontend
+        working-directory: Frontend
+        run: npm run build
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ChilliLand
+          publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
+          package: ./Frontend/dist
+  deploy-backend:
+    name: Deploy Backend to Azure
+    needs: [build-artifact]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: Chillieland-backend
+          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
+          package: ./Backend

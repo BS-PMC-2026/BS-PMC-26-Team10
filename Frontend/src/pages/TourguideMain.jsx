@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
 import GuideSidebar from "../components/GuideSidebar/GuideSidebar";
 import TourGrid from "../components/TourGrid/TourGrid";
 import TourFormModal from "../components/TourFormModal/TourFormModal";
 import CreateTourPage from "../components/CreateTourPage/CreateTourPage";
+import TourGuideDashboard from "./TourGuideDashboard";
+import TourGuideCalendar from "./TourGuideCalendar";
+import TourGuideBookings from "./TourGuideBookings";
+import TourGuideReviews from "./TourGuideReviews";
 import "../styles/TourguideMain.css";
 
 export function MyToursView({ onCreateNew }) {
@@ -98,22 +103,36 @@ export function MyToursView({ onCreateNew }) {
   );
 }
 
-function PlaceholderView({ name }) {
+function SettingsView() {
   return (
-    <main style={{ flex: 1, padding: "60px 40px", background: "linear-gradient(180deg,#fff8f8,#fff1ee)", fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ fontWeight: 800, fontSize: 28, color: "#7a1111", letterSpacing: "-0.02em" }}>{name}</h2>
-      <p style={{ color: "#8a4a4a" }}>This section isn't implemented yet.</p>
+    <main style={{
+      flex: 1,
+      padding: "3vw",
+      background: "linear-gradient(180deg,#fffaf5,#fffdf8)",
+      fontFamily: "var(--font-body, Arial, sans-serif)",
+    }}>
+      <p style={{ fontSize: "0.88vw", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1vw", color: "#a14d2a", marginBottom: "0.4vw" }}>
+        Tour Guide Portal
+      </p>
+      <h2 style={{ fontWeight: 800, fontSize: "2.4vw", color: "#4a2a1f", margin: "0 0 0.4vw" }}>Settings</h2>
+      <p style={{ color: "#6d5447", fontSize: "1vw" }}>Account settings coming soon.</p>
     </main>
   );
 }
 
 function TourguideMain() {
-  const [route, setRoute] = useState("my-tours");
+  const [route, setRoute] = useState("dashboard");
+  const { admin } = useAuth();
+  const guideName = admin ? `${admin.first_name} ${admin.last_name}` : undefined;
 
   return (
     <div className="tourguide-layout">
-      <GuideSidebar current={route} onNav={setRoute} />
+      <GuideSidebar current={route} onNav={setRoute} guideName={guideName} />
 
+      {route === "dashboard" && (
+        <TourGuideDashboard onNav={setRoute} />
+      )}
+      {route === "calendar" && <TourGuideCalendar />}
       {route === "my-tours" && (
         <MyToursView onCreateNew={() => setRoute("create")} />
       )}
@@ -123,8 +142,9 @@ function TourguideMain() {
           onCancel={() => setRoute("my-tours")}
         />
       )}
-      {route === "bookings" && <PlaceholderView name="Bookings" />}
-      {route === "settings" && <PlaceholderView name="Settings" />}
+      {route === "bookings" && <TourGuideBookings />}
+      {route === "reviews"  && <TourGuideReviews />}
+      {route === "settings" && <SettingsView />}
     </div>
   );
 }

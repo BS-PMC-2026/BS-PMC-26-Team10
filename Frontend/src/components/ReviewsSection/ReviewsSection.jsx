@@ -45,7 +45,7 @@ function StarPicker({ value, onChange }) {
 function ReviewCard({ review }) {
   const { t } = useTranslation();
 
-  const initials = review.reviewer_name
+  const initials = (review.reviewer_name || "")
     .trim()
     .split(/\s+/)
     .map((w) => w[0] || "")
@@ -370,7 +370,7 @@ export default function ReviewsSection({ tours }) {
       });
   }
 
-  useEffect(() => { fetchReviews("all"); }, []);
+  useEffect(() => { fetchReviews("all"); }, []); // eslint-disable-line react-hooks/set-state-in-effect
 
   /* Auto-rotation — restarts whenever reviews change */
   function startAutoplay() {

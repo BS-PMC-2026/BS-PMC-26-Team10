@@ -66,7 +66,10 @@ function App() {
             path="/owner/:section"
             element={<ProtectedRoute><OwnerMain /></ProtectedRoute>}
           />
-          <Route path="/tourguide" element={<TourguideMain />} />
+          <Route
+            path="/tourguide"
+            element={<ProtectedRoute><TourguideMain /></ProtectedRoute>}
+          />
           <Route path="/staffLogin" element={<Auth />} />        </Routes>
       </AuthProvider>
       </ThemeProvider>
