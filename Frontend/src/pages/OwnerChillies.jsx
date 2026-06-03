@@ -281,7 +281,7 @@ function OwnerChillies() {
                           </div>
                           <div class="card-footer">Scan QR to learn more • chilliland.farm</div>
                         </div>
-                        <script>window.onload = () => { window.print(); }<\/script>
+                        <script>window.onload = () => { window.print(); }</script>
                       </body>
                       </html>
                     `);
