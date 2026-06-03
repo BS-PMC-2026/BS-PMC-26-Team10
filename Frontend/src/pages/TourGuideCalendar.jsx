@@ -10,6 +10,10 @@ const MONTH_NAMES = [
 const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 function TourPill({ tour, onClick }) {
+  const pct =
+    tour.capacity > 0
+      ? Math.round(((tour.capacity - (tour.remaining_spots ?? tour.capacity)) / tour.capacity) * 100)
+      : 0;
   const isFull = tour.is_full;
   return (
     <button
