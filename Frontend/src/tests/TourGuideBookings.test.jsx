@@ -75,8 +75,9 @@ test("shows KPI stat cards with correct counts", async () => {
   await waitFor(() => screen.getByText("Dana Mizrahi"));
 
   expect(screen.getByText("Total Bookings")).toBeInTheDocument();
-  expect(screen.getByText("Confirmed")).toBeInTheDocument();
-  expect(screen.getByText("Cancelled")).toBeInTheDocument();
+  // "Confirmed" / "Cancelled" also appear as badges in rows — use getAllByText
+  expect(screen.getAllByText("Confirmed").length).toBeGreaterThan(0);
+  expect(screen.getAllByText("Cancelled").length).toBeGreaterThan(0);
   expect(screen.getByText("Total Visitors")).toBeInTheDocument();
 });
 
