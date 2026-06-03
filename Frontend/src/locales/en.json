@@ -363,7 +363,12 @@
     ],
     "ctaText": "You're welcome here",
     "ctaBody": "Hadiners was built as a place of passion, healing, and community. Whatever brings you — curiosity, love of food, a family outing, or just a great day out — you'll find your place among the peppers. Come as a visitor. Leave as part of the story.",
-    "ctaBtn": "View Tours & Book Your Visit"
+    "ctaBtn": "View Tours & Book Your Visit",
+    "followUs": "Follow us",
+    "farmGalleryKicker": "Farm Gallery",
+    "farmGalleryTitle": "See it for yourself",
+    "farmGallerySubtitle": "A glimpse into the colours, textures, and atmosphere waiting for you.",
+    "farmGalleryImgAlt": "ChiliLand farm {{n}}"
   },
   "location": {
     "back": "← Back",
