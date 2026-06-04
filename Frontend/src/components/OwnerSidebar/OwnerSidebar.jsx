@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, Globe, LogOut, Sun, Moon, Languages } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Leaf, Tag, Flame, Calendar, Users, MessageSquare, BellRing, Globe, LogOut, Sun, Moon, Languages } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
 import { useAuth } from "../../context/AuthContext";
@@ -16,6 +16,7 @@ const NAV_IDS = [
   { id: "bookings",    icon: <Calendar size={16} />,        key: "bookings"   },
   { id: "team",        icon: <Users size={16} />,           key: "team"       },
   { id: "reviews",     icon: <MessageSquare size={16} />,   key: "reviews"    },
+  { id: "updates",     icon: <BellRing size={16} />,        key: "updates"    },
 ];
 
 function OwnerSidebar({ activeSection }) {

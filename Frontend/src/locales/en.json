@@ -536,6 +536,26 @@
       "Regular watering for best production"
     ]
   },
+  "subscriptions": {
+    "kicker": "Stay in the loop",
+    "title": "Fresh updates from the farm",
+    "subtitle": "Choose the news you care about and receive occasional ChiliLand updates by email.",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "choose": "What would you like to receive?",
+    "events": "Events",
+    "discounts": "Special discounts",
+    "newProducts": "New products",
+    "consent": "I agree to receive email updates from ChiliLand. I can unsubscribe at any time.",
+    "subscribe": "Save my preferences",
+    "unsubscribe": "Unsubscribe",
+    "saving": "Saving...",
+    "saved": "Your update preferences were saved.",
+    "unsubscribed": "You have been unsubscribed from ChiliLand updates.",
+    "emailRequired": "Enter your email address to unsubscribe.",
+    "saveError": "Could not save your preferences.",
+    "unsubscribeError": "Could not unsubscribe this email."
+  },
   "owner": {
     "controlCenter": "Owner Control Center",
     "sidebar": {
@@ -551,7 +571,8 @@
         "tours": "Tours Overview",
         "bookings": "Booking Requests",
         "team": "Team Schedule",
-        "reviews": "Reviews"
+        "reviews": "Reviews",
+        "updates": "Subscriber Updates"
       },
       "darkMode": "Dark Mode",
       "lightMode": "Light Mode",
@@ -640,6 +661,22 @@
       "colPayment": "Payment",
       "paidLabel": "Paid",
       "freeLabel": "Free"
+    },
+    "updates": {
+      "title": "Subscriber Updates",
+      "subtitle": "See subscriber interests and send a timely update to the right audience.",
+      "statsLabel": "Subscription statistics",
+      "activeSubscribers": "Active subscribers",
+      "statsError": "Could not load subscription statistics.",
+      "composeTitle": "Send an update",
+      "composeSubtitle": "Messages are sent only to active subscribers who selected the chosen category.",
+      "category": "Audience category",
+      "subject": "Email subject",
+      "message": "Message",
+      "send": "Send update",
+      "sending": "Sending...",
+      "sendError": "Could not send the update.",
+      "sentResult": "Sent {{sent}} of {{recipients}} emails. Failed: {{failed}}."
     },
     "promoCodes": {
       "title": "Promo Codes",
