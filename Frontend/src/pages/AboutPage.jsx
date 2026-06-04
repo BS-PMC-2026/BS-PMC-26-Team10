@@ -3,6 +3,22 @@ import { useTranslation } from "react-i18next";
 import { Flame, Users, Package, GraduationCap, Sprout, FlaskConical, MapPin, ShoppingCart } from "lucide-react";
 import "../styles/AboutPage.css";
 import heroImg from "../assets/imgae3.jpeg";
+import SocialLinks from "../components/SocialLinks/SocialLinks";
+
+const GALLERY_IMAGES = [
+  "https://images.unsplash.com/photo-1518725750399-7a73d335dd8d?w=800&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1710663497561-b98b13c09aeb?w=800&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1575011016054-f3f0f3d4b7bb?w=800&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1640490201159-b3ae61c54747?w=800&h=600&fit=crop&q=80",
+  "https://plus.unsplash.com/premium_photo-1666299429522-1864e917f2e3?w=800&h=600&fit=crop&q=80",
+  "https://plus.unsplash.com/premium_photo-1666606035155-3253dbd39d4a?w=800&h=600&fit=crop&q=80",
+];
+
+const GALLERY_VIDEOS = [
+  "xr7FoeSji98",
+  "9vMr-tHdbRU",
+  "DMlV5QAul7w",
+];
 
 function scrollTo(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -197,6 +213,32 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="about-gallery">
+        <div className="about-section-inner">
+          <p className="about-section-kicker">{t('about.farmGalleryKicker')}</p>
+          <h2 className="about-section-title">{t('about.farmGalleryTitle')}</h2>
+          <p className="about-section-sub">{t('about.farmGallerySubtitle')}</p>
+
+          <div className="about-gallery-grid">
+            {GALLERY_IMAGES.map((src, i) => (
+              <div key={`img-${i}`} className="about-gallery-item">
+                <img src={src} alt={t('about.farmGalleryImgAlt', { n: i + 1 })} loading="lazy" />
+              </div>
+            ))}
+            {GALLERY_VIDEOS.map((videoId) => (
+              <div key={videoId} className="about-gallery-item about-gallery-item--video">
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  title={`ChiliLand video ${videoId}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="about-why">
         <div className="about-section-inner">
           <p className="about-section-kicker">{t('about.whyKicker')}</p>
@@ -224,6 +266,11 @@ export default function AboutPage() {
           <Link to="/tours" className="about-btn about-btn--primary about-btn--large">
             {t('about.ctaBtn')}
           </Link>
+
+          <div className="about-social">
+            <p className="about-social-label">{t('about.followUs')}</p>
+            <SocialLinks variant="inline" />
+          </div>
         </div>
       </section>
     </div>
