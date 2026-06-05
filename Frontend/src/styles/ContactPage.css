@@ -1,0 +1,225 @@
+.cp-root {
+  min-height: 100vh;
+  background: #faf8f5;
+}
+
+/* ── Hero ── */
+.cp-hero {
+  background: linear-gradient(135deg, #2a1006 0%, #7a1e06 100%);
+  padding: 5rem 6vw 4rem;
+  text-align: center;
+  color: #fff;
+}
+
+.cp-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin: 0 0 0.75rem;
+}
+
+.cp-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  margin: 0 0 1rem;
+  line-height: 1.15;
+}
+
+.cp-subtitle {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.75);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Body ── */
+.cp-body {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 6vw 5rem;
+}
+
+/* ── Form ── */
+.cp-form-wrap {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+.cp-form-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2a1006;
+  margin: 0 0 1.75rem;
+}
+
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.cp-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5a3a2a;
+}
+
+.cp-field input,
+.cp-field textarea {
+  border: 1.5px solid #e8d8d0;
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  color: #222;
+  background: #fff;
+  transition: border-color 0.18s;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.cp-field input:focus,
+.cp-field textarea:focus {
+  outline: none;
+  border-color: #b83b1a;
+}
+
+.cp-field input[aria-invalid="true"],
+.cp-field textarea[aria-invalid="true"] {
+  border-color: #e03030;
+}
+
+.cp-error {
+  font-size: 0.78rem;
+  color: #e03030;
+}
+
+.cp-send-error {
+  margin-bottom: 0.75rem;
+}
+
+.cp-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: #b83b1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+  margin-top: 0.5rem;
+}
+
+.cp-btn:hover:not(:disabled) { background: #9a2e12; }
+.cp-btn:active:not(:disabled) { transform: scale(0.98); }
+.cp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Success ── */
+.cp-success {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.cp-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.cp-success h2 { color: #2a1006; margin: 0 0 0.5rem; }
+.cp-success p  { color: #666; margin: 0 0 0.5rem; line-height: 1.6; }
+.cp-success-urgent { font-weight: 600; color: #b83b1a !important; }
+.cp-success .cp-btn { margin-top: 1.5rem; }
+
+/* ── Aside ── */
+.cp-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cp-info-card,
+.cp-social-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+.cp-info-card h3,
+.cp-social-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2a1006;
+  margin: 0 0 1rem;
+}
+
+.cp-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0;
+  color: #444;
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f5ede8;
+  transition: color 0.15s;
+}
+
+.cp-info-item:last-child { border-bottom: none; }
+.cp-info-item:hover { color: #b83b1a; }
+
+.cp-social-desc {
+  font-size: 0.85rem;
+  color: #888;
+  margin: -0.5rem 0 1rem;
+  line-height: 1.5;
+}
+
+.cp-social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cp-social-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  background: var(--cp-color);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: opacity 0.18s, transform 0.15s;
+}
+
+.cp-social-btn:hover {
+  opacity: 0.88;
+  transform: translateX(-3px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 720px) {
+  .cp-body {
+    grid-template-columns: 1fr;
+  }
+}

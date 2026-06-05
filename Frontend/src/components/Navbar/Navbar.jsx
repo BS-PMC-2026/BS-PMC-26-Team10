@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon, Languages } from "lucide-react";
+import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon, Languages, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
 import { useTheme } from "../../context/ThemeContext";
@@ -108,6 +108,16 @@ function Navbar() {
             </li>
           ))}
         </ul>
+
+        <Link
+          to="/contact"
+          className="navbar-contact-btn"
+          onClick={handleMenuLinkClick}
+          tabIndex={mobileMenuVisible ? undefined : -1}
+        >
+          <MessageCircle size="1em" strokeWidth={1.6} />
+          <span className="navbar-staff-label">{t("nav.contact")}</span>
+        </Link>
 
         <Link
           to="/staffLogin"

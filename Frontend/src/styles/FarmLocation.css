@@ -309,3 +309,20 @@
 .contact-social {
   margin-top: 1rem;
 }
+
+.farm-contact-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #b83b1a;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.18s;
+}
+
+.farm-contact-btn:hover {
+  background: #9a2e12;
+}

@@ -5,6 +5,7 @@
     "tours": "Tours",
     "about": "About",
     "location": "Location",
+    "contact": "Need Help?",
     "staff": "Staff",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
@@ -397,7 +398,8 @@
       "Bus: Line 12, \"Prigan Center\" stop — about 5 min walk"
     ],
     "helpTitle": "Need Help?",
-    "helpDesc": "If you have trouble finding us, feel free to contact:"
+    "helpDesc": "If you have trouble finding us, feel free to contact:",
+    "contactBtn": "Send us a message →"
   },
   "auth": {
     "brand": "ChilliLand",
@@ -850,5 +852,33 @@
     "back": "Back",
     "yes": "Yes",
     "no": "No"
+  },
+  "contact": {
+    "kicker": "We're here for you",
+    "title": "Contact Us",
+    "subtitle": "Have a question or request? Fill in the form and we'll get back to you shortly.",
+    "formTitle": "Send us a message",
+    "name": "Full Name",
+    "namePlaceholder": "John Smith",
+    "phone": "Phone Number",
+    "phonePlaceholder": "050-000-0000",
+    "email": "Email Address",
+    "emailPlaceholder": "john@email.com",
+    "message": "Message",
+    "messagePlaceholder": "Write your question or request here...",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "errorName": "Please enter your full name.",
+    "errorPhone": "Please enter your phone number.",
+    "errorEmail": "Please enter your email address.",
+    "errorMessage": "Please write a message.",
+    "sendError": "Something went wrong. Please try again.",
+    "successTitle": "Message sent successfully!",
+    "successBody": "Thank you! We'll get back to you shortly.",
+    "successUrgent": "If this is urgent, you can contact us directly by phone.",
+    "sendAnother": "Send another message",
+    "directTitle": "Direct Contact",
+    "socialTitle": "Follow Us",
+    "socialDesc": "You can also reach us through our social media channels."
   }
 }
