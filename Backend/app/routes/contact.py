@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from app.services.email_service import send_contact_inquiry
 
 router = APIRouter()
@@ -8,7 +8,7 @@ router = APIRouter()
 class ContactRequest(BaseModel):
     name: str
     phone: str
-    email: EmailStr
+    email: str
     message: str
 
 

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FaInstagram, FaFacebook, FaWhatsapp } from "react-icons/fa";
 import "../styles/ContactPage.css";
 
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const SOCIAL = [
   {

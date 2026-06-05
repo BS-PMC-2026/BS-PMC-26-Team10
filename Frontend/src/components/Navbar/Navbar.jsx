@@ -14,11 +14,12 @@ function Navbar() {
   const isHome = pathname === "/";
 
   const NAV_LINKS = [
-    { to: "/",              label: t("nav.home"),     Icon: Home       },
-    { to: "/products",      label: t("nav.products"), Icon: ShoppingBag },
-    { to: "/tours",         label: t("nav.tours"),    Icon: Tractor    },
-    { to: "/about",         label: t("nav.about"),    Icon: Info       },
-    { to: "/farm-location", label: t("nav.location"), Icon: MapPin     },
+    { to: "/",              label: t("nav.home"),     Icon: Home           },
+    { to: "/products",      label: t("nav.products"), Icon: ShoppingBag    },
+    { to: "/tours",         label: t("nav.tours"),    Icon: Tractor        },
+    { to: "/about",         label: t("nav.about"),    Icon: Info           },
+    { to: "/farm-location", label: t("nav.location"), Icon: MapPin         },
+    { to: "/contact",       label: t("nav.contact"),  Icon: MessageCircle  },
   ];
 
   const [visible, setVisible] = useState(!isHome);
@@ -108,16 +109,6 @@ function Navbar() {
             </li>
           ))}
         </ul>
-
-        <Link
-          to="/contact"
-          className="navbar-contact-btn"
-          onClick={handleMenuLinkClick}
-          tabIndex={mobileMenuVisible ? undefined : -1}
-        >
-          <MessageCircle size="1em" strokeWidth={1.6} />
-          <span className="navbar-staff-label">{t("nav.contact")}</span>
-        </Link>
 
         <Link
           to="/staffLogin"
