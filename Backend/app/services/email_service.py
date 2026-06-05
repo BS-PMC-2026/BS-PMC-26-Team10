@@ -1,5 +1,6 @@
 import os
 import smtplib
+from html import escape
 from email.message import EmailMessage
 from dotenv import load_dotenv
 
@@ -17,6 +18,10 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_APP_PASSWORD = os.getenv("SMTP_APP_PASSWORD")
 SMTP_SENDER_EMAIL = os.getenv("SMTP_SENDER_EMAIL", SMTP_USERNAME or SENDER_EMAIL)
+BACKEND_PUBLIC_URL = os.getenv(
+    "BACKEND_PUBLIC_URL",
+    "https://chillieland-backend-fpdyfhethmhth7hb.southeastasia-01.azurewebsites.net",
+)
 
 if resend:
     resend.api_key = RESEND_API_KEY
@@ -44,6 +49,54 @@ def _send_smtp_email(to_email, subject, html):
     except Exception as e:
         print("Failed to send email via Gmail SMTP:", e)
         return False
+
+
+def send_subscription_update(to_email: str, subject: str, message: str, category: str, unsubscribe_token: str) -> bool:
+    safe_subject = escape(subject)
+    safe_message = escape(message).replace("\n", "<br/>")
+    safe_category = escape(category.replace("_", " ").title())
+    unsubscribe_url = f"{BACKEND_PUBLIC_URL.rstrip('/')}/subscriptions/unsubscribe/{escape(unsubscribe_token)}"
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    </head>
+    <body style="margin:0;padding:0;background:#fdf7f0;font-family:'Segoe UI',Arial,sans-serif;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#fdf7f0;padding:40px 20px;">
+        <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+            <tr>
+                <td style="background:#4a2a1f;border-radius:16px 16px 0 0;padding:36px 40px;text-align:center;">
+                    <p style="margin:0 0 6px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#e4a97a;font-weight:600;">ChiliLand Farm</p>
+                    <h1 style="margin:0;font-size:30px;color:#ffffff;font-weight:700;">{safe_subject}</h1>
+                    <p style="margin:12px 0 0;font-size:14px;color:rgba(255,255,255,0.72);">{safe_category} update</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="background:#ffffff;padding:36px 40px;">
+                    <p style="margin:0;font-size:16px;color:#5b4032;line-height:1.75;">{safe_message}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="background:#fdf7f0;border:1px solid #efd8cc;border-top:none;border-radius:0 0 16px 16px;padding:22px 40px;text-align:center;">
+                    <p style="margin:0 0 14px;font-size:13px;color:#a07060;">You received this email because you subscribed to ChiliLand updates.</p>
+                    <a href="{unsubscribe_url}"
+                       style="display:inline-block;color:#8f321c;text-decoration:underline;font-size:12px;">
+                        Unsubscribe from updates
+                    </a>
+                </td>
+            </tr>
+        </table>
+        </td></tr>
+        </table>
+    </body>
+    </html>
+    """
+
+    return _send_smtp_email(to_email=to_email, subject=subject, html=html)
 
 
 def send_order_confirmation(order_id, customer_name, customer_email, items, total_amount):
@@ -371,5 +424,42 @@ def send_tour_cancellation_confirmation(
     return _send_smtp_email(
         to_email=visitor_email,
         subject=f"ChiliLand Tour Booking Cancelled - {booking_reference}",
+        html=html,
+    )
+
+
+def send_contact_inquiry(name: str, phone: str, email: str, message: str) -> bool:
+    safe_name = escape(name)
+    safe_phone = escape(phone)
+    safe_email = escape(email)
+    safe_message = escape(message).replace("\n", "<br/>")
+
+    html = f"""
+    <html><body style="font-family:Arial,sans-serif;background:#fff8f5;padding:32px;">
+      <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;
+                  padding:32px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+        <h2 style="color:#b83b1a;margin-top:0;">📬 פנייה חדשה מהאתר</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:15px;">
+          <tr><td style="padding:8px 0;color:#888;width:110px;">שם מלא</td>
+              <td style="padding:8px 0;font-weight:600;">{safe_name}</td></tr>
+          <tr><td style="padding:8px 0;color:#888;">טלפון</td>
+              <td style="padding:8px 0;">{safe_phone}</td></tr>
+          <tr><td style="padding:8px 0;color:#888;">מייל</td>
+              <td style="padding:8px 0;">{safe_email}</td></tr>
+        </table>
+        <hr style="margin:20px 0;border:none;border-top:1px solid #f0e0d8;"/>
+        <p style="color:#555;margin:0 0 6px;font-size:13px;text-transform:uppercase;
+                  letter-spacing:.06em;">הודעה</p>
+        <p style="background:#fff8f5;border-radius:8px;padding:16px;
+                  color:#333;line-height:1.7;margin:0;">{safe_message}</p>
+        <p style="margin-top:24px;font-size:12px;color:#aaa;">
+          נשלח מטופס יצירת הקשר באתר ChiliLand</p>
+      </div>
+    </body></html>
+    """
+
+    return _send_smtp_email(
+        to_email="danc2806@gmail.com",
+        subject=f"פנייה חדשה מהאתר — {safe_name}",
         html=html,
     )

@@ -12,6 +12,7 @@ import TourDetailPage from "./pages/TourDetailPage";
 import AboutPage from "./pages/AboutPage";
 import FarmLocation from "./pages/FarmLocation";
 import VisitorProducts from "./pages/VisitorProducts";
+import ContactPage from "./pages/ContactPage";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -57,6 +58,7 @@ function App() {
             <Route path="/tours/:id" element={<TourDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/farm-location" element={<FarmLocation />} />
+            <Route path="/contact" element={<ContactPage />} />
           </Route>
           <Route
             path="/owner"

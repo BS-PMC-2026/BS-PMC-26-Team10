@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import "../styles/OwnerReviews.css";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 function StarDisplay({ rating }) {
+  const { t } = useTranslation();
   return (
-    <span className="or-stars" aria-label={`${rating} out of 5`}>
+    <span className="or-stars" aria-label={t("reviews.ratingAlt", { rating, count: 5 })}>
       {[1, 2, 3, 4, 5].map((n) => (
         <span key={n} className={n <= rating ? "or-star or-star--on" : "or-star"}>★</span>
       ))}
@@ -15,6 +17,7 @@ function StarDisplay({ rating }) {
 }
 
 function ReviewRow({ review, token, onReplySaved }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [replyText, setReplyText] = useState(review.owner_reply ?? "");
   const [saving, setSaving] = useState(false);
@@ -23,7 +26,7 @@ function ReviewRow({ review, token, onReplySaved }) {
   const hasReply = Boolean(review.owner_reply);
 
   async function handleSave() {
-    if (!replyText.trim()) { setSaveErr("Reply cannot be empty."); return; }
+    if (!replyText.trim()) { setSaveErr(t("owner.reviews.replyEmpty")); return; }
     setSaveErr("");
     setSaving(true);
     try {
@@ -36,7 +39,7 @@ function ReviewRow({ review, token, onReplySaved }) {
         body: JSON.stringify({ reply: replyText.trim() }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Failed to save reply.");
+      if (!res.ok) throw new Error(data.detail || t("owner.reviews.saveFail"));
       onReplySaved(review.id, replyText.trim());
       setExpanded(false);
     } catch (err) {
@@ -65,7 +68,7 @@ function ReviewRow({ review, token, onReplySaved }) {
           <span className="or-review-date">{dateStr}</span>
         </div>
         <span className={`or-reply-badge${hasReply ? " or-reply-badge--replied" : " or-reply-badge--pending"}`}>
-          {hasReply ? "✓ Replied" : "Awaiting reply"}
+          {hasReply ? t("owner.reviews.badgeReplied") : t("owner.reviews.badgePending")}
         </span>
       </div>
 
@@ -77,7 +80,7 @@ function ReviewRow({ review, token, onReplySaved }) {
             </span>
             <div>
               <span className="or-reviewer-name">{review.reviewer_name}</span>
-              <span className="or-verified-tag">Verified Visitor</span>
+              <span className="or-verified-tag">{t("owner.reviews.verifiedVisitor")}</span>
             </div>
           </div>
           {review.comment && (
@@ -96,7 +99,7 @@ function ReviewRow({ review, token, onReplySaved }) {
 
       {hasReply && !expanded && (
         <div className="or-existing-reply">
-          <span className="or-existing-reply-label">Your response</span>
+          <span className="or-existing-reply-label">{t("owner.reviews.yourResponse")}</span>
           <p className="or-existing-reply-text">{review.owner_reply}</p>
         </div>
       )}
@@ -104,14 +107,14 @@ function ReviewRow({ review, token, onReplySaved }) {
       {expanded && (
         <div className="or-reply-form">
           <label className="or-reply-label" htmlFor={`reply-${review.id}`}>
-            {hasReply ? "Edit your response" : "Write a response"}
+            {hasReply ? t("owner.reviews.editResponse") : t("owner.reviews.writeResponse")}
           </label>
           <textarea
             id={`reply-${review.id}`}
             className="or-reply-textarea"
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            placeholder="Write a warm, helpful response visible to all visitors…"
+            placeholder={t("owner.reviews.replyPlaceholder")}
             rows={3}
             maxLength={800}
             autoFocus
@@ -119,21 +122,18 @@ function ReviewRow({ review, token, onReplySaved }) {
           {saveErr && <p className="or-reply-error">{saveErr}</p>}
           <div className="or-reply-actions">
             <button className="or-btn or-btn--ghost" onClick={handleCancel} disabled={saving}>
-              Cancel
+              {t("owner.reviews.cancel")}
             </button>
             <button className="or-btn or-btn--primary" onClick={handleSave} disabled={saving}>
-              {saving ? "Saving…" : "Save Response"}
+              {saving ? t("owner.reviews.saving") : t("owner.reviews.save")}
             </button>
           </div>
         </div>
       )}
 
       {!expanded && (
-        <button
-          className="or-reply-toggle"
-          onClick={() => setExpanded(true)}
-        >
-          {hasReply ? "✏ Edit Response" : "↩ Reply to Review"}
+        <button className="or-reply-toggle" onClick={() => setExpanded(true)}>
+          {hasReply ? t("owner.reviews.toggleEdit") : t("owner.reviews.toggleReply")}
         </button>
       )}
     </div>
@@ -141,6 +141,7 @@ function ReviewRow({ review, token, onReplySaved }) {
 }
 
 function OwnerReviews() {
+  const { t } = useTranslation();
   const { getToken } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,7 +154,7 @@ function OwnerReviews() {
     fetch(`${BASE_URL}/reviews`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((data) => { setReviews(Array.isArray(data) ? data : []); setLoading(false); })
-      .catch(() => { setError("Could not load reviews."); setLoading(false); });
+      .catch(() => { setError(t("owner.reviews.loadError")); setLoading(false); });
   }, []);
 
   function handleReplySaved(id, newReply) {
@@ -189,28 +190,26 @@ function OwnerReviews() {
   return (
     <div className="or-content">
       <div className="or-header">
-        <p className="or-overline">Owner Control Center</p>
-        <h1>Guest Reviews</h1>
-        <p className="or-subtitle">
-          Read visitor feedback from your tours and respond to keep the conversation going.
-        </p>
+        <p className="or-overline">{t("owner.controlCenter")}</p>
+        <h1>{t("owner.reviews.title")}</h1>
+        <p className="or-subtitle">{t("owner.reviews.subtitle")}</p>
       </div>
 
       <div className="or-stats">
         <div className="or-stat-card">
-          <p>Total Reviews</p>
+          <p>{t("owner.reviews.totalReviews")}</p>
           <h2>{reviews.length}</h2>
         </div>
         <div className="or-stat-card">
-          <p>Average Rating</p>
+          <p>{t("owner.reviews.avgRating")}</p>
           <h2>{avgRating} <span className="or-stat-star">★</span></h2>
         </div>
         <div className="or-stat-card">
-          <p>Replied</p>
+          <p>{t("owner.reviews.replied")}</p>
           <h2 className="or-stat--green">{repliedCount}</h2>
         </div>
         <div className="or-stat-card">
-          <p>Awaiting Reply</p>
+          <p>{t("owner.reviews.awaitingReply")}</p>
           <h2 className={pendingCount > 0 ? "or-stat--orange" : ""}>{pendingCount}</h2>
         </div>
       </div>
@@ -219,39 +218,39 @@ function OwnerReviews() {
         <input
           type="text"
           className="or-search"
-          placeholder="Search by reviewer, tour or comment…"
+          placeholder={t("owner.reviews.searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select className="or-filter" value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}>
-          <option value="all">All ratings</option>
+          <option value="all">{t("owner.reviews.allRatings")}</option>
           {[5, 4, 3, 2, 1].map((n) => (
             <option key={n} value={n}>{n} ★</option>
           ))}
         </select>
         <select className="or-filter" value={replyFilter} onChange={(e) => setReplyFilter(e.target.value)}>
-          <option value="all">All statuses</option>
-          <option value="pending">Awaiting reply</option>
-          <option value="replied">Replied</option>
+          <option value="all">{t("owner.reviews.allStatuses")}</option>
+          <option value="pending">{t("owner.reviews.filterAwaiting")}</option>
+          <option value="replied">{t("owner.reviews.filterReplied")}</option>
         </select>
       </div>
 
-      {loading && <div className="or-message">Loading reviews…</div>}
+      {loading && <div className="or-message">{t("owner.reviews.loading")}</div>}
       {!loading && error && <div className="or-message or-message--error">{error}</div>}
 
       {!loading && !error && reviews.length === 0 && (
         <div className="or-empty">
           <span className="or-empty-icon">💬</span>
-          <h2>No reviews yet</h2>
-          <p>Reviews from tour visitors will appear here once submitted.</p>
+          <h2>{t("owner.reviews.emptyTitle")}</h2>
+          <p>{t("owner.reviews.emptyDesc")}</p>
         </div>
       )}
 
       {!loading && !error && reviews.length > 0 && filtered.length === 0 && (
         <div className="or-empty">
           <span className="or-empty-icon">🔍</span>
-          <h2>No matches</h2>
-          <p>Try adjusting your search or filters.</p>
+          <h2>{t("owner.reviews.noMatchTitle")}</h2>
+          <p>{t("owner.reviews.noMatchDesc")}</p>
         </div>
       )}
 

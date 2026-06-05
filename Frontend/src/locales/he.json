@@ -5,6 +5,7 @@
     "tours": "סיורים",
     "about": "אודות",
     "location": "מיקום",
+    "contact": "צריך עזרה?",
     "staff": "צוות",
     "darkMode": "מצב כהה",
     "lightMode": "מצב בהיר",
@@ -395,7 +396,8 @@
       "אוטובוס: קו 12, תחנת \"מרכז פריגן\" — כ-5 דקות הליכה"
     ],
     "helpTitle": "צריך עזרה?",
-    "helpDesc": "אם אתה מתקשה למצוא אותנו, ניתן ליצור קשר:"
+    "helpDesc": "אם אתה מתקשה למצוא אותנו, ניתן ליצור קשר:",
+    "contactBtn": "שלח לנו הודעה ←"
   },
   "auth": {
     "brand": "ChilliLand",
@@ -531,6 +533,26 @@
       "השקיה סדירה לייצור מיטבי"
     ]
   },
+  "subscriptions": {
+    "kicker": "נשארים מעודכנים",
+    "title": "עדכונים טריים מהחווה",
+    "subtitle": "בחרו את החדשות שמעניינות אתכם וקבלו מדי פעם עדכונים מ-ChiliLand בדוא\"ל.",
+    "email": "כתובת דוא\"ל",
+    "emailPlaceholder": "you@example.com",
+    "choose": "אילו עדכונים תרצו לקבל?",
+    "events": "אירועים",
+    "discounts": "הנחות מיוחדות",
+    "newProducts": "מוצרים חדשים",
+    "consent": "אני מסכים/ה לקבל עדכונים בדוא\"ל מ-ChiliLand. ניתן לבטל את ההרשמה בכל עת.",
+    "subscribe": "שמור העדפות",
+    "unsubscribe": "ביטול הרשמה",
+    "saving": "שומר...",
+    "saved": "העדפות העדכונים נשמרו.",
+    "unsubscribed": "ההרשמה לעדכוני ChiliLand בוטלה.",
+    "emailRequired": "יש להזין כתובת דוא\"ל כדי לבטל הרשמה.",
+    "saveError": "לא ניתן לשמור את ההעדפות.",
+    "unsubscribeError": "לא ניתן לבטל את ההרשמה עבור כתובת זו."
+  },
   "owner": {
     "controlCenter": "מרכז בקרה לבעלים",
     "sidebar": {
@@ -546,7 +568,8 @@
         "tours": "סקירת סיורים",
         "bookings": "בקשות הזמנה",
         "team": "לוח שיבוצים",
-        "reviews": "ביקורות"
+        "reviews": "ביקורות",
+        "updates": "עדכונים למנויים"
       },
       "darkMode": "מצב כהה",
       "lightMode": "מצב בהיר",
@@ -636,6 +659,22 @@
       "paidLabel": "שולם",
       "freeLabel": "חינם"
     },
+    "updates": {
+      "title": "עדכונים למנויים",
+      "subtitle": "צפו בתחומי העניין של המנויים ושלחו עדכון בזמן לקהל המתאים.",
+      "statsLabel": "נתוני הרשמה לעדכונים",
+      "activeSubscribers": "מנויים פעילים",
+      "statsError": "לא ניתן לטעון את נתוני ההרשמה.",
+      "composeTitle": "שליחת עדכון",
+      "composeSubtitle": "ההודעה תישלח רק למנויים פעילים שבחרו בקטגוריה המתאימה.",
+      "category": "קטגוריית קהל",
+      "subject": "נושא הדוא\"ל",
+      "message": "תוכן ההודעה",
+      "send": "שלח עדכון",
+      "sending": "שולח...",
+      "sendError": "לא ניתן לשלוח את העדכון.",
+      "sentResult": "נשלחו {{sent}} מתוך {{recipients}} הודעות. נכשלו: {{failed}}."
+    },
     "promoCodes": {
       "title": "קודי הנחה",
       "subtitle": "צור קודי הנחה ללקוחות לשימוש בקופה.",
@@ -699,6 +738,39 @@
       "emptyDesc": "צור את הסיור הראשון שלך באמצעות הכפתור למעלה.",
       "confirmDelete": "למחוק סיור זה?",
       "deleteFail": "לא ניתן למחוק סיור."
+    },
+    "reviews": {
+      "title": "ביקורות מבקרים",
+      "subtitle": "קרא משוב מבקרים מהסיורים שלך והגב כדי לשמור על השיח.",
+      "totalReviews": "סה\"כ ביקורות",
+      "avgRating": "דירוג ממוצע",
+      "replied": "הושב",
+      "awaitingReply": "ממתין לתגובה",
+      "searchPlaceholder": "חיפוש לפי מבקר, סיור או תגובה…",
+      "allRatings": "כל הדירוגים",
+      "allStatuses": "כל הסטטוסים",
+      "filterAwaiting": "ממתין לתגובה",
+      "filterReplied": "הושב",
+      "loading": "טוען ביקורות…",
+      "loadError": "לא ניתן לטעון ביקורות.",
+      "emptyTitle": "אין ביקורות עדיין",
+      "emptyDesc": "ביקורות ממבקרי הסיורים יופיעו כאן לאחר הגשתן.",
+      "noMatchTitle": "לא נמצאו תוצאות",
+      "noMatchDesc": "נסה לשנות את החיפוש או הסינון.",
+      "badgeReplied": "✓ הושב",
+      "badgePending": "ממתין לתגובה",
+      "verifiedVisitor": "מבקר מאומת",
+      "yourResponse": "תגובתך",
+      "editResponse": "ערוך את תגובתך",
+      "writeResponse": "כתוב תגובה",
+      "replyPlaceholder": "כתוב תגובה חמה ומועילה שתהיה גלויה לכל המבקרים…",
+      "replyEmpty": "התגובה לא יכולה להיות ריקה.",
+      "saveFail": "שמירת התגובה נכשלה.",
+      "cancel": "ביטול",
+      "save": "שמור תגובה",
+      "saving": "שומר…",
+      "toggleEdit": "✏ ערוך תגובה",
+      "toggleReply": "↩ הגב לביקורת"
     },
     "status": {
       "paid": "שולם",
@@ -812,5 +884,33 @@
     "back": "חזרה",
     "yes": "כן",
     "no": "לא"
+  },
+  "contact": {
+    "kicker": "אנחנו כאן בשבילך",
+    "title": "צור קשר",
+    "subtitle": "יש לך שאלה או בקשה? מלא את הטופס ונחזור אליך בהקדם.",
+    "formTitle": "שלח לנו הודעה",
+    "name": "שם מלא",
+    "namePlaceholder": "ישראל ישראלי",
+    "phone": "מספר טלפון",
+    "phonePlaceholder": "050-000-0000",
+    "email": "כתובת מייל",
+    "emailPlaceholder": "israel@email.com",
+    "message": "הודעה",
+    "messagePlaceholder": "כתוב כאן את שאלתך או בקשתך...",
+    "send": "שלח הודעה",
+    "sending": "שולח...",
+    "errorName": "אנא הזן שם מלא.",
+    "errorPhone": "אנא הזן מספר טלפון.",
+    "errorEmail": "אנא הזן כתובת מייל.",
+    "errorMessage": "אנא כתוב הודעה.",
+    "sendError": "אירעה שגיאה בשליחה. נסה שוב.",
+    "successTitle": "הבקשה נשלחה בהצלחה!",
+    "successBody": "תודה! נחזור אליך בהקדם.",
+    "successUrgent": "במידה וזה דחוף, ניתן לפנות ישירות לנייד.",
+    "sendAnother": "שלח הודעה נוספת",
+    "directTitle": "יצירת קשר ישיר",
+    "socialTitle": "עקבו אחרינו",
+    "socialDesc": "ניתן גם לפנות אלינו דרך הרשתות החברתיות."
   }
 }

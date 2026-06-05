@@ -5,6 +5,7 @@
     "tours": "Tours",
     "about": "About",
     "location": "Location",
+    "contact": "Need Help?",
     "staff": "Staff",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
@@ -397,7 +398,8 @@
       "Bus: Line 12, \"Prigan Center\" stop — about 5 min walk"
     ],
     "helpTitle": "Need Help?",
-    "helpDesc": "If you have trouble finding us, feel free to contact:"
+    "helpDesc": "If you have trouble finding us, feel free to contact:",
+    "contactBtn": "Send us a message →"
   },
   "auth": {
     "brand": "ChilliLand",
@@ -536,6 +538,26 @@
       "Regular watering for best production"
     ]
   },
+  "subscriptions": {
+    "kicker": "Stay in the loop",
+    "title": "Fresh updates from the farm",
+    "subtitle": "Choose the news you care about and receive occasional ChiliLand updates by email.",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "choose": "What would you like to receive?",
+    "events": "Events",
+    "discounts": "Special discounts",
+    "newProducts": "New products",
+    "consent": "I agree to receive email updates from ChiliLand. I can unsubscribe at any time.",
+    "subscribe": "Save my preferences",
+    "unsubscribe": "Unsubscribe",
+    "saving": "Saving...",
+    "saved": "Your update preferences were saved.",
+    "unsubscribed": "You have been unsubscribed from ChiliLand updates.",
+    "emailRequired": "Enter your email address to unsubscribe.",
+    "saveError": "Could not save your preferences.",
+    "unsubscribeError": "Could not unsubscribe this email."
+  },
   "owner": {
     "controlCenter": "Owner Control Center",
     "sidebar": {
@@ -551,7 +573,8 @@
         "tours": "Tours Overview",
         "bookings": "Booking Requests",
         "team": "Team Schedule",
-        "reviews": "Reviews"
+        "reviews": "Reviews",
+        "updates": "Subscriber Updates"
       },
       "darkMode": "Dark Mode",
       "lightMode": "Light Mode",
@@ -641,6 +664,22 @@
       "paidLabel": "Paid",
       "freeLabel": "Free"
     },
+    "updates": {
+      "title": "Subscriber Updates",
+      "subtitle": "See subscriber interests and send a timely update to the right audience.",
+      "statsLabel": "Subscription statistics",
+      "activeSubscribers": "Active subscribers",
+      "statsError": "Could not load subscription statistics.",
+      "composeTitle": "Send an update",
+      "composeSubtitle": "Messages are sent only to active subscribers who selected the chosen category.",
+      "category": "Audience category",
+      "subject": "Email subject",
+      "message": "Message",
+      "send": "Send update",
+      "sending": "Sending...",
+      "sendError": "Could not send the update.",
+      "sentResult": "Sent {{sent}} of {{recipients}} emails. Failed: {{failed}}."
+    },
     "promoCodes": {
       "title": "Promo Codes",
       "subtitle": "Create discount codes for customers to use at checkout.",
@@ -704,6 +743,39 @@
       "emptyDesc": "Create your first tour using the button above.",
       "confirmDelete": "Delete this tour?",
       "deleteFail": "Could not delete tour."
+    },
+    "reviews": {
+      "title": "Guest Reviews",
+      "subtitle": "Read visitor feedback from your tours and respond to keep the conversation going.",
+      "totalReviews": "Total Reviews",
+      "avgRating": "Average Rating",
+      "replied": "Replied",
+      "awaitingReply": "Awaiting Reply",
+      "searchPlaceholder": "Search by reviewer, tour or comment…",
+      "allRatings": "All ratings",
+      "allStatuses": "All statuses",
+      "filterAwaiting": "Awaiting reply",
+      "filterReplied": "Replied",
+      "loading": "Loading reviews…",
+      "loadError": "Could not load reviews.",
+      "emptyTitle": "No reviews yet",
+      "emptyDesc": "Reviews from tour visitors will appear here once submitted.",
+      "noMatchTitle": "No matches",
+      "noMatchDesc": "Try adjusting your search or filters.",
+      "badgeReplied": "✓ Replied",
+      "badgePending": "Awaiting reply",
+      "verifiedVisitor": "Verified Visitor",
+      "yourResponse": "Your response",
+      "editResponse": "Edit your response",
+      "writeResponse": "Write a response",
+      "replyPlaceholder": "Write a warm, helpful response visible to all visitors…",
+      "replyEmpty": "Reply cannot be empty.",
+      "saveFail": "Failed to save reply.",
+      "cancel": "Cancel",
+      "save": "Save Response",
+      "saving": "Saving…",
+      "toggleEdit": "✏ Edit Response",
+      "toggleReply": "↩ Reply to Review"
     },
     "status": {
       "paid": "Paid",
@@ -813,5 +885,33 @@
     "back": "Back",
     "yes": "Yes",
     "no": "No"
+  },
+  "contact": {
+    "kicker": "We're here for you",
+    "title": "Contact Us",
+    "subtitle": "Have a question or request? Fill in the form and we'll get back to you shortly.",
+    "formTitle": "Send us a message",
+    "name": "Full Name",
+    "namePlaceholder": "John Smith",
+    "phone": "Phone Number",
+    "phonePlaceholder": "050-000-0000",
+    "email": "Email Address",
+    "emailPlaceholder": "john@email.com",
+    "message": "Message",
+    "messagePlaceholder": "Write your question or request here...",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "errorName": "Please enter your full name.",
+    "errorPhone": "Please enter your phone number.",
+    "errorEmail": "Please enter your email address.",
+    "errorMessage": "Please write a message.",
+    "sendError": "Something went wrong. Please try again.",
+    "successTitle": "Message sent successfully!",
+    "successBody": "Thank you! We'll get back to you shortly.",
+    "successUrgent": "If this is urgent, you can contact us directly by phone.",
+    "sendAnother": "Send another message",
+    "directTitle": "Direct Contact",
+    "socialTitle": "Follow Us",
+    "socialDesc": "You can also reach us through our social media channels."
   }
 }

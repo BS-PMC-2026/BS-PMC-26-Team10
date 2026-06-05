@@ -691,3 +691,52 @@
   .tours-grid-meta-row { font-size: 3.4vw; }
   .tours-grid-btn { font-size: 3.8vw; padding: 3.5vw; border-radius: 3vw; }
 }
+
+/* ===== DARK MODE — FAQ ===== */
+[data-theme="dark"] .tours-faq {
+  border-top-color: #3d2820;
+}
+
+[data-theme="dark"] .tours-faq-kicker {
+  color: #d46040;
+}
+
+[data-theme="dark"] .tours-faq-heading h2 {
+  color: #f0e4d8;
+}
+
+[data-theme="dark"] .tours-faq-heading p,
+[data-theme="dark"] .tours-faq-status {
+  color: #c4a090;
+}
+
+[data-theme="dark"] .tours-faq-list {
+  background: #2a1c15;
+  border-color: #3d2820;
+}
+
+[data-theme="dark"] .tours-faq-item + .tours-faq-item {
+  border-top-color: #3d2820;
+}
+
+[data-theme="dark"] .tours-faq-question {
+  background: #2a1c15;
+  color: #f0e4d8;
+}
+
+[data-theme="dark"] .tours-faq-question:hover {
+  background: #331f16;
+}
+
+[data-theme="dark"] .tours-faq-category {
+  color: #d46040;
+}
+
+[data-theme="dark"] .tours-faq-icon {
+  background: #3d2415;
+  color: #e4a97a;
+}
+
+[data-theme="dark"] .tours-faq-answer {
+  color: #d4c0b0;
+}
