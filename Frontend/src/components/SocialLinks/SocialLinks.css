@@ -9,6 +9,11 @@
   z-index: 900;
 }
 
+[dir="rtl"] .sl-floating {
+  right: auto;
+  left: 16px;
+}
+
 .sl-floating-btn {
   display: flex;
   align-items: center;

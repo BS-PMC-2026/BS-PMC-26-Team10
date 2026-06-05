@@ -530,6 +530,77 @@
     height: 60px;
   }
 }
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .vc-drawer,
+[data-theme="dark"] .vc-backdrop {
+  --vc-bg: #1e1410;
+  --vc-card: #2a1c15;
+  --vc-border: #3d2820;
+  --vc-text: #f0e4d8;
+  --vc-muted: #c4a090;
+}
+
+[data-theme="dark"] .vc-item--error {
+  background: #2e1414;
+}
+
+[data-theme="dark"] .vc-item-img-wrap {
+  background: linear-gradient(135deg, #3a2518, #2a1c12);
+}
+
+[data-theme="dark"] .vc-qty {
+  background: #2e1e16;
+  border-color: #3d2820;
+}
+
+[data-theme="dark"] .vc-qty-btn:hover:not(:disabled) {
+  background: #3d2820;
+}
+
+[data-theme="dark"] .vc-item-remove:hover {
+  background: #3a1818;
+}
+
+[data-theme="dark"] .vc-footer-errors {
+  background: #3a1818;
+  border-color: rgba(162, 59, 59, 0.4);
+}
+
+[data-theme="dark"] .vc-promo-applied {
+  background: #132613;
+  border-color: #2e5a2e;
+  color: #7dba7d;
+}
+
+[data-theme="dark"] .vc-promo-remove {
+  color: #5a9a5a;
+}
+
+[data-theme="dark"] .vc-promo-remove:hover {
+  color: #7dba7d;
+}
+
+[data-theme="dark"] .vc-totals-row--discount,
+[data-theme="dark"] .vc-discount-value {
+  color: #7dba7d;
+}
+
+[data-theme="dark"] .vc-item-price-each {
+  color: #c4a090;
+}
+
+[data-theme="dark"] .vc-shipping-note {
+  color: #c4a090;
+}
+
+[data-theme="dark"] .vc-clear-btn {
+  color: #c4a090;
+}
+
+[data-theme="dark"] .vc-body {
+  scrollbar-color: #3d2820 transparent;
+}
+
 /* ===== RTL SUPPORT ===== */
 [dir="rtl"] .vc-drawer {
   right: auto;
