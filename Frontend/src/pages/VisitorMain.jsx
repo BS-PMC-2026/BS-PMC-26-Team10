@@ -7,6 +7,7 @@ import VisitorCatalogue from "/src/components/VisitorCatalogue/VisitorCatalogue"
 // import WhyVisitUs from "/src/components/WhyVisitUs/WhyVisitUs";
 import FooterVisitor from "/src/components/FooterVisitor/FooterVisitor";
 import SocialLinks from "/src/components/SocialLinks/SocialLinks";
+import UpdateSubscription from "/src/components/UpdateSubscription/UpdateSubscription";
 
 function VisitorMain() {
   return (
@@ -16,6 +17,7 @@ function VisitorMain() {
       <WelcomeStrip />
       <div id="products"><VisitorCatalogue /></div>
       {/* <WhyVisitUs /> */}
+      <UpdateSubscription />
       <FooterVisitor />
     </>
   );

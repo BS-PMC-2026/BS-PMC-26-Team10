@@ -45,6 +45,7 @@ describe("OwnerSidebar", () => {
     expect(screen.getByText("Stock & Inventory")).toBeInTheDocument();
     expect(screen.getByText("Pepper Catalogue")).toBeInTheDocument();
     expect(screen.getByText("Promo Codes")).toBeInTheDocument();
+    expect(screen.getByText("Subscriber Updates")).toBeInTheDocument();
   });
 
   test("clicking Log Out calls logout() and navigates to /staffLogin", async () => {

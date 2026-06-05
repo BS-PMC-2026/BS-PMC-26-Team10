@@ -10,6 +10,7 @@ import { MyToursView } from "./TourguideMain";
 import CreateTourPage from "../components/CreateTourPage/CreateTourPage";
 import OwnerBookings from "./OwnerBookings";
 import OwnerReviews from "./OwnerReviews";
+import OwnerUpdates from "./OwnerUpdates";
 import "../styles/OwnerMain.css";
 
 function ComingSoon({ section }) {
@@ -58,6 +59,7 @@ function OwnerMain() {
       case "tours":       return <OwnerToursView />;
       case "bookings":    return <OwnerBookings />;
       case "reviews":     return <OwnerReviews />;
+      case "updates":     return <OwnerUpdates />;
       default:            return <ComingSoon section={activeSection} />;
     }
   }

@@ -531,6 +531,26 @@
       "השקיה סדירה לייצור מיטבי"
     ]
   },
+  "subscriptions": {
+    "kicker": "נשארים מעודכנים",
+    "title": "עדכונים טריים מהחווה",
+    "subtitle": "בחרו את החדשות שמעניינות אתכם וקבלו מדי פעם עדכונים מ-ChiliLand בדוא\"ל.",
+    "email": "כתובת דוא\"ל",
+    "emailPlaceholder": "you@example.com",
+    "choose": "אילו עדכונים תרצו לקבל?",
+    "events": "אירועים",
+    "discounts": "הנחות מיוחדות",
+    "newProducts": "מוצרים חדשים",
+    "consent": "אני מסכים/ה לקבל עדכונים בדוא\"ל מ-ChiliLand. ניתן לבטל את ההרשמה בכל עת.",
+    "subscribe": "שמור העדפות",
+    "unsubscribe": "ביטול הרשמה",
+    "saving": "שומר...",
+    "saved": "העדפות העדכונים נשמרו.",
+    "unsubscribed": "ההרשמה לעדכוני ChiliLand בוטלה.",
+    "emailRequired": "יש להזין כתובת דוא\"ל כדי לבטל הרשמה.",
+    "saveError": "לא ניתן לשמור את ההעדפות.",
+    "unsubscribeError": "לא ניתן לבטל את ההרשמה עבור כתובת זו."
+  },
   "owner": {
     "controlCenter": "מרכז בקרה לבעלים",
     "sidebar": {
@@ -546,7 +566,8 @@
         "tours": "סקירת סיורים",
         "bookings": "בקשות הזמנה",
         "team": "לוח שיבוצים",
-        "reviews": "ביקורות"
+        "reviews": "ביקורות",
+        "updates": "עדכונים למנויים"
       },
       "darkMode": "מצב כהה",
       "lightMode": "מצב בהיר",
@@ -635,6 +656,22 @@
       "colPayment": "תשלום",
       "paidLabel": "שולם",
       "freeLabel": "חינם"
+    },
+    "updates": {
+      "title": "עדכונים למנויים",
+      "subtitle": "צפו בתחומי העניין של המנויים ושלחו עדכון בזמן לקהל המתאים.",
+      "statsLabel": "נתוני הרשמה לעדכונים",
+      "activeSubscribers": "מנויים פעילים",
+      "statsError": "לא ניתן לטעון את נתוני ההרשמה.",
+      "composeTitle": "שליחת עדכון",
+      "composeSubtitle": "ההודעה תישלח רק למנויים פעילים שבחרו בקטגוריה המתאימה.",
+      "category": "קטגוריית קהל",
+      "subject": "נושא הדוא\"ל",
+      "message": "תוכן ההודעה",
+      "send": "שלח עדכון",
+      "sending": "שולח...",
+      "sendError": "לא ניתן לשלוח את העדכון.",
+      "sentResult": "נשלחו {{sent}} מתוך {{recipients}} הודעות. נכשלו: {{failed}}."
     },
     "promoCodes": {
       "title": "קודי הנחה",
