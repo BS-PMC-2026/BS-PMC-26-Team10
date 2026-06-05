@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon, Languages } from "lucide-react";
+import { Home, ShoppingBag, Tractor, Info, MapPin, LogIn, Menu, X, Sun, Moon, Languages, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CLMonogram } from "../ChiliMark/ChiliMark";
 import { useTheme } from "../../context/ThemeContext";
@@ -14,11 +14,12 @@ function Navbar() {
   const isHome = pathname === "/";
 
   const NAV_LINKS = [
-    { to: "/",              label: t("nav.home"),     Icon: Home       },
-    { to: "/products",      label: t("nav.products"), Icon: ShoppingBag },
-    { to: "/tours",         label: t("nav.tours"),    Icon: Tractor    },
-    { to: "/about",         label: t("nav.about"),    Icon: Info       },
-    { to: "/farm-location", label: t("nav.location"), Icon: MapPin     },
+    { to: "/",              label: t("nav.home"),     Icon: Home           },
+    { to: "/products",      label: t("nav.products"), Icon: ShoppingBag    },
+    { to: "/tours",         label: t("nav.tours"),    Icon: Tractor        },
+    { to: "/about",         label: t("nav.about"),    Icon: Info           },
+    { to: "/farm-location", label: t("nav.location"), Icon: MapPin         },
+    { to: "/contact",       label: t("nav.contact"),  Icon: MessageCircle  },
   ];
 
   const [visible, setVisible] = useState(!isHome);

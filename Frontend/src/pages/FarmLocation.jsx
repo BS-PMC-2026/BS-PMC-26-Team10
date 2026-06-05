@@ -129,6 +129,9 @@ function FarmLocation() {
             <div className="contact-social">
               <SocialLinks variant="inline" />
             </div>
+            <Link to="/contact" className="farm-contact-btn">
+              {t('location.contactBtn')}
+            </Link>
           </div>
         </section>
       </div>

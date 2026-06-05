@@ -426,3 +426,40 @@ def send_tour_cancellation_confirmation(
         subject=f"ChiliLand Tour Booking Cancelled - {booking_reference}",
         html=html,
     )
+
+
+def send_contact_inquiry(name: str, phone: str, email: str, message: str) -> bool:
+    safe_name = escape(name)
+    safe_phone = escape(phone)
+    safe_email = escape(email)
+    safe_message = escape(message).replace("\n", "<br/>")
+
+    html = f"""
+    <html><body style="font-family:Arial,sans-serif;background:#fff8f5;padding:32px;">
+      <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;
+                  padding:32px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+        <h2 style="color:#b83b1a;margin-top:0;">📬 פנייה חדשה מהאתר</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:15px;">
+          <tr><td style="padding:8px 0;color:#888;width:110px;">שם מלא</td>
+              <td style="padding:8px 0;font-weight:600;">{safe_name}</td></tr>
+          <tr><td style="padding:8px 0;color:#888;">טלפון</td>
+              <td style="padding:8px 0;">{safe_phone}</td></tr>
+          <tr><td style="padding:8px 0;color:#888;">מייל</td>
+              <td style="padding:8px 0;">{safe_email}</td></tr>
+        </table>
+        <hr style="margin:20px 0;border:none;border-top:1px solid #f0e0d8;"/>
+        <p style="color:#555;margin:0 0 6px;font-size:13px;text-transform:uppercase;
+                  letter-spacing:.06em;">הודעה</p>
+        <p style="background:#fff8f5;border-radius:8px;padding:16px;
+                  color:#333;line-height:1.7;margin:0;">{safe_message}</p>
+        <p style="margin-top:24px;font-size:12px;color:#aaa;">
+          נשלח מטופס יצירת הקשר באתר ChiliLand</p>
+      </div>
+    </body></html>
+    """
+
+    return _send_smtp_email(
+        to_email="danc2806@gmail.com",
+        subject=f"פנייה חדשה מהאתר — {safe_name}",
+        html=html,
+    )
